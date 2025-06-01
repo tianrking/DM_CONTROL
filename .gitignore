@@ -1,2 +1,9 @@
 */__pycache__/*
 */build/*
+*/CtrBoard/*
+*.o
+*.axf
+*.d
+*.crf
+*.map
+*.hex
