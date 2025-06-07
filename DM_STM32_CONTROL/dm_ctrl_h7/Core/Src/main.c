@@ -107,14 +107,14 @@ int main(void)
   /* USER CODE BEGIN 2 */
   
   
-  const char *ready_message = "Motor Control System Ready. Target RPM can be updated via UART.\r\n";
-  uint8_t initial_uart_rx_byte[1];
-  if (HAL_UART_Receive_IT(&huart1, initial_uart_rx_byte, 1) != HAL_OK)
-  {
-	Error_Handler(); 
-  }
+  // const char *ready_message = "Motor Control System Ready. Target RPM can be updated via UART.\r\n";
+  // uint8_t initial_uart_rx_byte[1];
+  // if (HAL_UART_Receive_IT(&huart1, initial_uart_rx_byte, 1) != HAL_OK)
+  // {
+	// Error_Handler(); 
+  // }
 
-  HAL_UART_Transmit(&huart1, (uint8_t*)ready_message, strlen(ready_message), HAL_MAX_DELAY);
+  // HAL_UART_Transmit(&huart1, (uint8_t*)ready_message, strlen(ready_message), HAL_MAX_DELAY);
 
 
   /* USER CODE END 2 */

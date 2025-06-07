@@ -1,0 +1,2464 @@
+ARM GAS  /tmp/ccYNYXys.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"dm_motor_ctrl.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.text.dm_motor_init,"ax",%progbits
+  17              		.align	1
+  18              		.global	dm_motor_init
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	dm_motor_init:
+  26              	.LFB144:
+  27              		.file 1 "User/dm_motor_ctrl.c"
+   1:User/dm_motor_ctrl.c **** #include "dm_motor_drv.h"
+   2:User/dm_motor_ctrl.c **** #include "dm_motor_ctrl.h"
+   3:User/dm_motor_ctrl.c **** #include "string.h"
+   4:User/dm_motor_ctrl.c **** #include "stdbool.h"
+   5:User/dm_motor_ctrl.c **** 
+   6:User/dm_motor_ctrl.c **** motor_t motor[num];
+   7:User/dm_motor_ctrl.c **** 
+   8:User/dm_motor_ctrl.c **** 
+   9:User/dm_motor_ctrl.c **** /**
+  10:User/dm_motor_ctrl.c **** ************************************************************************
+  11:User/dm_motor_ctrl.c **** * @brief:      	dm4310_motor_init: DM4310电机初始化函数
+  12:User/dm_motor_ctrl.c **** * @param:      	void
+  13:User/dm_motor_ctrl.c **** * @retval:     	void
+  14:User/dm_motor_ctrl.c **** * @details:    	初始化1个DM4310型号的电机，设置默认参数和控制模式。
+  15:User/dm_motor_ctrl.c **** *               设置ID、控制模式和命令模式等信息。
+  16:User/dm_motor_ctrl.c **** ************************************************************************
+  17:User/dm_motor_ctrl.c **** **/
+  18:User/dm_motor_ctrl.c **** void dm_motor_init(void)
+  19:User/dm_motor_ctrl.c **** {
+  28              		.loc 1 19 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 38B5     		push	{r3, r4, r5, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 3, -16
+  36              		.cfi_offset 4, -12
+  37              		.cfi_offset 5, -8
+  38              		.cfi_offset 14, -4
+  20:User/dm_motor_ctrl.c **** 	// 初始化Motor1和Motor2的电机结构
+ARM GAS  /tmp/ccYNYXys.s 			page 2
+
+
+  21:User/dm_motor_ctrl.c **** 	memset(&motor[Motor1], 0, sizeof(motor[Motor1]));
+  39              		.loc 1 21 2 view .LVU1
+  40 0002 1D4C     		ldr	r4, .L3
+  41 0004 4FF48875 		mov	r5, #272
+  42 0008 2A46     		mov	r2, r5
+  43 000a 0021     		movs	r1, #0
+  44 000c 2046     		mov	r0, r4
+  45 000e FFF7FEFF 		bl	memset
+  46              	.LVL0:
+  22:User/dm_motor_ctrl.c **** 	memset(&motor[Motor2], 0, sizeof(motor[Motor2]));
+  47              		.loc 1 22 2 view .LVU2
+  48 0012 2A46     		mov	r2, r5
+  49 0014 0021     		movs	r1, #0
+  50 0016 6019     		adds	r0, r4, r5
+  51 0018 FFF7FEFF 		bl	memset
+  52              	.LVL1:
+  23:User/dm_motor_ctrl.c **** 	memset(&motor[Motor3], 0, sizeof(motor[Motor3]));
+  53              		.loc 1 23 2 view .LVU3
+  54 001c 2A46     		mov	r2, r5
+  55 001e 0021     		movs	r1, #0
+  56 0020 04F50870 		add	r0, r4, #544
+  57 0024 FFF7FEFF 		bl	memset
+  58              	.LVL2:
+  24:User/dm_motor_ctrl.c **** 	memset(&motor[Motor4], 0, sizeof(motor[Motor4]));
+  59              		.loc 1 24 2 view .LVU4
+  60 0028 2A46     		mov	r2, r5
+  61 002a 0021     		movs	r1, #0
+  62 002c 04F54C70 		add	r0, r4, #816
+  63 0030 FFF7FEFF 		bl	memset
+  64              	.LVL3:
+  25:User/dm_motor_ctrl.c **** 	memset(&motor[Motor5], 0, sizeof(motor[Motor5]));
+  65              		.loc 1 25 2 view .LVU5
+  66 0034 2A46     		mov	r2, r5
+  67 0036 0021     		movs	r1, #0
+  68 0038 04F58860 		add	r0, r4, #1088
+  69 003c FFF7FEFF 		bl	memset
+  70              	.LVL4:
+  26:User/dm_motor_ctrl.c **** 	memset(&motor[Motor6], 0, sizeof(motor[Motor6]));
+  71              		.loc 1 26 2 view .LVU6
+  72 0040 2A46     		mov	r2, r5
+  73 0042 0021     		movs	r1, #0
+  74 0044 04F5AA60 		add	r0, r4, #1360
+  75 0048 FFF7FEFF 		bl	memset
+  76              	.LVL5:
+  27:User/dm_motor_ctrl.c **** 
+  28:User/dm_motor_ctrl.c **** 	// 设置Motor1的电机信息
+  29:User/dm_motor_ctrl.c **** 	motor[Motor1].id = 0x01;
+  77              		.loc 1 29 2 view .LVU7
+  78              		.loc 1 29 19 is_stmt 0 view .LVU8
+  79 004c 0123     		movs	r3, #1
+  80 004e 2380     		strh	r3, [r4]	@ movhi
+  30:User/dm_motor_ctrl.c **** 	motor[Motor1].mst_id = 0x00;	// 实际没有用上，只做标识作用
+  81              		.loc 1 30 2 is_stmt 1 view .LVU9
+  31:User/dm_motor_ctrl.c **** 	motor[Motor1].tmp.read_flag = 1;
+  82              		.loc 1 31 2 view .LVU10
+  83              		.loc 1 31 30 is_stmt 0 view .LVU11
+  84 0050 84F85830 		strb	r3, [r4, #88]
+ARM GAS  /tmp/ccYNYXys.s 			page 3
+
+
+  32:User/dm_motor_ctrl.c **** 	motor[Motor1].ctrl.mode 	= spd_mode;
+  85              		.loc 1 32 2 is_stmt 1 view .LVU12
+  86              		.loc 1 32 27 is_stmt 0 view .LVU13
+  87 0054 0323     		movs	r3, #3
+  88 0056 84F83C30 		strb	r3, [r4, #60]
+  33:User/dm_motor_ctrl.c **** 	motor[Motor1].ctrl.vel_set 	= 1.0f;
+  89              		.loc 1 33 2 is_stmt 1 view .LVU14
+  90              		.loc 1 33 30 is_stmt 0 view .LVU15
+  91 005a 4FF07E53 		mov	r3, #1065353216
+  92 005e 6364     		str	r3, [r4, #68]	@ float
+  34:User/dm_motor_ctrl.c **** //	motor[Motor1].ctrl.pos_set 	= 6.28f;
+  35:User/dm_motor_ctrl.c ****     motor[Motor1].ctrl.pos_set 	= 0.0f;
+  93              		.loc 1 35 5 is_stmt 1 view .LVU16
+  36:User/dm_motor_ctrl.c **** 	motor[Motor1].ctrl.tor_set 	= 0.0f;
+  94              		.loc 1 36 2 view .LVU17
+  37:User/dm_motor_ctrl.c **** 	motor[Motor1].ctrl.cur_set 	= 0.02f;
+  95              		.loc 1 37 2 view .LVU18
+  96              		.loc 1 37 30 is_stmt 0 view .LVU19
+  97 0060 064B     		ldr	r3, .L3+4
+  98 0062 E364     		str	r3, [r4, #76]	@ float
+  38:User/dm_motor_ctrl.c **** 	motor[Motor1].ctrl.kp_set 	= 0.0f;
+  99              		.loc 1 38 2 is_stmt 1 view .LVU20
+  39:User/dm_motor_ctrl.c **** 	motor[Motor1].ctrl.kd_set 	= 0.0f;
+ 100              		.loc 1 39 2 view .LVU21
+  40:User/dm_motor_ctrl.c **** 	motor[Motor1].tmp.PMAX		= 12.5f;
+ 101              		.loc 1 40 2 view .LVU22
+ 102              		.loc 1 40 26 is_stmt 0 view .LVU23
+ 103 0064 064B     		ldr	r3, .L3+8
+ 104 0066 C4F8B030 		str	r3, [r4, #176]	@ float
+  41:User/dm_motor_ctrl.c **** 	motor[Motor1].tmp.VMAX		= 30.0f;
+ 105              		.loc 1 41 2 is_stmt 1 view .LVU24
+ 106              		.loc 1 41 26 is_stmt 0 view .LVU25
+ 107 006a 064B     		ldr	r3, .L3+12
+ 108 006c C4F8B430 		str	r3, [r4, #180]	@ float
+  42:User/dm_motor_ctrl.c **** 	motor[Motor1].tmp.TMAX		= 10.0f;
+ 109              		.loc 1 42 2 is_stmt 1 view .LVU26
+ 110              		.loc 1 42 26 is_stmt 0 view .LVU27
+ 111 0070 054B     		ldr	r3, .L3+16
+ 112 0072 C4F8B830 		str	r3, [r4, #184]	@ float
+  43:User/dm_motor_ctrl.c **** }
+ 113              		.loc 1 43 1 view .LVU28
+ 114 0076 38BD     		pop	{r3, r4, r5, pc}
+ 115              	.L4:
+ 116              		.align	2
+ 117              	.L3:
+ 118 0078 00000000 		.word	.LANCHOR0
+ 119 007c 0AD7A33C 		.word	1017370378
+ 120 0080 00004841 		.word	1095237632
+ 121 0084 0000F041 		.word	1106247680
+ 122 0088 00002041 		.word	1092616192
+ 123              		.cfi_endproc
+ 124              	.LFE144:
+ 126              		.section	.text.read_all_motor_data,"ax",%progbits
+ 127              		.align	1
+ 128              		.global	read_all_motor_data
+ 129              		.syntax unified
+ 130              		.thumb
+ARM GAS  /tmp/ccYNYXys.s 			page 4
+
+
+ 131              		.thumb_func
+ 132              		.fpu fpv5-d16
+ 134              	read_all_motor_data:
+ 135              	.LVL6:
+ 136              	.LFB145:
+  44:User/dm_motor_ctrl.c **** /**
+  45:User/dm_motor_ctrl.c **** ************************************************************************
+  46:User/dm_motor_ctrl.c **** * @brief:      	read_all_motor_data: 读取电机的所有寄存器的数据信息
+  47:User/dm_motor_ctrl.c **** * @param:      	motor_t：电机参数结构体
+  48:User/dm_motor_ctrl.c **** * @retval:     	void
+  49:User/dm_motor_ctrl.c **** * @details:    	逐次发送读取命令
+  50:User/dm_motor_ctrl.c **** ************************************************************************
+  51:User/dm_motor_ctrl.c **** **/
+  52:User/dm_motor_ctrl.c **** void read_all_motor_data(motor_t *motor)
+  53:User/dm_motor_ctrl.c **** {
+ 137              		.loc 1 53 1 is_stmt 1 view -0
+ 138              		.cfi_startproc
+ 139              		@ args = 0, pretend = 0, frame = 0
+ 140              		@ frame_needed = 0, uses_anonymous_args = 0
+ 141              		.loc 1 53 1 is_stmt 0 view .LVU30
+ 142 0000 08B5     		push	{r3, lr}
+ 143              	.LCFI1:
+ 144              		.cfi_def_cfa_offset 8
+ 145              		.cfi_offset 3, -8
+ 146              		.cfi_offset 14, -4
+  54:User/dm_motor_ctrl.c ****     switch (motor->tmp.read_flag)
+ 147              		.loc 1 54 5 is_stmt 1 view .LVU31
+ 148              		.loc 1 54 23 is_stmt 0 view .LVU32
+ 149 0002 90F85830 		ldrb	r3, [r0, #88]	@ zero_extendqisi2
+ 150              		.loc 1 54 5 view .LVU33
+ 151 0006 013B     		subs	r3, r3, #1
+ 152 0008 2C2B     		cmp	r3, #44
+ 153 000a 32D8     		bhi	.L5
+ 154 000c DFE813F0 		tbh	[pc, r3, lsl #1]
+ 155              	.L8:
+ 156 0010 2D00     		.2byte	(.L52-.L8)/2
+ 157 0012 3200     		.2byte	(.L51-.L8)/2
+ 158 0014 3700     		.2byte	(.L50-.L8)/2
+ 159 0016 3C00     		.2byte	(.L49-.L8)/2
+ 160 0018 4100     		.2byte	(.L48-.L8)/2
+ 161 001a 4600     		.2byte	(.L47-.L8)/2
+ 162 001c 4B00     		.2byte	(.L46-.L8)/2
+ 163 001e 5000     		.2byte	(.L45-.L8)/2
+ 164 0020 5500     		.2byte	(.L44-.L8)/2
+ 165 0022 5A00     		.2byte	(.L43-.L8)/2
+ 166 0024 5F00     		.2byte	(.L42-.L8)/2
+ 167 0026 6400     		.2byte	(.L41-.L8)/2
+ 168 0028 6900     		.2byte	(.L40-.L8)/2
+ 169 002a 6E00     		.2byte	(.L39-.L8)/2
+ 170 002c 7300     		.2byte	(.L38-.L8)/2
+ 171 002e 7800     		.2byte	(.L37-.L8)/2
+ 172 0030 7D00     		.2byte	(.L36-.L8)/2
+ 173 0032 8200     		.2byte	(.L35-.L8)/2
+ 174 0034 8700     		.2byte	(.L34-.L8)/2
+ 175 0036 8C00     		.2byte	(.L33-.L8)/2
+ 176 0038 9100     		.2byte	(.L32-.L8)/2
+ 177 003a 9600     		.2byte	(.L31-.L8)/2
+ARM GAS  /tmp/ccYNYXys.s 			page 5
+
+
+ 178 003c 9B00     		.2byte	(.L30-.L8)/2
+ 179 003e A000     		.2byte	(.L29-.L8)/2
+ 180 0040 A500     		.2byte	(.L28-.L8)/2
+ 181 0042 AA00     		.2byte	(.L27-.L8)/2
+ 182 0044 AF00     		.2byte	(.L26-.L8)/2
+ 183 0046 B400     		.2byte	(.L25-.L8)/2
+ 184 0048 B900     		.2byte	(.L24-.L8)/2
+ 185 004a BE00     		.2byte	(.L23-.L8)/2
+ 186 004c C300     		.2byte	(.L22-.L8)/2
+ 187 004e C800     		.2byte	(.L21-.L8)/2
+ 188 0050 CD00     		.2byte	(.L20-.L8)/2
+ 189 0052 D200     		.2byte	(.L19-.L8)/2
+ 190 0054 D700     		.2byte	(.L18-.L8)/2
+ 191 0056 DC00     		.2byte	(.L17-.L8)/2
+ 192 0058 E100     		.2byte	(.L16-.L8)/2
+ 193 005a E600     		.2byte	(.L15-.L8)/2
+ 194 005c EB00     		.2byte	(.L14-.L8)/2
+ 195 005e F000     		.2byte	(.L13-.L8)/2
+ 196 0060 F500     		.2byte	(.L12-.L8)/2
+ 197 0062 FA00     		.2byte	(.L11-.L8)/2
+ 198 0064 FF00     		.2byte	(.L10-.L8)/2
+ 199 0066 0401     		.2byte	(.L9-.L8)/2
+ 200 0068 0901     		.2byte	(.L7-.L8)/2
+ 201              		.p2align 1
+ 202              	.L52:
+  55:User/dm_motor_ctrl.c ****     {
+  56:User/dm_motor_ctrl.c **** 		case 1:  read_motor_data(motor->id, RID_UV_VALUE);  break; // UV_Value
+ 203              		.loc 1 56 12 is_stmt 1 view .LVU34
+ 204 006a 0021     		movs	r1, #0
+ 205 006c 0088     		ldrh	r0, [r0]
+ 206              	.LVL7:
+ 207              		.loc 1 56 12 is_stmt 0 view .LVU35
+ 208 006e FFF7FEFF 		bl	read_motor_data
+ 209              	.LVL8:
+ 210              		.loc 1 56 55 is_stmt 1 view .LVU36
+ 211              	.L5:
+  57:User/dm_motor_ctrl.c **** 		case 2:  read_motor_data(motor->id, RID_KT_VALUE);  break; // KT_Value
+  58:User/dm_motor_ctrl.c **** 		case 3:  read_motor_data(motor->id, RID_OT_VALUE);  break; // OT_Value
+  59:User/dm_motor_ctrl.c **** 		case 4:  read_motor_data(motor->id, RID_OC_VALUE);  break; // OC_Value
+  60:User/dm_motor_ctrl.c **** 		case 5:  read_motor_data(motor->id, RID_ACC);       break; // ACC
+  61:User/dm_motor_ctrl.c **** 		case 6:  read_motor_data(motor->id, RID_DEC);       break; // DEC
+  62:User/dm_motor_ctrl.c **** 		case 7:  read_motor_data(motor->id, RID_MAX_SPD);   break; // MAX_SPD
+  63:User/dm_motor_ctrl.c **** 		case 8:  read_motor_data(motor->id, RID_MST_ID);    break; // MST_ID 
+  64:User/dm_motor_ctrl.c **** 		case 9:  read_motor_data(motor->id, RID_ESC_ID);    break; // ESC_ID
+  65:User/dm_motor_ctrl.c **** 		case 10: read_motor_data(motor->id, RID_TIMEOUT);   break; // TIMEOUT 
+  66:User/dm_motor_ctrl.c **** 		case 11: read_motor_data(motor->id, RID_CMODE);     break; // CTRL_MODE 
+  67:User/dm_motor_ctrl.c **** 		case 12: read_motor_data(motor->id, RID_DAMP);      break; // Damp 
+  68:User/dm_motor_ctrl.c **** 		case 13: read_motor_data(motor->id, RID_INERTIA);   break; // Inertia
+  69:User/dm_motor_ctrl.c **** 		case 14: read_motor_data(motor->id, RID_HW_VER);    break; // Rsv1 
+  70:User/dm_motor_ctrl.c **** 		case 15: read_motor_data(motor->id, RID_SW_VER);    break; // sw_ver 
+  71:User/dm_motor_ctrl.c **** 		case 16: read_motor_data(motor->id, RID_SN);        break; // Rsv2 
+  72:User/dm_motor_ctrl.c **** 		case 17: read_motor_data(motor->id, RID_NPP);       break; // NPP 
+  73:User/dm_motor_ctrl.c **** 		case 18: read_motor_data(motor->id, RID_RS);        break; // Rs 
+  74:User/dm_motor_ctrl.c **** 		case 19: read_motor_data(motor->id, RID_LS);        break; // Ls 
+  75:User/dm_motor_ctrl.c **** 		case 20: read_motor_data(motor->id, RID_FLUX);      break; // Flux 
+  76:User/dm_motor_ctrl.c **** 		case 21: read_motor_data(motor->id, RID_GR);        break; // Gr 
+  77:User/dm_motor_ctrl.c **** 		case 22: read_motor_data(motor->id, RID_PMAX);      break; // PMAX 
+ARM GAS  /tmp/ccYNYXys.s 			page 6
+
+
+  78:User/dm_motor_ctrl.c **** 		case 23: read_motor_data(motor->id, RID_VMAX);      break; // VMAX 
+  79:User/dm_motor_ctrl.c **** 		case 24: read_motor_data(motor->id, RID_TMAX);      break; // TMAX 
+  80:User/dm_motor_ctrl.c **** 		case 25: read_motor_data(motor->id, RID_I_BW);      break; // I_BW 
+  81:User/dm_motor_ctrl.c **** 		case 26: read_motor_data(motor->id, RID_KP_ASR);    break; // KP_ASR 
+  82:User/dm_motor_ctrl.c **** 		case 27: read_motor_data(motor->id, RID_KI_ASR);    break; // KI_ASR 
+  83:User/dm_motor_ctrl.c **** 		case 28: read_motor_data(motor->id, RID_KP_APR);    break; // KP_APR 
+  84:User/dm_motor_ctrl.c **** 		case 29: read_motor_data(motor->id, RID_KI_APR);    break; // KI_APR 
+  85:User/dm_motor_ctrl.c **** 		case 30: read_motor_data(motor->id, RID_OV_VALUE);  break; // OV_Value 
+  86:User/dm_motor_ctrl.c **** 		case 31: read_motor_data(motor->id, RID_GREF);      break; // GREF 
+  87:User/dm_motor_ctrl.c **** 		case 32: read_motor_data(motor->id, RID_DETA);      break; // Deta 
+  88:User/dm_motor_ctrl.c **** 		case 33: read_motor_data(motor->id, RID_V_BW);      break; // V_BW 
+  89:User/dm_motor_ctrl.c **** 		case 34: read_motor_data(motor->id, RID_IQ_CL);     break; // IQ_c1 
+  90:User/dm_motor_ctrl.c **** 		case 35: read_motor_data(motor->id, RID_VL_CL);     break; // VL_c1 
+  91:User/dm_motor_ctrl.c **** 		case 36: read_motor_data(motor->id, RID_CAN_BR);    break; // can_br 
+  92:User/dm_motor_ctrl.c **** 		case 37: read_motor_data(motor->id, RID_SUB_VER);   break; // sub_ver 
+  93:User/dm_motor_ctrl.c **** 		case 38: read_motor_data(motor->id, RID_U_OFF);     break; // u_off 
+  94:User/dm_motor_ctrl.c **** 		case 39: read_motor_data(motor->id, RID_V_OFF);     break; // v_off 
+  95:User/dm_motor_ctrl.c **** 		case 40: read_motor_data(motor->id, RID_K1);        break; // k1 
+  96:User/dm_motor_ctrl.c **** 		case 41: read_motor_data(motor->id, RID_K2);        break; // k2 
+  97:User/dm_motor_ctrl.c **** 		case 42: read_motor_data(motor->id, RID_M_OFF);     break; // m_off 
+  98:User/dm_motor_ctrl.c **** 		case 43: read_motor_data(motor->id, RID_DIR);       break; // dir 
+  99:User/dm_motor_ctrl.c **** 		case 44: read_motor_data(motor->id, RID_P_M);       break; // pm 
+ 100:User/dm_motor_ctrl.c **** 		case 45: read_motor_data(motor->id, RID_X_OUT);     break; // xout 
+ 101:User/dm_motor_ctrl.c ****     }
+ 102:User/dm_motor_ctrl.c **** }
+ 212              		.loc 1 102 1 is_stmt 0 view .LVU37
+ 213 0072 08BD     		pop	{r3, pc}
+ 214              	.LVL9:
+ 215              	.L51:
+  57:User/dm_motor_ctrl.c **** 		case 2:  read_motor_data(motor->id, RID_KT_VALUE);  break; // KT_Value
+ 216              		.loc 1 57 12 is_stmt 1 view .LVU38
+ 217 0074 0121     		movs	r1, #1
+ 218 0076 0088     		ldrh	r0, [r0]
+ 219              	.LVL10:
+  57:User/dm_motor_ctrl.c **** 		case 2:  read_motor_data(motor->id, RID_KT_VALUE);  break; // KT_Value
+ 220              		.loc 1 57 12 is_stmt 0 view .LVU39
+ 221 0078 FFF7FEFF 		bl	read_motor_data
+ 222              	.LVL11:
+  57:User/dm_motor_ctrl.c **** 		case 2:  read_motor_data(motor->id, RID_KT_VALUE);  break; // KT_Value
+ 223              		.loc 1 57 55 is_stmt 1 view .LVU40
+  57:User/dm_motor_ctrl.c **** 		case 2:  read_motor_data(motor->id, RID_KT_VALUE);  break; // KT_Value
+ 224              		.loc 1 57 3 is_stmt 0 view .LVU41
+ 225 007c F9E7     		b	.L5
+ 226              	.LVL12:
+ 227              	.L50:
+  58:User/dm_motor_ctrl.c **** 		case 4:  read_motor_data(motor->id, RID_OC_VALUE);  break; // OC_Value
+ 228              		.loc 1 58 12 is_stmt 1 view .LVU42
+ 229 007e 0221     		movs	r1, #2
+ 230 0080 0088     		ldrh	r0, [r0]
+ 231              	.LVL13:
+  58:User/dm_motor_ctrl.c **** 		case 4:  read_motor_data(motor->id, RID_OC_VALUE);  break; // OC_Value
+ 232              		.loc 1 58 12 is_stmt 0 view .LVU43
+ 233 0082 FFF7FEFF 		bl	read_motor_data
+ 234              	.LVL14:
+  58:User/dm_motor_ctrl.c **** 		case 4:  read_motor_data(motor->id, RID_OC_VALUE);  break; // OC_Value
+ 235              		.loc 1 58 55 is_stmt 1 view .LVU44
+  58:User/dm_motor_ctrl.c **** 		case 4:  read_motor_data(motor->id, RID_OC_VALUE);  break; // OC_Value
+ARM GAS  /tmp/ccYNYXys.s 			page 7
+
+
+ 236              		.loc 1 58 3 is_stmt 0 view .LVU45
+ 237 0086 F4E7     		b	.L5
+ 238              	.LVL15:
+ 239              	.L49:
+  59:User/dm_motor_ctrl.c **** 		case 5:  read_motor_data(motor->id, RID_ACC);       break; // ACC
+ 240              		.loc 1 59 12 is_stmt 1 view .LVU46
+ 241 0088 0321     		movs	r1, #3
+ 242 008a 0088     		ldrh	r0, [r0]
+ 243              	.LVL16:
+  59:User/dm_motor_ctrl.c **** 		case 5:  read_motor_data(motor->id, RID_ACC);       break; // ACC
+ 244              		.loc 1 59 12 is_stmt 0 view .LVU47
+ 245 008c FFF7FEFF 		bl	read_motor_data
+ 246              	.LVL17:
+  59:User/dm_motor_ctrl.c **** 		case 5:  read_motor_data(motor->id, RID_ACC);       break; // ACC
+ 247              		.loc 1 59 55 is_stmt 1 view .LVU48
+  59:User/dm_motor_ctrl.c **** 		case 5:  read_motor_data(motor->id, RID_ACC);       break; // ACC
+ 248              		.loc 1 59 3 is_stmt 0 view .LVU49
+ 249 0090 EFE7     		b	.L5
+ 250              	.LVL18:
+ 251              	.L48:
+  60:User/dm_motor_ctrl.c **** 		case 6:  read_motor_data(motor->id, RID_DEC);       break; // DEC
+ 252              		.loc 1 60 12 is_stmt 1 view .LVU50
+ 253 0092 0421     		movs	r1, #4
+ 254 0094 0088     		ldrh	r0, [r0]
+ 255              	.LVL19:
+  60:User/dm_motor_ctrl.c **** 		case 6:  read_motor_data(motor->id, RID_DEC);       break; // DEC
+ 256              		.loc 1 60 12 is_stmt 0 view .LVU51
+ 257 0096 FFF7FEFF 		bl	read_motor_data
+ 258              	.LVL20:
+  60:User/dm_motor_ctrl.c **** 		case 6:  read_motor_data(motor->id, RID_DEC);       break; // DEC
+ 259              		.loc 1 60 55 is_stmt 1 view .LVU52
+  60:User/dm_motor_ctrl.c **** 		case 6:  read_motor_data(motor->id, RID_DEC);       break; // DEC
+ 260              		.loc 1 60 3 is_stmt 0 view .LVU53
+ 261 009a EAE7     		b	.L5
+ 262              	.LVL21:
+ 263              	.L47:
+  61:User/dm_motor_ctrl.c **** 		case 7:  read_motor_data(motor->id, RID_MAX_SPD);   break; // MAX_SPD
+ 264              		.loc 1 61 12 is_stmt 1 view .LVU54
+ 265 009c 0521     		movs	r1, #5
+ 266 009e 0088     		ldrh	r0, [r0]
+ 267              	.LVL22:
+  61:User/dm_motor_ctrl.c **** 		case 7:  read_motor_data(motor->id, RID_MAX_SPD);   break; // MAX_SPD
+ 268              		.loc 1 61 12 is_stmt 0 view .LVU55
+ 269 00a0 FFF7FEFF 		bl	read_motor_data
+ 270              	.LVL23:
+  61:User/dm_motor_ctrl.c **** 		case 7:  read_motor_data(motor->id, RID_MAX_SPD);   break; // MAX_SPD
+ 271              		.loc 1 61 55 is_stmt 1 view .LVU56
+  61:User/dm_motor_ctrl.c **** 		case 7:  read_motor_data(motor->id, RID_MAX_SPD);   break; // MAX_SPD
+ 272              		.loc 1 61 3 is_stmt 0 view .LVU57
+ 273 00a4 E5E7     		b	.L5
+ 274              	.LVL24:
+ 275              	.L46:
+  62:User/dm_motor_ctrl.c **** 		case 8:  read_motor_data(motor->id, RID_MST_ID);    break; // MST_ID 
+ 276              		.loc 1 62 12 is_stmt 1 view .LVU58
+ 277 00a6 0621     		movs	r1, #6
+ 278 00a8 0088     		ldrh	r0, [r0]
+ 279              	.LVL25:
+ARM GAS  /tmp/ccYNYXys.s 			page 8
+
+
+  62:User/dm_motor_ctrl.c **** 		case 8:  read_motor_data(motor->id, RID_MST_ID);    break; // MST_ID 
+ 280              		.loc 1 62 12 is_stmt 0 view .LVU59
+ 281 00aa FFF7FEFF 		bl	read_motor_data
+ 282              	.LVL26:
+  62:User/dm_motor_ctrl.c **** 		case 8:  read_motor_data(motor->id, RID_MST_ID);    break; // MST_ID 
+ 283              		.loc 1 62 55 is_stmt 1 view .LVU60
+  62:User/dm_motor_ctrl.c **** 		case 8:  read_motor_data(motor->id, RID_MST_ID);    break; // MST_ID 
+ 284              		.loc 1 62 3 is_stmt 0 view .LVU61
+ 285 00ae E0E7     		b	.L5
+ 286              	.LVL27:
+ 287              	.L45:
+  63:User/dm_motor_ctrl.c **** 		case 9:  read_motor_data(motor->id, RID_ESC_ID);    break; // ESC_ID
+ 288              		.loc 1 63 12 is_stmt 1 view .LVU62
+ 289 00b0 0721     		movs	r1, #7
+ 290 00b2 0088     		ldrh	r0, [r0]
+ 291              	.LVL28:
+  63:User/dm_motor_ctrl.c **** 		case 9:  read_motor_data(motor->id, RID_ESC_ID);    break; // ESC_ID
+ 292              		.loc 1 63 12 is_stmt 0 view .LVU63
+ 293 00b4 FFF7FEFF 		bl	read_motor_data
+ 294              	.LVL29:
+  63:User/dm_motor_ctrl.c **** 		case 9:  read_motor_data(motor->id, RID_ESC_ID);    break; // ESC_ID
+ 295              		.loc 1 63 55 is_stmt 1 view .LVU64
+  63:User/dm_motor_ctrl.c **** 		case 9:  read_motor_data(motor->id, RID_ESC_ID);    break; // ESC_ID
+ 296              		.loc 1 63 3 is_stmt 0 view .LVU65
+ 297 00b8 DBE7     		b	.L5
+ 298              	.LVL30:
+ 299              	.L44:
+  64:User/dm_motor_ctrl.c **** 		case 10: read_motor_data(motor->id, RID_TIMEOUT);   break; // TIMEOUT 
+ 300              		.loc 1 64 12 is_stmt 1 view .LVU66
+ 301 00ba 0821     		movs	r1, #8
+ 302 00bc 0088     		ldrh	r0, [r0]
+ 303              	.LVL31:
+  64:User/dm_motor_ctrl.c **** 		case 10: read_motor_data(motor->id, RID_TIMEOUT);   break; // TIMEOUT 
+ 304              		.loc 1 64 12 is_stmt 0 view .LVU67
+ 305 00be FFF7FEFF 		bl	read_motor_data
+ 306              	.LVL32:
+  64:User/dm_motor_ctrl.c **** 		case 10: read_motor_data(motor->id, RID_TIMEOUT);   break; // TIMEOUT 
+ 307              		.loc 1 64 55 is_stmt 1 view .LVU68
+  64:User/dm_motor_ctrl.c **** 		case 10: read_motor_data(motor->id, RID_TIMEOUT);   break; // TIMEOUT 
+ 308              		.loc 1 64 3 is_stmt 0 view .LVU69
+ 309 00c2 D6E7     		b	.L5
+ 310              	.LVL33:
+ 311              	.L43:
+  65:User/dm_motor_ctrl.c **** 		case 11: read_motor_data(motor->id, RID_CMODE);     break; // CTRL_MODE 
+ 312              		.loc 1 65 12 is_stmt 1 view .LVU70
+ 313 00c4 0921     		movs	r1, #9
+ 314 00c6 0088     		ldrh	r0, [r0]
+ 315              	.LVL34:
+  65:User/dm_motor_ctrl.c **** 		case 11: read_motor_data(motor->id, RID_CMODE);     break; // CTRL_MODE 
+ 316              		.loc 1 65 12 is_stmt 0 view .LVU71
+ 317 00c8 FFF7FEFF 		bl	read_motor_data
+ 318              	.LVL35:
+  65:User/dm_motor_ctrl.c **** 		case 11: read_motor_data(motor->id, RID_CMODE);     break; // CTRL_MODE 
+ 319              		.loc 1 65 55 is_stmt 1 view .LVU72
+  65:User/dm_motor_ctrl.c **** 		case 11: read_motor_data(motor->id, RID_CMODE);     break; // CTRL_MODE 
+ 320              		.loc 1 65 3 is_stmt 0 view .LVU73
+ 321 00cc D1E7     		b	.L5
+ARM GAS  /tmp/ccYNYXys.s 			page 9
+
+
+ 322              	.LVL36:
+ 323              	.L42:
+  66:User/dm_motor_ctrl.c **** 		case 12: read_motor_data(motor->id, RID_DAMP);      break; // Damp 
+ 324              		.loc 1 66 12 is_stmt 1 view .LVU74
+ 325 00ce 0A21     		movs	r1, #10
+ 326 00d0 0088     		ldrh	r0, [r0]
+ 327              	.LVL37:
+  66:User/dm_motor_ctrl.c **** 		case 12: read_motor_data(motor->id, RID_DAMP);      break; // Damp 
+ 328              		.loc 1 66 12 is_stmt 0 view .LVU75
+ 329 00d2 FFF7FEFF 		bl	read_motor_data
+ 330              	.LVL38:
+  66:User/dm_motor_ctrl.c **** 		case 12: read_motor_data(motor->id, RID_DAMP);      break; // Damp 
+ 331              		.loc 1 66 55 is_stmt 1 view .LVU76
+  66:User/dm_motor_ctrl.c **** 		case 12: read_motor_data(motor->id, RID_DAMP);      break; // Damp 
+ 332              		.loc 1 66 3 is_stmt 0 view .LVU77
+ 333 00d6 CCE7     		b	.L5
+ 334              	.LVL39:
+ 335              	.L41:
+  67:User/dm_motor_ctrl.c **** 		case 13: read_motor_data(motor->id, RID_INERTIA);   break; // Inertia
+ 336              		.loc 1 67 12 is_stmt 1 view .LVU78
+ 337 00d8 0B21     		movs	r1, #11
+ 338 00da 0088     		ldrh	r0, [r0]
+ 339              	.LVL40:
+  67:User/dm_motor_ctrl.c **** 		case 13: read_motor_data(motor->id, RID_INERTIA);   break; // Inertia
+ 340              		.loc 1 67 12 is_stmt 0 view .LVU79
+ 341 00dc FFF7FEFF 		bl	read_motor_data
+ 342              	.LVL41:
+  67:User/dm_motor_ctrl.c **** 		case 13: read_motor_data(motor->id, RID_INERTIA);   break; // Inertia
+ 343              		.loc 1 67 55 is_stmt 1 view .LVU80
+  67:User/dm_motor_ctrl.c **** 		case 13: read_motor_data(motor->id, RID_INERTIA);   break; // Inertia
+ 344              		.loc 1 67 3 is_stmt 0 view .LVU81
+ 345 00e0 C7E7     		b	.L5
+ 346              	.LVL42:
+ 347              	.L40:
+  68:User/dm_motor_ctrl.c **** 		case 14: read_motor_data(motor->id, RID_HW_VER);    break; // Rsv1 
+ 348              		.loc 1 68 12 is_stmt 1 view .LVU82
+ 349 00e2 0C21     		movs	r1, #12
+ 350 00e4 0088     		ldrh	r0, [r0]
+ 351              	.LVL43:
+  68:User/dm_motor_ctrl.c **** 		case 14: read_motor_data(motor->id, RID_HW_VER);    break; // Rsv1 
+ 352              		.loc 1 68 12 is_stmt 0 view .LVU83
+ 353 00e6 FFF7FEFF 		bl	read_motor_data
+ 354              	.LVL44:
+  68:User/dm_motor_ctrl.c **** 		case 14: read_motor_data(motor->id, RID_HW_VER);    break; // Rsv1 
+ 355              		.loc 1 68 55 is_stmt 1 view .LVU84
+  68:User/dm_motor_ctrl.c **** 		case 14: read_motor_data(motor->id, RID_HW_VER);    break; // Rsv1 
+ 356              		.loc 1 68 3 is_stmt 0 view .LVU85
+ 357 00ea C2E7     		b	.L5
+ 358              	.LVL45:
+ 359              	.L39:
+  69:User/dm_motor_ctrl.c **** 		case 15: read_motor_data(motor->id, RID_SW_VER);    break; // sw_ver 
+ 360              		.loc 1 69 12 is_stmt 1 view .LVU86
+ 361 00ec 0D21     		movs	r1, #13
+ 362 00ee 0088     		ldrh	r0, [r0]
+ 363              	.LVL46:
+  69:User/dm_motor_ctrl.c **** 		case 15: read_motor_data(motor->id, RID_SW_VER);    break; // sw_ver 
+ 364              		.loc 1 69 12 is_stmt 0 view .LVU87
+ARM GAS  /tmp/ccYNYXys.s 			page 10
+
+
+ 365 00f0 FFF7FEFF 		bl	read_motor_data
+ 366              	.LVL47:
+  69:User/dm_motor_ctrl.c **** 		case 15: read_motor_data(motor->id, RID_SW_VER);    break; // sw_ver 
+ 367              		.loc 1 69 55 is_stmt 1 view .LVU88
+  69:User/dm_motor_ctrl.c **** 		case 15: read_motor_data(motor->id, RID_SW_VER);    break; // sw_ver 
+ 368              		.loc 1 69 3 is_stmt 0 view .LVU89
+ 369 00f4 BDE7     		b	.L5
+ 370              	.LVL48:
+ 371              	.L38:
+  70:User/dm_motor_ctrl.c **** 		case 16: read_motor_data(motor->id, RID_SN);        break; // Rsv2 
+ 372              		.loc 1 70 12 is_stmt 1 view .LVU90
+ 373 00f6 0E21     		movs	r1, #14
+ 374 00f8 0088     		ldrh	r0, [r0]
+ 375              	.LVL49:
+  70:User/dm_motor_ctrl.c **** 		case 16: read_motor_data(motor->id, RID_SN);        break; // Rsv2 
+ 376              		.loc 1 70 12 is_stmt 0 view .LVU91
+ 377 00fa FFF7FEFF 		bl	read_motor_data
+ 378              	.LVL50:
+  70:User/dm_motor_ctrl.c **** 		case 16: read_motor_data(motor->id, RID_SN);        break; // Rsv2 
+ 379              		.loc 1 70 55 is_stmt 1 view .LVU92
+  70:User/dm_motor_ctrl.c **** 		case 16: read_motor_data(motor->id, RID_SN);        break; // Rsv2 
+ 380              		.loc 1 70 3 is_stmt 0 view .LVU93
+ 381 00fe B8E7     		b	.L5
+ 382              	.LVL51:
+ 383              	.L37:
+  71:User/dm_motor_ctrl.c **** 		case 17: read_motor_data(motor->id, RID_NPP);       break; // NPP 
+ 384              		.loc 1 71 12 is_stmt 1 view .LVU94
+ 385 0100 0F21     		movs	r1, #15
+ 386 0102 0088     		ldrh	r0, [r0]
+ 387              	.LVL52:
+  71:User/dm_motor_ctrl.c **** 		case 17: read_motor_data(motor->id, RID_NPP);       break; // NPP 
+ 388              		.loc 1 71 12 is_stmt 0 view .LVU95
+ 389 0104 FFF7FEFF 		bl	read_motor_data
+ 390              	.LVL53:
+  71:User/dm_motor_ctrl.c **** 		case 17: read_motor_data(motor->id, RID_NPP);       break; // NPP 
+ 391              		.loc 1 71 55 is_stmt 1 view .LVU96
+  71:User/dm_motor_ctrl.c **** 		case 17: read_motor_data(motor->id, RID_NPP);       break; // NPP 
+ 392              		.loc 1 71 3 is_stmt 0 view .LVU97
+ 393 0108 B3E7     		b	.L5
+ 394              	.LVL54:
+ 395              	.L36:
+  72:User/dm_motor_ctrl.c **** 		case 18: read_motor_data(motor->id, RID_RS);        break; // Rs 
+ 396              		.loc 1 72 12 is_stmt 1 view .LVU98
+ 397 010a 1021     		movs	r1, #16
+ 398 010c 0088     		ldrh	r0, [r0]
+ 399              	.LVL55:
+  72:User/dm_motor_ctrl.c **** 		case 18: read_motor_data(motor->id, RID_RS);        break; // Rs 
+ 400              		.loc 1 72 12 is_stmt 0 view .LVU99
+ 401 010e FFF7FEFF 		bl	read_motor_data
+ 402              	.LVL56:
+  72:User/dm_motor_ctrl.c **** 		case 18: read_motor_data(motor->id, RID_RS);        break; // Rs 
+ 403              		.loc 1 72 55 is_stmt 1 view .LVU100
+  72:User/dm_motor_ctrl.c **** 		case 18: read_motor_data(motor->id, RID_RS);        break; // Rs 
+ 404              		.loc 1 72 3 is_stmt 0 view .LVU101
+ 405 0112 AEE7     		b	.L5
+ 406              	.LVL57:
+ 407              	.L35:
+ARM GAS  /tmp/ccYNYXys.s 			page 11
+
+
+  73:User/dm_motor_ctrl.c **** 		case 19: read_motor_data(motor->id, RID_LS);        break; // Ls 
+ 408              		.loc 1 73 12 is_stmt 1 view .LVU102
+ 409 0114 1121     		movs	r1, #17
+ 410 0116 0088     		ldrh	r0, [r0]
+ 411              	.LVL58:
+  73:User/dm_motor_ctrl.c **** 		case 19: read_motor_data(motor->id, RID_LS);        break; // Ls 
+ 412              		.loc 1 73 12 is_stmt 0 view .LVU103
+ 413 0118 FFF7FEFF 		bl	read_motor_data
+ 414              	.LVL59:
+  73:User/dm_motor_ctrl.c **** 		case 19: read_motor_data(motor->id, RID_LS);        break; // Ls 
+ 415              		.loc 1 73 55 is_stmt 1 view .LVU104
+  73:User/dm_motor_ctrl.c **** 		case 19: read_motor_data(motor->id, RID_LS);        break; // Ls 
+ 416              		.loc 1 73 3 is_stmt 0 view .LVU105
+ 417 011c A9E7     		b	.L5
+ 418              	.LVL60:
+ 419              	.L34:
+  74:User/dm_motor_ctrl.c **** 		case 20: read_motor_data(motor->id, RID_FLUX);      break; // Flux 
+ 420              		.loc 1 74 12 is_stmt 1 view .LVU106
+ 421 011e 1221     		movs	r1, #18
+ 422 0120 0088     		ldrh	r0, [r0]
+ 423              	.LVL61:
+  74:User/dm_motor_ctrl.c **** 		case 20: read_motor_data(motor->id, RID_FLUX);      break; // Flux 
+ 424              		.loc 1 74 12 is_stmt 0 view .LVU107
+ 425 0122 FFF7FEFF 		bl	read_motor_data
+ 426              	.LVL62:
+  74:User/dm_motor_ctrl.c **** 		case 20: read_motor_data(motor->id, RID_FLUX);      break; // Flux 
+ 427              		.loc 1 74 55 is_stmt 1 view .LVU108
+  74:User/dm_motor_ctrl.c **** 		case 20: read_motor_data(motor->id, RID_FLUX);      break; // Flux 
+ 428              		.loc 1 74 3 is_stmt 0 view .LVU109
+ 429 0126 A4E7     		b	.L5
+ 430              	.LVL63:
+ 431              	.L33:
+  75:User/dm_motor_ctrl.c **** 		case 21: read_motor_data(motor->id, RID_GR);        break; // Gr 
+ 432              		.loc 1 75 12 is_stmt 1 view .LVU110
+ 433 0128 1321     		movs	r1, #19
+ 434 012a 0088     		ldrh	r0, [r0]
+ 435              	.LVL64:
+  75:User/dm_motor_ctrl.c **** 		case 21: read_motor_data(motor->id, RID_GR);        break; // Gr 
+ 436              		.loc 1 75 12 is_stmt 0 view .LVU111
+ 437 012c FFF7FEFF 		bl	read_motor_data
+ 438              	.LVL65:
+  75:User/dm_motor_ctrl.c **** 		case 21: read_motor_data(motor->id, RID_GR);        break; // Gr 
+ 439              		.loc 1 75 55 is_stmt 1 view .LVU112
+  75:User/dm_motor_ctrl.c **** 		case 21: read_motor_data(motor->id, RID_GR);        break; // Gr 
+ 440              		.loc 1 75 3 is_stmt 0 view .LVU113
+ 441 0130 9FE7     		b	.L5
+ 442              	.LVL66:
+ 443              	.L32:
+  76:User/dm_motor_ctrl.c **** 		case 22: read_motor_data(motor->id, RID_PMAX);      break; // PMAX 
+ 444              		.loc 1 76 12 is_stmt 1 view .LVU114
+ 445 0132 1421     		movs	r1, #20
+ 446 0134 0088     		ldrh	r0, [r0]
+ 447              	.LVL67:
+  76:User/dm_motor_ctrl.c **** 		case 22: read_motor_data(motor->id, RID_PMAX);      break; // PMAX 
+ 448              		.loc 1 76 12 is_stmt 0 view .LVU115
+ 449 0136 FFF7FEFF 		bl	read_motor_data
+ 450              	.LVL68:
+ARM GAS  /tmp/ccYNYXys.s 			page 12
+
+
+  76:User/dm_motor_ctrl.c **** 		case 22: read_motor_data(motor->id, RID_PMAX);      break; // PMAX 
+ 451              		.loc 1 76 55 is_stmt 1 view .LVU116
+  76:User/dm_motor_ctrl.c **** 		case 22: read_motor_data(motor->id, RID_PMAX);      break; // PMAX 
+ 452              		.loc 1 76 3 is_stmt 0 view .LVU117
+ 453 013a 9AE7     		b	.L5
+ 454              	.LVL69:
+ 455              	.L31:
+  77:User/dm_motor_ctrl.c **** 		case 23: read_motor_data(motor->id, RID_VMAX);      break; // VMAX 
+ 456              		.loc 1 77 12 is_stmt 1 view .LVU118
+ 457 013c 1521     		movs	r1, #21
+ 458 013e 0088     		ldrh	r0, [r0]
+ 459              	.LVL70:
+  77:User/dm_motor_ctrl.c **** 		case 23: read_motor_data(motor->id, RID_VMAX);      break; // VMAX 
+ 460              		.loc 1 77 12 is_stmt 0 view .LVU119
+ 461 0140 FFF7FEFF 		bl	read_motor_data
+ 462              	.LVL71:
+  77:User/dm_motor_ctrl.c **** 		case 23: read_motor_data(motor->id, RID_VMAX);      break; // VMAX 
+ 463              		.loc 1 77 55 is_stmt 1 view .LVU120
+  77:User/dm_motor_ctrl.c **** 		case 23: read_motor_data(motor->id, RID_VMAX);      break; // VMAX 
+ 464              		.loc 1 77 3 is_stmt 0 view .LVU121
+ 465 0144 95E7     		b	.L5
+ 466              	.LVL72:
+ 467              	.L30:
+  78:User/dm_motor_ctrl.c **** 		case 24: read_motor_data(motor->id, RID_TMAX);      break; // TMAX 
+ 468              		.loc 1 78 12 is_stmt 1 view .LVU122
+ 469 0146 1621     		movs	r1, #22
+ 470 0148 0088     		ldrh	r0, [r0]
+ 471              	.LVL73:
+  78:User/dm_motor_ctrl.c **** 		case 24: read_motor_data(motor->id, RID_TMAX);      break; // TMAX 
+ 472              		.loc 1 78 12 is_stmt 0 view .LVU123
+ 473 014a FFF7FEFF 		bl	read_motor_data
+ 474              	.LVL74:
+  78:User/dm_motor_ctrl.c **** 		case 24: read_motor_data(motor->id, RID_TMAX);      break; // TMAX 
+ 475              		.loc 1 78 55 is_stmt 1 view .LVU124
+  78:User/dm_motor_ctrl.c **** 		case 24: read_motor_data(motor->id, RID_TMAX);      break; // TMAX 
+ 476              		.loc 1 78 3 is_stmt 0 view .LVU125
+ 477 014e 90E7     		b	.L5
+ 478              	.LVL75:
+ 479              	.L29:
+  79:User/dm_motor_ctrl.c **** 		case 25: read_motor_data(motor->id, RID_I_BW);      break; // I_BW 
+ 480              		.loc 1 79 12 is_stmt 1 view .LVU126
+ 481 0150 1721     		movs	r1, #23
+ 482 0152 0088     		ldrh	r0, [r0]
+ 483              	.LVL76:
+  79:User/dm_motor_ctrl.c **** 		case 25: read_motor_data(motor->id, RID_I_BW);      break; // I_BW 
+ 484              		.loc 1 79 12 is_stmt 0 view .LVU127
+ 485 0154 FFF7FEFF 		bl	read_motor_data
+ 486              	.LVL77:
+  79:User/dm_motor_ctrl.c **** 		case 25: read_motor_data(motor->id, RID_I_BW);      break; // I_BW 
+ 487              		.loc 1 79 55 is_stmt 1 view .LVU128
+  79:User/dm_motor_ctrl.c **** 		case 25: read_motor_data(motor->id, RID_I_BW);      break; // I_BW 
+ 488              		.loc 1 79 3 is_stmt 0 view .LVU129
+ 489 0158 8BE7     		b	.L5
+ 490              	.LVL78:
+ 491              	.L28:
+  80:User/dm_motor_ctrl.c **** 		case 26: read_motor_data(motor->id, RID_KP_ASR);    break; // KP_ASR 
+ 492              		.loc 1 80 12 is_stmt 1 view .LVU130
+ARM GAS  /tmp/ccYNYXys.s 			page 13
+
+
+ 493 015a 1821     		movs	r1, #24
+ 494 015c 0088     		ldrh	r0, [r0]
+ 495              	.LVL79:
+  80:User/dm_motor_ctrl.c **** 		case 26: read_motor_data(motor->id, RID_KP_ASR);    break; // KP_ASR 
+ 496              		.loc 1 80 12 is_stmt 0 view .LVU131
+ 497 015e FFF7FEFF 		bl	read_motor_data
+ 498              	.LVL80:
+  80:User/dm_motor_ctrl.c **** 		case 26: read_motor_data(motor->id, RID_KP_ASR);    break; // KP_ASR 
+ 499              		.loc 1 80 55 is_stmt 1 view .LVU132
+  80:User/dm_motor_ctrl.c **** 		case 26: read_motor_data(motor->id, RID_KP_ASR);    break; // KP_ASR 
+ 500              		.loc 1 80 3 is_stmt 0 view .LVU133
+ 501 0162 86E7     		b	.L5
+ 502              	.LVL81:
+ 503              	.L27:
+  81:User/dm_motor_ctrl.c **** 		case 27: read_motor_data(motor->id, RID_KI_ASR);    break; // KI_ASR 
+ 504              		.loc 1 81 12 is_stmt 1 view .LVU134
+ 505 0164 1921     		movs	r1, #25
+ 506 0166 0088     		ldrh	r0, [r0]
+ 507              	.LVL82:
+  81:User/dm_motor_ctrl.c **** 		case 27: read_motor_data(motor->id, RID_KI_ASR);    break; // KI_ASR 
+ 508              		.loc 1 81 12 is_stmt 0 view .LVU135
+ 509 0168 FFF7FEFF 		bl	read_motor_data
+ 510              	.LVL83:
+  81:User/dm_motor_ctrl.c **** 		case 27: read_motor_data(motor->id, RID_KI_ASR);    break; // KI_ASR 
+ 511              		.loc 1 81 55 is_stmt 1 view .LVU136
+  81:User/dm_motor_ctrl.c **** 		case 27: read_motor_data(motor->id, RID_KI_ASR);    break; // KI_ASR 
+ 512              		.loc 1 81 3 is_stmt 0 view .LVU137
+ 513 016c 81E7     		b	.L5
+ 514              	.LVL84:
+ 515              	.L26:
+  82:User/dm_motor_ctrl.c **** 		case 28: read_motor_data(motor->id, RID_KP_APR);    break; // KP_APR 
+ 516              		.loc 1 82 12 is_stmt 1 view .LVU138
+ 517 016e 1A21     		movs	r1, #26
+ 518 0170 0088     		ldrh	r0, [r0]
+ 519              	.LVL85:
+  82:User/dm_motor_ctrl.c **** 		case 28: read_motor_data(motor->id, RID_KP_APR);    break; // KP_APR 
+ 520              		.loc 1 82 12 is_stmt 0 view .LVU139
+ 521 0172 FFF7FEFF 		bl	read_motor_data
+ 522              	.LVL86:
+  82:User/dm_motor_ctrl.c **** 		case 28: read_motor_data(motor->id, RID_KP_APR);    break; // KP_APR 
+ 523              		.loc 1 82 55 is_stmt 1 view .LVU140
+  82:User/dm_motor_ctrl.c **** 		case 28: read_motor_data(motor->id, RID_KP_APR);    break; // KP_APR 
+ 524              		.loc 1 82 3 is_stmt 0 view .LVU141
+ 525 0176 7CE7     		b	.L5
+ 526              	.LVL87:
+ 527              	.L25:
+  83:User/dm_motor_ctrl.c **** 		case 29: read_motor_data(motor->id, RID_KI_APR);    break; // KI_APR 
+ 528              		.loc 1 83 12 is_stmt 1 view .LVU142
+ 529 0178 1B21     		movs	r1, #27
+ 530 017a 0088     		ldrh	r0, [r0]
+ 531              	.LVL88:
+  83:User/dm_motor_ctrl.c **** 		case 29: read_motor_data(motor->id, RID_KI_APR);    break; // KI_APR 
+ 532              		.loc 1 83 12 is_stmt 0 view .LVU143
+ 533 017c FFF7FEFF 		bl	read_motor_data
+ 534              	.LVL89:
+  83:User/dm_motor_ctrl.c **** 		case 29: read_motor_data(motor->id, RID_KI_APR);    break; // KI_APR 
+ 535              		.loc 1 83 55 is_stmt 1 view .LVU144
+ARM GAS  /tmp/ccYNYXys.s 			page 14
+
+
+  83:User/dm_motor_ctrl.c **** 		case 29: read_motor_data(motor->id, RID_KI_APR);    break; // KI_APR 
+ 536              		.loc 1 83 3 is_stmt 0 view .LVU145
+ 537 0180 77E7     		b	.L5
+ 538              	.LVL90:
+ 539              	.L24:
+  84:User/dm_motor_ctrl.c **** 		case 30: read_motor_data(motor->id, RID_OV_VALUE);  break; // OV_Value 
+ 540              		.loc 1 84 12 is_stmt 1 view .LVU146
+ 541 0182 1C21     		movs	r1, #28
+ 542 0184 0088     		ldrh	r0, [r0]
+ 543              	.LVL91:
+  84:User/dm_motor_ctrl.c **** 		case 30: read_motor_data(motor->id, RID_OV_VALUE);  break; // OV_Value 
+ 544              		.loc 1 84 12 is_stmt 0 view .LVU147
+ 545 0186 FFF7FEFF 		bl	read_motor_data
+ 546              	.LVL92:
+  84:User/dm_motor_ctrl.c **** 		case 30: read_motor_data(motor->id, RID_OV_VALUE);  break; // OV_Value 
+ 547              		.loc 1 84 55 is_stmt 1 view .LVU148
+  84:User/dm_motor_ctrl.c **** 		case 30: read_motor_data(motor->id, RID_OV_VALUE);  break; // OV_Value 
+ 548              		.loc 1 84 3 is_stmt 0 view .LVU149
+ 549 018a 72E7     		b	.L5
+ 550              	.LVL93:
+ 551              	.L23:
+  85:User/dm_motor_ctrl.c **** 		case 31: read_motor_data(motor->id, RID_GREF);      break; // GREF 
+ 552              		.loc 1 85 12 is_stmt 1 view .LVU150
+ 553 018c 1D21     		movs	r1, #29
+ 554 018e 0088     		ldrh	r0, [r0]
+ 555              	.LVL94:
+  85:User/dm_motor_ctrl.c **** 		case 31: read_motor_data(motor->id, RID_GREF);      break; // GREF 
+ 556              		.loc 1 85 12 is_stmt 0 view .LVU151
+ 557 0190 FFF7FEFF 		bl	read_motor_data
+ 558              	.LVL95:
+  85:User/dm_motor_ctrl.c **** 		case 31: read_motor_data(motor->id, RID_GREF);      break; // GREF 
+ 559              		.loc 1 85 55 is_stmt 1 view .LVU152
+  85:User/dm_motor_ctrl.c **** 		case 31: read_motor_data(motor->id, RID_GREF);      break; // GREF 
+ 560              		.loc 1 85 3 is_stmt 0 view .LVU153
+ 561 0194 6DE7     		b	.L5
+ 562              	.LVL96:
+ 563              	.L22:
+  86:User/dm_motor_ctrl.c **** 		case 32: read_motor_data(motor->id, RID_DETA);      break; // Deta 
+ 564              		.loc 1 86 12 is_stmt 1 view .LVU154
+ 565 0196 1E21     		movs	r1, #30
+ 566 0198 0088     		ldrh	r0, [r0]
+ 567              	.LVL97:
+  86:User/dm_motor_ctrl.c **** 		case 32: read_motor_data(motor->id, RID_DETA);      break; // Deta 
+ 568              		.loc 1 86 12 is_stmt 0 view .LVU155
+ 569 019a FFF7FEFF 		bl	read_motor_data
+ 570              	.LVL98:
+  86:User/dm_motor_ctrl.c **** 		case 32: read_motor_data(motor->id, RID_DETA);      break; // Deta 
+ 571              		.loc 1 86 55 is_stmt 1 view .LVU156
+  86:User/dm_motor_ctrl.c **** 		case 32: read_motor_data(motor->id, RID_DETA);      break; // Deta 
+ 572              		.loc 1 86 3 is_stmt 0 view .LVU157
+ 573 019e 68E7     		b	.L5
+ 574              	.LVL99:
+ 575              	.L21:
+  87:User/dm_motor_ctrl.c **** 		case 33: read_motor_data(motor->id, RID_V_BW);      break; // V_BW 
+ 576              		.loc 1 87 12 is_stmt 1 view .LVU158
+ 577 01a0 1F21     		movs	r1, #31
+ 578 01a2 0088     		ldrh	r0, [r0]
+ARM GAS  /tmp/ccYNYXys.s 			page 15
+
+
+ 579              	.LVL100:
+  87:User/dm_motor_ctrl.c **** 		case 33: read_motor_data(motor->id, RID_V_BW);      break; // V_BW 
+ 580              		.loc 1 87 12 is_stmt 0 view .LVU159
+ 581 01a4 FFF7FEFF 		bl	read_motor_data
+ 582              	.LVL101:
+  87:User/dm_motor_ctrl.c **** 		case 33: read_motor_data(motor->id, RID_V_BW);      break; // V_BW 
+ 583              		.loc 1 87 55 is_stmt 1 view .LVU160
+  87:User/dm_motor_ctrl.c **** 		case 33: read_motor_data(motor->id, RID_V_BW);      break; // V_BW 
+ 584              		.loc 1 87 3 is_stmt 0 view .LVU161
+ 585 01a8 63E7     		b	.L5
+ 586              	.LVL102:
+ 587              	.L20:
+  88:User/dm_motor_ctrl.c **** 		case 34: read_motor_data(motor->id, RID_IQ_CL);     break; // IQ_c1 
+ 588              		.loc 1 88 12 is_stmt 1 view .LVU162
+ 589 01aa 2021     		movs	r1, #32
+ 590 01ac 0088     		ldrh	r0, [r0]
+ 591              	.LVL103:
+  88:User/dm_motor_ctrl.c **** 		case 34: read_motor_data(motor->id, RID_IQ_CL);     break; // IQ_c1 
+ 592              		.loc 1 88 12 is_stmt 0 view .LVU163
+ 593 01ae FFF7FEFF 		bl	read_motor_data
+ 594              	.LVL104:
+  88:User/dm_motor_ctrl.c **** 		case 34: read_motor_data(motor->id, RID_IQ_CL);     break; // IQ_c1 
+ 595              		.loc 1 88 55 is_stmt 1 view .LVU164
+  88:User/dm_motor_ctrl.c **** 		case 34: read_motor_data(motor->id, RID_IQ_CL);     break; // IQ_c1 
+ 596              		.loc 1 88 3 is_stmt 0 view .LVU165
+ 597 01b2 5EE7     		b	.L5
+ 598              	.LVL105:
+ 599              	.L19:
+  89:User/dm_motor_ctrl.c **** 		case 35: read_motor_data(motor->id, RID_VL_CL);     break; // VL_c1 
+ 600              		.loc 1 89 12 is_stmt 1 view .LVU166
+ 601 01b4 2121     		movs	r1, #33
+ 602 01b6 0088     		ldrh	r0, [r0]
+ 603              	.LVL106:
+  89:User/dm_motor_ctrl.c **** 		case 35: read_motor_data(motor->id, RID_VL_CL);     break; // VL_c1 
+ 604              		.loc 1 89 12 is_stmt 0 view .LVU167
+ 605 01b8 FFF7FEFF 		bl	read_motor_data
+ 606              	.LVL107:
+  89:User/dm_motor_ctrl.c **** 		case 35: read_motor_data(motor->id, RID_VL_CL);     break; // VL_c1 
+ 607              		.loc 1 89 55 is_stmt 1 view .LVU168
+  89:User/dm_motor_ctrl.c **** 		case 35: read_motor_data(motor->id, RID_VL_CL);     break; // VL_c1 
+ 608              		.loc 1 89 3 is_stmt 0 view .LVU169
+ 609 01bc 59E7     		b	.L5
+ 610              	.LVL108:
+ 611              	.L18:
+  90:User/dm_motor_ctrl.c **** 		case 36: read_motor_data(motor->id, RID_CAN_BR);    break; // can_br 
+ 612              		.loc 1 90 12 is_stmt 1 view .LVU170
+ 613 01be 2221     		movs	r1, #34
+ 614 01c0 0088     		ldrh	r0, [r0]
+ 615              	.LVL109:
+  90:User/dm_motor_ctrl.c **** 		case 36: read_motor_data(motor->id, RID_CAN_BR);    break; // can_br 
+ 616              		.loc 1 90 12 is_stmt 0 view .LVU171
+ 617 01c2 FFF7FEFF 		bl	read_motor_data
+ 618              	.LVL110:
+  90:User/dm_motor_ctrl.c **** 		case 36: read_motor_data(motor->id, RID_CAN_BR);    break; // can_br 
+ 619              		.loc 1 90 55 is_stmt 1 view .LVU172
+  90:User/dm_motor_ctrl.c **** 		case 36: read_motor_data(motor->id, RID_CAN_BR);    break; // can_br 
+ 620              		.loc 1 90 3 is_stmt 0 view .LVU173
+ARM GAS  /tmp/ccYNYXys.s 			page 16
+
+
+ 621 01c6 54E7     		b	.L5
+ 622              	.LVL111:
+ 623              	.L17:
+  91:User/dm_motor_ctrl.c **** 		case 37: read_motor_data(motor->id, RID_SUB_VER);   break; // sub_ver 
+ 624              		.loc 1 91 12 is_stmt 1 view .LVU174
+ 625 01c8 2321     		movs	r1, #35
+ 626 01ca 0088     		ldrh	r0, [r0]
+ 627              	.LVL112:
+  91:User/dm_motor_ctrl.c **** 		case 37: read_motor_data(motor->id, RID_SUB_VER);   break; // sub_ver 
+ 628              		.loc 1 91 12 is_stmt 0 view .LVU175
+ 629 01cc FFF7FEFF 		bl	read_motor_data
+ 630              	.LVL113:
+  91:User/dm_motor_ctrl.c **** 		case 37: read_motor_data(motor->id, RID_SUB_VER);   break; // sub_ver 
+ 631              		.loc 1 91 55 is_stmt 1 view .LVU176
+  91:User/dm_motor_ctrl.c **** 		case 37: read_motor_data(motor->id, RID_SUB_VER);   break; // sub_ver 
+ 632              		.loc 1 91 3 is_stmt 0 view .LVU177
+ 633 01d0 4FE7     		b	.L5
+ 634              	.LVL114:
+ 635              	.L16:
+  92:User/dm_motor_ctrl.c **** 		case 38: read_motor_data(motor->id, RID_U_OFF);     break; // u_off 
+ 636              		.loc 1 92 12 is_stmt 1 view .LVU178
+ 637 01d2 2421     		movs	r1, #36
+ 638 01d4 0088     		ldrh	r0, [r0]
+ 639              	.LVL115:
+  92:User/dm_motor_ctrl.c **** 		case 38: read_motor_data(motor->id, RID_U_OFF);     break; // u_off 
+ 640              		.loc 1 92 12 is_stmt 0 view .LVU179
+ 641 01d6 FFF7FEFF 		bl	read_motor_data
+ 642              	.LVL116:
+  92:User/dm_motor_ctrl.c **** 		case 38: read_motor_data(motor->id, RID_U_OFF);     break; // u_off 
+ 643              		.loc 1 92 55 is_stmt 1 view .LVU180
+  92:User/dm_motor_ctrl.c **** 		case 38: read_motor_data(motor->id, RID_U_OFF);     break; // u_off 
+ 644              		.loc 1 92 3 is_stmt 0 view .LVU181
+ 645 01da 4AE7     		b	.L5
+ 646              	.LVL117:
+ 647              	.L15:
+  93:User/dm_motor_ctrl.c **** 		case 39: read_motor_data(motor->id, RID_V_OFF);     break; // v_off 
+ 648              		.loc 1 93 12 is_stmt 1 view .LVU182
+ 649 01dc 3221     		movs	r1, #50
+ 650 01de 0088     		ldrh	r0, [r0]
+ 651              	.LVL118:
+  93:User/dm_motor_ctrl.c **** 		case 39: read_motor_data(motor->id, RID_V_OFF);     break; // v_off 
+ 652              		.loc 1 93 12 is_stmt 0 view .LVU183
+ 653 01e0 FFF7FEFF 		bl	read_motor_data
+ 654              	.LVL119:
+  93:User/dm_motor_ctrl.c **** 		case 39: read_motor_data(motor->id, RID_V_OFF);     break; // v_off 
+ 655              		.loc 1 93 55 is_stmt 1 view .LVU184
+  93:User/dm_motor_ctrl.c **** 		case 39: read_motor_data(motor->id, RID_V_OFF);     break; // v_off 
+ 656              		.loc 1 93 3 is_stmt 0 view .LVU185
+ 657 01e4 45E7     		b	.L5
+ 658              	.LVL120:
+ 659              	.L14:
+  94:User/dm_motor_ctrl.c **** 		case 40: read_motor_data(motor->id, RID_K1);        break; // k1 
+ 660              		.loc 1 94 12 is_stmt 1 view .LVU186
+ 661 01e6 3321     		movs	r1, #51
+ 662 01e8 0088     		ldrh	r0, [r0]
+ 663              	.LVL121:
+  94:User/dm_motor_ctrl.c **** 		case 40: read_motor_data(motor->id, RID_K1);        break; // k1 
+ARM GAS  /tmp/ccYNYXys.s 			page 17
+
+
+ 664              		.loc 1 94 12 is_stmt 0 view .LVU187
+ 665 01ea FFF7FEFF 		bl	read_motor_data
+ 666              	.LVL122:
+  94:User/dm_motor_ctrl.c **** 		case 40: read_motor_data(motor->id, RID_K1);        break; // k1 
+ 667              		.loc 1 94 55 is_stmt 1 view .LVU188
+  94:User/dm_motor_ctrl.c **** 		case 40: read_motor_data(motor->id, RID_K1);        break; // k1 
+ 668              		.loc 1 94 3 is_stmt 0 view .LVU189
+ 669 01ee 40E7     		b	.L5
+ 670              	.LVL123:
+ 671              	.L13:
+  95:User/dm_motor_ctrl.c **** 		case 41: read_motor_data(motor->id, RID_K2);        break; // k2 
+ 672              		.loc 1 95 12 is_stmt 1 view .LVU190
+ 673 01f0 3421     		movs	r1, #52
+ 674 01f2 0088     		ldrh	r0, [r0]
+ 675              	.LVL124:
+  95:User/dm_motor_ctrl.c **** 		case 41: read_motor_data(motor->id, RID_K2);        break; // k2 
+ 676              		.loc 1 95 12 is_stmt 0 view .LVU191
+ 677 01f4 FFF7FEFF 		bl	read_motor_data
+ 678              	.LVL125:
+  95:User/dm_motor_ctrl.c **** 		case 41: read_motor_data(motor->id, RID_K2);        break; // k2 
+ 679              		.loc 1 95 55 is_stmt 1 view .LVU192
+  95:User/dm_motor_ctrl.c **** 		case 41: read_motor_data(motor->id, RID_K2);        break; // k2 
+ 680              		.loc 1 95 3 is_stmt 0 view .LVU193
+ 681 01f8 3BE7     		b	.L5
+ 682              	.LVL126:
+ 683              	.L12:
+  96:User/dm_motor_ctrl.c **** 		case 42: read_motor_data(motor->id, RID_M_OFF);     break; // m_off 
+ 684              		.loc 1 96 12 is_stmt 1 view .LVU194
+ 685 01fa 3521     		movs	r1, #53
+ 686 01fc 0088     		ldrh	r0, [r0]
+ 687              	.LVL127:
+  96:User/dm_motor_ctrl.c **** 		case 42: read_motor_data(motor->id, RID_M_OFF);     break; // m_off 
+ 688              		.loc 1 96 12 is_stmt 0 view .LVU195
+ 689 01fe FFF7FEFF 		bl	read_motor_data
+ 690              	.LVL128:
+  96:User/dm_motor_ctrl.c **** 		case 42: read_motor_data(motor->id, RID_M_OFF);     break; // m_off 
+ 691              		.loc 1 96 55 is_stmt 1 view .LVU196
+  96:User/dm_motor_ctrl.c **** 		case 42: read_motor_data(motor->id, RID_M_OFF);     break; // m_off 
+ 692              		.loc 1 96 3 is_stmt 0 view .LVU197
+ 693 0202 36E7     		b	.L5
+ 694              	.LVL129:
+ 695              	.L11:
+  97:User/dm_motor_ctrl.c **** 		case 43: read_motor_data(motor->id, RID_DIR);       break; // dir 
+ 696              		.loc 1 97 12 is_stmt 1 view .LVU198
+ 697 0204 3621     		movs	r1, #54
+ 698 0206 0088     		ldrh	r0, [r0]
+ 699              	.LVL130:
+  97:User/dm_motor_ctrl.c **** 		case 43: read_motor_data(motor->id, RID_DIR);       break; // dir 
+ 700              		.loc 1 97 12 is_stmt 0 view .LVU199
+ 701 0208 FFF7FEFF 		bl	read_motor_data
+ 702              	.LVL131:
+  97:User/dm_motor_ctrl.c **** 		case 43: read_motor_data(motor->id, RID_DIR);       break; // dir 
+ 703              		.loc 1 97 55 is_stmt 1 view .LVU200
+  97:User/dm_motor_ctrl.c **** 		case 43: read_motor_data(motor->id, RID_DIR);       break; // dir 
+ 704              		.loc 1 97 3 is_stmt 0 view .LVU201
+ 705 020c 31E7     		b	.L5
+ 706              	.LVL132:
+ARM GAS  /tmp/ccYNYXys.s 			page 18
+
+
+ 707              	.L10:
+  98:User/dm_motor_ctrl.c **** 		case 44: read_motor_data(motor->id, RID_P_M);       break; // pm 
+ 708              		.loc 1 98 12 is_stmt 1 view .LVU202
+ 709 020e 3721     		movs	r1, #55
+ 710 0210 0088     		ldrh	r0, [r0]
+ 711              	.LVL133:
+  98:User/dm_motor_ctrl.c **** 		case 44: read_motor_data(motor->id, RID_P_M);       break; // pm 
+ 712              		.loc 1 98 12 is_stmt 0 view .LVU203
+ 713 0212 FFF7FEFF 		bl	read_motor_data
+ 714              	.LVL134:
+  98:User/dm_motor_ctrl.c **** 		case 44: read_motor_data(motor->id, RID_P_M);       break; // pm 
+ 715              		.loc 1 98 55 is_stmt 1 view .LVU204
+  98:User/dm_motor_ctrl.c **** 		case 44: read_motor_data(motor->id, RID_P_M);       break; // pm 
+ 716              		.loc 1 98 3 is_stmt 0 view .LVU205
+ 717 0216 2CE7     		b	.L5
+ 718              	.LVL135:
+ 719              	.L9:
+  99:User/dm_motor_ctrl.c **** 		case 45: read_motor_data(motor->id, RID_X_OUT);     break; // xout 
+ 720              		.loc 1 99 12 is_stmt 1 view .LVU206
+ 721 0218 5021     		movs	r1, #80
+ 722 021a 0088     		ldrh	r0, [r0]
+ 723              	.LVL136:
+  99:User/dm_motor_ctrl.c **** 		case 45: read_motor_data(motor->id, RID_X_OUT);     break; // xout 
+ 724              		.loc 1 99 12 is_stmt 0 view .LVU207
+ 725 021c FFF7FEFF 		bl	read_motor_data
+ 726              	.LVL137:
+  99:User/dm_motor_ctrl.c **** 		case 45: read_motor_data(motor->id, RID_X_OUT);     break; // xout 
+ 727              		.loc 1 99 55 is_stmt 1 view .LVU208
+  99:User/dm_motor_ctrl.c **** 		case 45: read_motor_data(motor->id, RID_X_OUT);     break; // xout 
+ 728              		.loc 1 99 3 is_stmt 0 view .LVU209
+ 729 0220 27E7     		b	.L5
+ 730              	.LVL138:
+ 731              	.L7:
+ 100:User/dm_motor_ctrl.c ****     }
+ 732              		.loc 1 100 12 is_stmt 1 view .LVU210
+ 733 0222 5121     		movs	r1, #81
+ 734 0224 0088     		ldrh	r0, [r0]
+ 735              	.LVL139:
+ 100:User/dm_motor_ctrl.c ****     }
+ 736              		.loc 1 100 12 is_stmt 0 view .LVU211
+ 737 0226 FFF7FEFF 		bl	read_motor_data
+ 738              	.LVL140:
+ 100:User/dm_motor_ctrl.c ****     }
+ 739              		.loc 1 100 55 is_stmt 1 view .LVU212
+ 740              		.loc 1 102 1 is_stmt 0 view .LVU213
+ 741 022a 22E7     		b	.L5
+ 742              		.cfi_endproc
+ 743              	.LFE145:
+ 745              		.section	.text.receive_motor_data,"ax",%progbits
+ 746              		.align	1
+ 747              		.global	receive_motor_data
+ 748              		.syntax unified
+ 749              		.thumb
+ 750              		.thumb_func
+ 751              		.fpu fpv5-d16
+ 753              	receive_motor_data:
+ 754              	.LVL141:
+ARM GAS  /tmp/ccYNYXys.s 			page 19
+
+
+ 755              	.LFB146:
+ 103:User/dm_motor_ctrl.c **** /**
+ 104:User/dm_motor_ctrl.c **** ************************************************************************
+ 105:User/dm_motor_ctrl.c **** * @brief:      	receive_motor_data: 接收电机返回的数据信息
+ 106:User/dm_motor_ctrl.c **** * @param:      	motor_t：电机参数结构体
+ 107:User/dm_motor_ctrl.c **** * @param:      	data：接收的数据
+ 108:User/dm_motor_ctrl.c **** * @retval:     	void
+ 109:User/dm_motor_ctrl.c **** * @details:    	逐次接收电机回传的参数信息
+ 110:User/dm_motor_ctrl.c **** ************************************************************************
+ 111:User/dm_motor_ctrl.c **** **/
+ 112:User/dm_motor_ctrl.c **** void receive_motor_data(motor_t *motor, uint8_t *data)
+ 113:User/dm_motor_ctrl.c **** {
+ 756              		.loc 1 113 1 is_stmt 1 view -0
+ 757              		.cfi_startproc
+ 758              		@ args = 0, pretend = 0, frame = 0
+ 759              		@ frame_needed = 0, uses_anonymous_args = 0
+ 760              		@ link register save eliminated.
+ 114:User/dm_motor_ctrl.c **** 	if(motor->tmp.read_flag == 0)
+ 761              		.loc 1 114 2 view .LVU215
+ 762              		.loc 1 114 15 is_stmt 0 view .LVU216
+ 763 0000 90F85830 		ldrb	r3, [r0, #88]	@ zero_extendqisi2
+ 764              		.loc 1 114 4 view .LVU217
+ 765 0004 13B1     		cbz	r3, .L54
+ 115:User/dm_motor_ctrl.c **** 		return ;
+ 116:User/dm_motor_ctrl.c **** 	
+ 117:User/dm_motor_ctrl.c **** 	float_type_u y;
+ 766              		.loc 1 117 2 is_stmt 1 view .LVU218
+ 118:User/dm_motor_ctrl.c **** 	
+ 119:User/dm_motor_ctrl.c **** 	if(data[2] == 0x33)
+ 767              		.loc 1 119 2 view .LVU219
+ 768              		.loc 1 119 9 is_stmt 0 view .LVU220
+ 769 0006 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
+ 770              		.loc 1 119 4 view .LVU221
+ 771 0008 332B     		cmp	r3, #51
+ 772 000a 00D0     		beq	.L104
+ 773              	.LVL142:
+ 774              	.L54:
+ 120:User/dm_motor_ctrl.c **** 	{
+ 121:User/dm_motor_ctrl.c **** 		uint16_t rid_value = data[3];
+ 122:User/dm_motor_ctrl.c **** 		y.b_val[0] = data[4];
+ 123:User/dm_motor_ctrl.c **** 		y.b_val[1] = data[5];
+ 124:User/dm_motor_ctrl.c **** 		y.b_val[2] = data[6];
+ 125:User/dm_motor_ctrl.c **** 		y.b_val[3] = data[7];
+ 126:User/dm_motor_ctrl.c **** 		
+ 127:User/dm_motor_ctrl.c **** 		switch (rid_value) 
+ 128:User/dm_motor_ctrl.c **** 		{
+ 129:User/dm_motor_ctrl.c **** 			case RID_UV_VALUE: motor->tmp.UV_Value = y.f_val; motor->tmp.read_flag =  2; break;
+ 130:User/dm_motor_ctrl.c **** 			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
+ 131:User/dm_motor_ctrl.c **** 			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
+ 132:User/dm_motor_ctrl.c **** 			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
+ 133:User/dm_motor_ctrl.c **** 			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
+ 134:User/dm_motor_ctrl.c **** 			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
+ 135:User/dm_motor_ctrl.c **** 			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
+ 136:User/dm_motor_ctrl.c **** 			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
+ 137:User/dm_motor_ctrl.c **** 			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
+ 138:User/dm_motor_ctrl.c **** 			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
+ 139:User/dm_motor_ctrl.c **** 			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 20
+
+
+ 140:User/dm_motor_ctrl.c **** 			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
+ 141:User/dm_motor_ctrl.c **** 			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
+ 142:User/dm_motor_ctrl.c **** 			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
+ 143:User/dm_motor_ctrl.c **** 			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
+ 144:User/dm_motor_ctrl.c **** 			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
+ 145:User/dm_motor_ctrl.c **** 			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
+ 146:User/dm_motor_ctrl.c **** 			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
+ 147:User/dm_motor_ctrl.c **** 			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
+ 148:User/dm_motor_ctrl.c **** 			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
+ 149:User/dm_motor_ctrl.c **** 			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
+ 150:User/dm_motor_ctrl.c **** 			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
+ 151:User/dm_motor_ctrl.c **** 			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
+ 152:User/dm_motor_ctrl.c **** 			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
+ 153:User/dm_motor_ctrl.c **** 			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
+ 154:User/dm_motor_ctrl.c **** 			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
+ 155:User/dm_motor_ctrl.c **** 			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
+ 156:User/dm_motor_ctrl.c **** 			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
+ 157:User/dm_motor_ctrl.c **** 			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
+ 158:User/dm_motor_ctrl.c **** 			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
+ 159:User/dm_motor_ctrl.c **** 			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
+ 160:User/dm_motor_ctrl.c **** 			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
+ 161:User/dm_motor_ctrl.c **** 			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
+ 162:User/dm_motor_ctrl.c **** 			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
+ 163:User/dm_motor_ctrl.c **** 			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
+ 164:User/dm_motor_ctrl.c **** 			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
+ 165:User/dm_motor_ctrl.c **** 			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
+ 166:User/dm_motor_ctrl.c **** 			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
+ 167:User/dm_motor_ctrl.c **** 			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
+ 168:User/dm_motor_ctrl.c **** 			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
+ 169:User/dm_motor_ctrl.c **** 			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
+ 170:User/dm_motor_ctrl.c **** 			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
+ 171:User/dm_motor_ctrl.c **** 			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
+ 172:User/dm_motor_ctrl.c **** 			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
+ 173:User/dm_motor_ctrl.c **** 			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
+ 174:User/dm_motor_ctrl.c **** 		}
+ 175:User/dm_motor_ctrl.c **** 	}
+ 176:User/dm_motor_ctrl.c **** }
+ 775              		.loc 1 176 1 view .LVU222
+ 776 000c 7047     		bx	lr
+ 777              	.LVL143:
+ 778              	.L104:
+ 779              	.LBB2:
+ 121:User/dm_motor_ctrl.c **** 		y.b_val[0] = data[4];
+ 780              		.loc 1 121 3 is_stmt 1 view .LVU223
+ 121:User/dm_motor_ctrl.c **** 		y.b_val[0] = data[4];
+ 781              		.loc 1 121 28 is_stmt 0 view .LVU224
+ 782 000e CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
+ 783              	.LVL144:
+ 122:User/dm_motor_ctrl.c **** 		y.b_val[1] = data[5];
+ 784              		.loc 1 122 3 is_stmt 1 view .LVU225
+ 122:User/dm_motor_ctrl.c **** 		y.b_val[1] = data[5];
+ 785              		.loc 1 122 14 is_stmt 0 view .LVU226
+ 786 0010 91F804C0 		ldrb	ip, [r1, #4]	@ zero_extendqisi2
+ 787 0014 0023     		movs	r3, #0
+ 122:User/dm_motor_ctrl.c **** 		y.b_val[1] = data[5];
+ 788              		.loc 1 122 14 view .LVU227
+ 789 0016 6CF30703 		bfi	r3, ip, #0, #8
+ARM GAS  /tmp/ccYNYXys.s 			page 21
+
+
+ 790              	.LVL145:
+ 123:User/dm_motor_ctrl.c **** 		y.b_val[2] = data[6];
+ 791              		.loc 1 123 3 is_stmt 1 view .LVU228
+ 123:User/dm_motor_ctrl.c **** 		y.b_val[2] = data[6];
+ 792              		.loc 1 123 14 is_stmt 0 view .LVU229
+ 793 001a 91F805C0 		ldrb	ip, [r1, #5]	@ zero_extendqisi2
+ 794 001e 6CF30F23 		bfi	r3, ip, #8, #8
+ 124:User/dm_motor_ctrl.c **** 		y.b_val[3] = data[7];
+ 795              		.loc 1 124 3 is_stmt 1 view .LVU230
+ 124:User/dm_motor_ctrl.c **** 		y.b_val[3] = data[7];
+ 796              		.loc 1 124 14 is_stmt 0 view .LVU231
+ 797 0022 91F806C0 		ldrb	ip, [r1, #6]	@ zero_extendqisi2
+ 798 0026 6CF31743 		bfi	r3, ip, #16, #8
+ 125:User/dm_motor_ctrl.c **** 		
+ 799              		.loc 1 125 3 is_stmt 1 view .LVU232
+ 125:User/dm_motor_ctrl.c **** 		
+ 800              		.loc 1 125 14 is_stmt 0 view .LVU233
+ 801 002a C979     		ldrb	r1, [r1, #7]	@ zero_extendqisi2
+ 802              	.LVL146:
+ 125:User/dm_motor_ctrl.c **** 		
+ 803              		.loc 1 125 14 view .LVU234
+ 804 002c 61F31F63 		bfi	r3, r1, #24, #8
+ 127:User/dm_motor_ctrl.c **** 		{
+ 805              		.loc 1 127 3 is_stmt 1 view .LVU235
+ 806 0030 512A     		cmp	r2, #81
+ 807 0032 EBD8     		bhi	.L54
+ 808 0034 01A1     		adr	r1, .L59
+ 809 0036 51F822F0 		ldr	pc, [r1, r2, lsl #2]
+ 810 003a 00BF     		.p2align 2
+ 811              	.L59:
+ 812 003c 85010000 		.word	.L103+1
+ 813 0040 8F010000 		.word	.L102+1
+ 814 0044 99010000 		.word	.L101+1
+ 815 0048 A3010000 		.word	.L100+1
+ 816 004c AD010000 		.word	.L99+1
+ 817 0050 B7010000 		.word	.L98+1
+ 818 0054 C1010000 		.word	.L97+1
+ 819 0058 CB010000 		.word	.L96+1
+ 820 005c D5010000 		.word	.L95+1
+ 821 0060 DF010000 		.word	.L94+1
+ 822 0064 EB010000 		.word	.L93+1
+ 823 0068 F7010000 		.word	.L92+1
+ 824 006c 03020000 		.word	.L91+1
+ 825 0070 0F020000 		.word	.L90+1
+ 826 0074 1B020000 		.word	.L89+1
+ 827 0078 27020000 		.word	.L88+1
+ 828 007c 33020000 		.word	.L87+1
+ 829 0080 3F020000 		.word	.L86+1
+ 830 0084 4B020000 		.word	.L85+1
+ 831 0088 57020000 		.word	.L84+1
+ 832 008c 63020000 		.word	.L83+1
+ 833 0090 6F020000 		.word	.L82+1
+ 834 0094 7B020000 		.word	.L81+1
+ 835 0098 87020000 		.word	.L80+1
+ 836 009c 93020000 		.word	.L79+1
+ 837 00a0 9F020000 		.word	.L78+1
+ 838 00a4 AB020000 		.word	.L77+1
+ARM GAS  /tmp/ccYNYXys.s 			page 22
+
+
+ 839 00a8 B7020000 		.word	.L76+1
+ 840 00ac C3020000 		.word	.L75+1
+ 841 00b0 CF020000 		.word	.L74+1
+ 842 00b4 DB020000 		.word	.L73+1
+ 843 00b8 E7020000 		.word	.L72+1
+ 844 00bc F3020000 		.word	.L71+1
+ 845 00c0 FF020000 		.word	.L70+1
+ 846 00c4 0B030000 		.word	.L69+1
+ 847 00c8 17030000 		.word	.L68+1
+ 848 00cc 23030000 		.word	.L67+1
+ 849 00d0 0D000000 		.word	.L54+1
+ 850 00d4 0D000000 		.word	.L54+1
+ 851 00d8 0D000000 		.word	.L54+1
+ 852 00dc 0D000000 		.word	.L54+1
+ 853 00e0 0D000000 		.word	.L54+1
+ 854 00e4 0D000000 		.word	.L54+1
+ 855 00e8 0D000000 		.word	.L54+1
+ 856 00ec 0D000000 		.word	.L54+1
+ 857 00f0 0D000000 		.word	.L54+1
+ 858 00f4 0D000000 		.word	.L54+1
+ 859 00f8 0D000000 		.word	.L54+1
+ 860 00fc 0D000000 		.word	.L54+1
+ 861 0100 0D000000 		.word	.L54+1
+ 862 0104 2F030000 		.word	.L66+1
+ 863 0108 3B030000 		.word	.L65+1
+ 864 010c 47030000 		.word	.L64+1
+ 865 0110 53030000 		.word	.L63+1
+ 866 0114 5F030000 		.word	.L62+1
+ 867 0118 6B030000 		.word	.L61+1
+ 868 011c 0D000000 		.word	.L54+1
+ 869 0120 0D000000 		.word	.L54+1
+ 870 0124 0D000000 		.word	.L54+1
+ 871 0128 0D000000 		.word	.L54+1
+ 872 012c 0D000000 		.word	.L54+1
+ 873 0130 0D000000 		.word	.L54+1
+ 874 0134 0D000000 		.word	.L54+1
+ 875 0138 0D000000 		.word	.L54+1
+ 876 013c 0D000000 		.word	.L54+1
+ 877 0140 0D000000 		.word	.L54+1
+ 878 0144 0D000000 		.word	.L54+1
+ 879 0148 0D000000 		.word	.L54+1
+ 880 014c 0D000000 		.word	.L54+1
+ 881 0150 0D000000 		.word	.L54+1
+ 882 0154 0D000000 		.word	.L54+1
+ 883 0158 0D000000 		.word	.L54+1
+ 884 015c 0D000000 		.word	.L54+1
+ 885 0160 0D000000 		.word	.L54+1
+ 886 0164 0D000000 		.word	.L54+1
+ 887 0168 0D000000 		.word	.L54+1
+ 888 016c 0D000000 		.word	.L54+1
+ 889 0170 0D000000 		.word	.L54+1
+ 890 0174 0D000000 		.word	.L54+1
+ 891 0178 0D000000 		.word	.L54+1
+ 892 017c 77030000 		.word	.L60+1
+ 893 0180 83030000 		.word	.L58+1
+ 894              		.p2align 1
+ 895              	.L103:
+ARM GAS  /tmp/ccYNYXys.s 			page 23
+
+
+ 129:User/dm_motor_ctrl.c **** 			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
+ 896              		.loc 1 129 23 view .LVU236
+ 129:User/dm_motor_ctrl.c **** 			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
+ 897              		.loc 1 129 43 is_stmt 0 view .LVU237
+ 898 0184 C365     		str	r3, [r0, #92]	@ float
+ 129:User/dm_motor_ctrl.c **** 			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
+ 899              		.loc 1 129 54 is_stmt 1 view .LVU238
+ 129:User/dm_motor_ctrl.c **** 			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
+ 900              		.loc 1 129 75 is_stmt 0 view .LVU239
+ 901 0186 0223     		movs	r3, #2
+ 902              	.LVL147:
+ 129:User/dm_motor_ctrl.c **** 			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
+ 903              		.loc 1 129 75 view .LVU240
+ 904 0188 80F85830 		strb	r3, [r0, #88]
+ 129:User/dm_motor_ctrl.c **** 			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
+ 905              		.loc 1 129 81 is_stmt 1 view .LVU241
+ 129:User/dm_motor_ctrl.c **** 			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
+ 906              		.loc 1 129 4 is_stmt 0 view .LVU242
+ 907 018c 7047     		bx	lr
+ 908              	.LVL148:
+ 909              	.L102:
+ 130:User/dm_motor_ctrl.c **** 			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
+ 910              		.loc 1 130 23 is_stmt 1 view .LVU243
+ 130:User/dm_motor_ctrl.c **** 			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
+ 911              		.loc 1 130 43 is_stmt 0 view .LVU244
+ 912 018e 0366     		str	r3, [r0, #96]	@ float
+ 130:User/dm_motor_ctrl.c **** 			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
+ 913              		.loc 1 130 54 is_stmt 1 view .LVU245
+ 130:User/dm_motor_ctrl.c **** 			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
+ 914              		.loc 1 130 75 is_stmt 0 view .LVU246
+ 915 0190 0323     		movs	r3, #3
+ 916              	.LVL149:
+ 130:User/dm_motor_ctrl.c **** 			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
+ 917              		.loc 1 130 75 view .LVU247
+ 918 0192 80F85830 		strb	r3, [r0, #88]
+ 130:User/dm_motor_ctrl.c **** 			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
+ 919              		.loc 1 130 81 is_stmt 1 view .LVU248
+ 130:User/dm_motor_ctrl.c **** 			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
+ 920              		.loc 1 130 4 is_stmt 0 view .LVU249
+ 921 0196 7047     		bx	lr
+ 922              	.LVL150:
+ 923              	.L101:
+ 131:User/dm_motor_ctrl.c **** 			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
+ 924              		.loc 1 131 23 is_stmt 1 view .LVU250
+ 131:User/dm_motor_ctrl.c **** 			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
+ 925              		.loc 1 131 43 is_stmt 0 view .LVU251
+ 926 0198 4366     		str	r3, [r0, #100]	@ float
+ 131:User/dm_motor_ctrl.c **** 			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
+ 927              		.loc 1 131 54 is_stmt 1 view .LVU252
+ 131:User/dm_motor_ctrl.c **** 			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
+ 928              		.loc 1 131 75 is_stmt 0 view .LVU253
+ 929 019a 0423     		movs	r3, #4
+ 930              	.LVL151:
+ 131:User/dm_motor_ctrl.c **** 			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
+ 931              		.loc 1 131 75 view .LVU254
+ 932 019c 80F85830 		strb	r3, [r0, #88]
+ 131:User/dm_motor_ctrl.c **** 			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 24
+
+
+ 933              		.loc 1 131 81 is_stmt 1 view .LVU255
+ 131:User/dm_motor_ctrl.c **** 			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
+ 934              		.loc 1 131 4 is_stmt 0 view .LVU256
+ 935 01a0 7047     		bx	lr
+ 936              	.LVL152:
+ 937              	.L100:
+ 132:User/dm_motor_ctrl.c **** 			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
+ 938              		.loc 1 132 23 is_stmt 1 view .LVU257
+ 132:User/dm_motor_ctrl.c **** 			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
+ 939              		.loc 1 132 43 is_stmt 0 view .LVU258
+ 940 01a2 8366     		str	r3, [r0, #104]	@ float
+ 132:User/dm_motor_ctrl.c **** 			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
+ 941              		.loc 1 132 54 is_stmt 1 view .LVU259
+ 132:User/dm_motor_ctrl.c **** 			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
+ 942              		.loc 1 132 75 is_stmt 0 view .LVU260
+ 943 01a4 0523     		movs	r3, #5
+ 944              	.LVL153:
+ 132:User/dm_motor_ctrl.c **** 			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
+ 945              		.loc 1 132 75 view .LVU261
+ 946 01a6 80F85830 		strb	r3, [r0, #88]
+ 132:User/dm_motor_ctrl.c **** 			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
+ 947              		.loc 1 132 81 is_stmt 1 view .LVU262
+ 132:User/dm_motor_ctrl.c **** 			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
+ 948              		.loc 1 132 4 is_stmt 0 view .LVU263
+ 949 01aa 7047     		bx	lr
+ 950              	.LVL154:
+ 951              	.L99:
+ 133:User/dm_motor_ctrl.c **** 			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
+ 952              		.loc 1 133 23 is_stmt 1 view .LVU264
+ 133:User/dm_motor_ctrl.c **** 			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
+ 953              		.loc 1 133 43 is_stmt 0 view .LVU265
+ 954 01ac C366     		str	r3, [r0, #108]	@ float
+ 133:User/dm_motor_ctrl.c **** 			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
+ 955              		.loc 1 133 54 is_stmt 1 view .LVU266
+ 133:User/dm_motor_ctrl.c **** 			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
+ 956              		.loc 1 133 75 is_stmt 0 view .LVU267
+ 957 01ae 0623     		movs	r3, #6
+ 958              	.LVL155:
+ 133:User/dm_motor_ctrl.c **** 			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
+ 959              		.loc 1 133 75 view .LVU268
+ 960 01b0 80F85830 		strb	r3, [r0, #88]
+ 133:User/dm_motor_ctrl.c **** 			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
+ 961              		.loc 1 133 81 is_stmt 1 view .LVU269
+ 133:User/dm_motor_ctrl.c **** 			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
+ 962              		.loc 1 133 4 is_stmt 0 view .LVU270
+ 963 01b4 7047     		bx	lr
+ 964              	.LVL156:
+ 965              	.L98:
+ 134:User/dm_motor_ctrl.c **** 			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
+ 966              		.loc 1 134 23 is_stmt 1 view .LVU271
+ 134:User/dm_motor_ctrl.c **** 			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
+ 967              		.loc 1 134 43 is_stmt 0 view .LVU272
+ 968 01b6 0367     		str	r3, [r0, #112]	@ float
+ 134:User/dm_motor_ctrl.c **** 			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
+ 969              		.loc 1 134 54 is_stmt 1 view .LVU273
+ 134:User/dm_motor_ctrl.c **** 			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
+ 970              		.loc 1 134 75 is_stmt 0 view .LVU274
+ARM GAS  /tmp/ccYNYXys.s 			page 25
+
+
+ 971 01b8 0723     		movs	r3, #7
+ 972              	.LVL157:
+ 134:User/dm_motor_ctrl.c **** 			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
+ 973              		.loc 1 134 75 view .LVU275
+ 974 01ba 80F85830 		strb	r3, [r0, #88]
+ 134:User/dm_motor_ctrl.c **** 			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
+ 975              		.loc 1 134 81 is_stmt 1 view .LVU276
+ 134:User/dm_motor_ctrl.c **** 			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
+ 976              		.loc 1 134 4 is_stmt 0 view .LVU277
+ 977 01be 7047     		bx	lr
+ 978              	.LVL158:
+ 979              	.L97:
+ 135:User/dm_motor_ctrl.c **** 			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
+ 980              		.loc 1 135 23 is_stmt 1 view .LVU278
+ 135:User/dm_motor_ctrl.c **** 			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
+ 981              		.loc 1 135 43 is_stmt 0 view .LVU279
+ 982 01c0 4367     		str	r3, [r0, #116]	@ float
+ 135:User/dm_motor_ctrl.c **** 			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
+ 983              		.loc 1 135 54 is_stmt 1 view .LVU280
+ 135:User/dm_motor_ctrl.c **** 			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
+ 984              		.loc 1 135 75 is_stmt 0 view .LVU281
+ 985 01c2 0823     		movs	r3, #8
+ 986              	.LVL159:
+ 135:User/dm_motor_ctrl.c **** 			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
+ 987              		.loc 1 135 75 view .LVU282
+ 988 01c4 80F85830 		strb	r3, [r0, #88]
+ 135:User/dm_motor_ctrl.c **** 			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
+ 989              		.loc 1 135 81 is_stmt 1 view .LVU283
+ 135:User/dm_motor_ctrl.c **** 			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
+ 990              		.loc 1 135 4 is_stmt 0 view .LVU284
+ 991 01c8 7047     		bx	lr
+ 992              	.LVL160:
+ 993              	.L96:
+ 136:User/dm_motor_ctrl.c **** 			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
+ 994              		.loc 1 136 23 is_stmt 1 view .LVU285
+ 136:User/dm_motor_ctrl.c **** 			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
+ 995              		.loc 1 136 43 is_stmt 0 view .LVU286
+ 996 01ca 8367     		str	r3, [r0, #120]
+ 136:User/dm_motor_ctrl.c **** 			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
+ 997              		.loc 1 136 54 is_stmt 1 view .LVU287
+ 136:User/dm_motor_ctrl.c **** 			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
+ 998              		.loc 1 136 75 is_stmt 0 view .LVU288
+ 999 01cc 0923     		movs	r3, #9
+ 1000              	.LVL161:
+ 136:User/dm_motor_ctrl.c **** 			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
+ 1001              		.loc 1 136 75 view .LVU289
+ 1002 01ce 80F85830 		strb	r3, [r0, #88]
+ 136:User/dm_motor_ctrl.c **** 			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
+ 1003              		.loc 1 136 81 is_stmt 1 view .LVU290
+ 136:User/dm_motor_ctrl.c **** 			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
+ 1004              		.loc 1 136 4 is_stmt 0 view .LVU291
+ 1005 01d2 7047     		bx	lr
+ 1006              	.LVL162:
+ 1007              	.L95:
+ 137:User/dm_motor_ctrl.c **** 			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
+ 1008              		.loc 1 137 23 is_stmt 1 view .LVU292
+ 137:User/dm_motor_ctrl.c **** 			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 26
+
+
+ 1009              		.loc 1 137 43 is_stmt 0 view .LVU293
+ 1010 01d4 C367     		str	r3, [r0, #124]
+ 137:User/dm_motor_ctrl.c **** 			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
+ 1011              		.loc 1 137 54 is_stmt 1 view .LVU294
+ 137:User/dm_motor_ctrl.c **** 			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
+ 1012              		.loc 1 137 75 is_stmt 0 view .LVU295
+ 1013 01d6 0A23     		movs	r3, #10
+ 1014              	.LVL163:
+ 137:User/dm_motor_ctrl.c **** 			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
+ 1015              		.loc 1 137 75 view .LVU296
+ 1016 01d8 80F85830 		strb	r3, [r0, #88]
+ 137:User/dm_motor_ctrl.c **** 			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
+ 1017              		.loc 1 137 81 is_stmt 1 view .LVU297
+ 137:User/dm_motor_ctrl.c **** 			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
+ 1018              		.loc 1 137 4 is_stmt 0 view .LVU298
+ 1019 01dc 7047     		bx	lr
+ 1020              	.LVL164:
+ 1021              	.L94:
+ 138:User/dm_motor_ctrl.c **** 			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
+ 1022              		.loc 1 138 23 is_stmt 1 view .LVU299
+ 138:User/dm_motor_ctrl.c **** 			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
+ 1023              		.loc 1 138 43 is_stmt 0 view .LVU300
+ 1024 01de C0F88030 		str	r3, [r0, #128]
+ 138:User/dm_motor_ctrl.c **** 			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
+ 1025              		.loc 1 138 54 is_stmt 1 view .LVU301
+ 138:User/dm_motor_ctrl.c **** 			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
+ 1026              		.loc 1 138 75 is_stmt 0 view .LVU302
+ 1027 01e2 0B23     		movs	r3, #11
+ 1028              	.LVL165:
+ 138:User/dm_motor_ctrl.c **** 			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
+ 1029              		.loc 1 138 75 view .LVU303
+ 1030 01e4 80F85830 		strb	r3, [r0, #88]
+ 138:User/dm_motor_ctrl.c **** 			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
+ 1031              		.loc 1 138 81 is_stmt 1 view .LVU304
+ 138:User/dm_motor_ctrl.c **** 			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
+ 1032              		.loc 1 138 4 is_stmt 0 view .LVU305
+ 1033 01e8 7047     		bx	lr
+ 1034              	.LVL166:
+ 1035              	.L93:
+ 139:User/dm_motor_ctrl.c **** 			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
+ 1036              		.loc 1 139 23 is_stmt 1 view .LVU306
+ 139:User/dm_motor_ctrl.c **** 			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
+ 1037              		.loc 1 139 43 is_stmt 0 view .LVU307
+ 1038 01ea C0F88430 		str	r3, [r0, #132]
+ 139:User/dm_motor_ctrl.c **** 			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
+ 1039              		.loc 1 139 54 is_stmt 1 view .LVU308
+ 139:User/dm_motor_ctrl.c **** 			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
+ 1040              		.loc 1 139 75 is_stmt 0 view .LVU309
+ 1041 01ee 0C23     		movs	r3, #12
+ 1042              	.LVL167:
+ 139:User/dm_motor_ctrl.c **** 			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
+ 1043              		.loc 1 139 75 view .LVU310
+ 1044 01f0 80F85830 		strb	r3, [r0, #88]
+ 139:User/dm_motor_ctrl.c **** 			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
+ 1045              		.loc 1 139 81 is_stmt 1 view .LVU311
+ 139:User/dm_motor_ctrl.c **** 			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
+ 1046              		.loc 1 139 4 is_stmt 0 view .LVU312
+ARM GAS  /tmp/ccYNYXys.s 			page 27
+
+
+ 1047 01f4 7047     		bx	lr
+ 1048              	.LVL168:
+ 1049              	.L92:
+ 140:User/dm_motor_ctrl.c **** 			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
+ 1050              		.loc 1 140 23 is_stmt 1 view .LVU313
+ 140:User/dm_motor_ctrl.c **** 			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
+ 1051              		.loc 1 140 43 is_stmt 0 view .LVU314
+ 1052 01f6 C0F88830 		str	r3, [r0, #136]	@ float
+ 140:User/dm_motor_ctrl.c **** 			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
+ 1053              		.loc 1 140 54 is_stmt 1 view .LVU315
+ 140:User/dm_motor_ctrl.c **** 			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
+ 1054              		.loc 1 140 75 is_stmt 0 view .LVU316
+ 1055 01fa 0D23     		movs	r3, #13
+ 1056              	.LVL169:
+ 140:User/dm_motor_ctrl.c **** 			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
+ 1057              		.loc 1 140 75 view .LVU317
+ 1058 01fc 80F85830 		strb	r3, [r0, #88]
+ 140:User/dm_motor_ctrl.c **** 			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
+ 1059              		.loc 1 140 81 is_stmt 1 view .LVU318
+ 140:User/dm_motor_ctrl.c **** 			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
+ 1060              		.loc 1 140 4 is_stmt 0 view .LVU319
+ 1061 0200 7047     		bx	lr
+ 1062              	.LVL170:
+ 1063              	.L91:
+ 141:User/dm_motor_ctrl.c **** 			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
+ 1064              		.loc 1 141 23 is_stmt 1 view .LVU320
+ 141:User/dm_motor_ctrl.c **** 			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
+ 1065              		.loc 1 141 43 is_stmt 0 view .LVU321
+ 1066 0202 C0F88C30 		str	r3, [r0, #140]	@ float
+ 141:User/dm_motor_ctrl.c **** 			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
+ 1067              		.loc 1 141 54 is_stmt 1 view .LVU322
+ 141:User/dm_motor_ctrl.c **** 			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
+ 1068              		.loc 1 141 75 is_stmt 0 view .LVU323
+ 1069 0206 0E23     		movs	r3, #14
+ 1070              	.LVL171:
+ 141:User/dm_motor_ctrl.c **** 			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
+ 1071              		.loc 1 141 75 view .LVU324
+ 1072 0208 80F85830 		strb	r3, [r0, #88]
+ 141:User/dm_motor_ctrl.c **** 			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
+ 1073              		.loc 1 141 81 is_stmt 1 view .LVU325
+ 141:User/dm_motor_ctrl.c **** 			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
+ 1074              		.loc 1 141 4 is_stmt 0 view .LVU326
+ 1075 020c 7047     		bx	lr
+ 1076              	.LVL172:
+ 1077              	.L90:
+ 142:User/dm_motor_ctrl.c **** 			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
+ 1078              		.loc 1 142 23 is_stmt 1 view .LVU327
+ 142:User/dm_motor_ctrl.c **** 			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
+ 1079              		.loc 1 142 43 is_stmt 0 view .LVU328
+ 1080 020e C0F89030 		str	r3, [r0, #144]
+ 142:User/dm_motor_ctrl.c **** 			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
+ 1081              		.loc 1 142 54 is_stmt 1 view .LVU329
+ 142:User/dm_motor_ctrl.c **** 			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
+ 1082              		.loc 1 142 75 is_stmt 0 view .LVU330
+ 1083 0212 0F23     		movs	r3, #15
+ 1084              	.LVL173:
+ 142:User/dm_motor_ctrl.c **** 			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 28
+
+
+ 1085              		.loc 1 142 75 view .LVU331
+ 1086 0214 80F85830 		strb	r3, [r0, #88]
+ 142:User/dm_motor_ctrl.c **** 			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
+ 1087              		.loc 1 142 81 is_stmt 1 view .LVU332
+ 142:User/dm_motor_ctrl.c **** 			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
+ 1088              		.loc 1 142 4 is_stmt 0 view .LVU333
+ 1089 0218 7047     		bx	lr
+ 1090              	.LVL174:
+ 1091              	.L89:
+ 143:User/dm_motor_ctrl.c **** 			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
+ 1092              		.loc 1 143 23 is_stmt 1 view .LVU334
+ 143:User/dm_motor_ctrl.c **** 			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
+ 1093              		.loc 1 143 43 is_stmt 0 view .LVU335
+ 1094 021a C0F89430 		str	r3, [r0, #148]
+ 143:User/dm_motor_ctrl.c **** 			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
+ 1095              		.loc 1 143 54 is_stmt 1 view .LVU336
+ 143:User/dm_motor_ctrl.c **** 			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
+ 1096              		.loc 1 143 75 is_stmt 0 view .LVU337
+ 1097 021e 1023     		movs	r3, #16
+ 1098              	.LVL175:
+ 143:User/dm_motor_ctrl.c **** 			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
+ 1099              		.loc 1 143 75 view .LVU338
+ 1100 0220 80F85830 		strb	r3, [r0, #88]
+ 143:User/dm_motor_ctrl.c **** 			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
+ 1101              		.loc 1 143 81 is_stmt 1 view .LVU339
+ 143:User/dm_motor_ctrl.c **** 			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
+ 1102              		.loc 1 143 4 is_stmt 0 view .LVU340
+ 1103 0224 7047     		bx	lr
+ 1104              	.LVL176:
+ 1105              	.L88:
+ 144:User/dm_motor_ctrl.c **** 			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
+ 1106              		.loc 1 144 23 is_stmt 1 view .LVU341
+ 144:User/dm_motor_ctrl.c **** 			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
+ 1107              		.loc 1 144 43 is_stmt 0 view .LVU342
+ 1108 0226 C0F89830 		str	r3, [r0, #152]
+ 144:User/dm_motor_ctrl.c **** 			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
+ 1109              		.loc 1 144 54 is_stmt 1 view .LVU343
+ 144:User/dm_motor_ctrl.c **** 			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
+ 1110              		.loc 1 144 75 is_stmt 0 view .LVU344
+ 1111 022a 1123     		movs	r3, #17
+ 1112              	.LVL177:
+ 144:User/dm_motor_ctrl.c **** 			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
+ 1113              		.loc 1 144 75 view .LVU345
+ 1114 022c 80F85830 		strb	r3, [r0, #88]
+ 144:User/dm_motor_ctrl.c **** 			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
+ 1115              		.loc 1 144 81 is_stmt 1 view .LVU346
+ 144:User/dm_motor_ctrl.c **** 			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
+ 1116              		.loc 1 144 4 is_stmt 0 view .LVU347
+ 1117 0230 7047     		bx	lr
+ 1118              	.LVL178:
+ 1119              	.L87:
+ 145:User/dm_motor_ctrl.c **** 			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
+ 1120              		.loc 1 145 23 is_stmt 1 view .LVU348
+ 145:User/dm_motor_ctrl.c **** 			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
+ 1121              		.loc 1 145 43 is_stmt 0 view .LVU349
+ 1122 0232 C0F89C30 		str	r3, [r0, #156]
+ 145:User/dm_motor_ctrl.c **** 			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 29
+
+
+ 1123              		.loc 1 145 54 is_stmt 1 view .LVU350
+ 145:User/dm_motor_ctrl.c **** 			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
+ 1124              		.loc 1 145 75 is_stmt 0 view .LVU351
+ 1125 0236 1223     		movs	r3, #18
+ 1126              	.LVL179:
+ 145:User/dm_motor_ctrl.c **** 			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
+ 1127              		.loc 1 145 75 view .LVU352
+ 1128 0238 80F85830 		strb	r3, [r0, #88]
+ 145:User/dm_motor_ctrl.c **** 			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
+ 1129              		.loc 1 145 81 is_stmt 1 view .LVU353
+ 145:User/dm_motor_ctrl.c **** 			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
+ 1130              		.loc 1 145 4 is_stmt 0 view .LVU354
+ 1131 023c 7047     		bx	lr
+ 1132              	.LVL180:
+ 1133              	.L86:
+ 146:User/dm_motor_ctrl.c **** 			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
+ 1134              		.loc 1 146 23 is_stmt 1 view .LVU355
+ 146:User/dm_motor_ctrl.c **** 			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
+ 1135              		.loc 1 146 43 is_stmt 0 view .LVU356
+ 1136 023e C0F8A030 		str	r3, [r0, #160]	@ float
+ 146:User/dm_motor_ctrl.c **** 			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
+ 1137              		.loc 1 146 54 is_stmt 1 view .LVU357
+ 146:User/dm_motor_ctrl.c **** 			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
+ 1138              		.loc 1 146 75 is_stmt 0 view .LVU358
+ 1139 0242 1323     		movs	r3, #19
+ 1140              	.LVL181:
+ 146:User/dm_motor_ctrl.c **** 			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
+ 1141              		.loc 1 146 75 view .LVU359
+ 1142 0244 80F85830 		strb	r3, [r0, #88]
+ 146:User/dm_motor_ctrl.c **** 			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
+ 1143              		.loc 1 146 81 is_stmt 1 view .LVU360
+ 146:User/dm_motor_ctrl.c **** 			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
+ 1144              		.loc 1 146 4 is_stmt 0 view .LVU361
+ 1145 0248 7047     		bx	lr
+ 1146              	.LVL182:
+ 1147              	.L85:
+ 147:User/dm_motor_ctrl.c **** 			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
+ 1148              		.loc 1 147 23 is_stmt 1 view .LVU362
+ 147:User/dm_motor_ctrl.c **** 			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
+ 1149              		.loc 1 147 43 is_stmt 0 view .LVU363
+ 1150 024a C0F8A430 		str	r3, [r0, #164]	@ float
+ 147:User/dm_motor_ctrl.c **** 			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
+ 1151              		.loc 1 147 54 is_stmt 1 view .LVU364
+ 147:User/dm_motor_ctrl.c **** 			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
+ 1152              		.loc 1 147 75 is_stmt 0 view .LVU365
+ 1153 024e 1423     		movs	r3, #20
+ 1154              	.LVL183:
+ 147:User/dm_motor_ctrl.c **** 			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
+ 1155              		.loc 1 147 75 view .LVU366
+ 1156 0250 80F85830 		strb	r3, [r0, #88]
+ 147:User/dm_motor_ctrl.c **** 			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
+ 1157              		.loc 1 147 81 is_stmt 1 view .LVU367
+ 147:User/dm_motor_ctrl.c **** 			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
+ 1158              		.loc 1 147 4 is_stmt 0 view .LVU368
+ 1159 0254 7047     		bx	lr
+ 1160              	.LVL184:
+ 1161              	.L84:
+ARM GAS  /tmp/ccYNYXys.s 			page 30
+
+
+ 148:User/dm_motor_ctrl.c **** 			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
+ 1162              		.loc 1 148 23 is_stmt 1 view .LVU369
+ 148:User/dm_motor_ctrl.c **** 			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
+ 1163              		.loc 1 148 43 is_stmt 0 view .LVU370
+ 1164 0256 C0F8A830 		str	r3, [r0, #168]	@ float
+ 148:User/dm_motor_ctrl.c **** 			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
+ 1165              		.loc 1 148 54 is_stmt 1 view .LVU371
+ 148:User/dm_motor_ctrl.c **** 			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
+ 1166              		.loc 1 148 75 is_stmt 0 view .LVU372
+ 1167 025a 1523     		movs	r3, #21
+ 1168              	.LVL185:
+ 148:User/dm_motor_ctrl.c **** 			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
+ 1169              		.loc 1 148 75 view .LVU373
+ 1170 025c 80F85830 		strb	r3, [r0, #88]
+ 148:User/dm_motor_ctrl.c **** 			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
+ 1171              		.loc 1 148 81 is_stmt 1 view .LVU374
+ 148:User/dm_motor_ctrl.c **** 			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
+ 1172              		.loc 1 148 4 is_stmt 0 view .LVU375
+ 1173 0260 7047     		bx	lr
+ 1174              	.LVL186:
+ 1175              	.L83:
+ 149:User/dm_motor_ctrl.c **** 			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
+ 1176              		.loc 1 149 23 is_stmt 1 view .LVU376
+ 149:User/dm_motor_ctrl.c **** 			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
+ 1177              		.loc 1 149 43 is_stmt 0 view .LVU377
+ 1178 0262 C0F8AC30 		str	r3, [r0, #172]	@ float
+ 149:User/dm_motor_ctrl.c **** 			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
+ 1179              		.loc 1 149 54 is_stmt 1 view .LVU378
+ 149:User/dm_motor_ctrl.c **** 			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
+ 1180              		.loc 1 149 75 is_stmt 0 view .LVU379
+ 1181 0266 1623     		movs	r3, #22
+ 1182              	.LVL187:
+ 149:User/dm_motor_ctrl.c **** 			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
+ 1183              		.loc 1 149 75 view .LVU380
+ 1184 0268 80F85830 		strb	r3, [r0, #88]
+ 149:User/dm_motor_ctrl.c **** 			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
+ 1185              		.loc 1 149 81 is_stmt 1 view .LVU381
+ 149:User/dm_motor_ctrl.c **** 			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
+ 1186              		.loc 1 149 4 is_stmt 0 view .LVU382
+ 1187 026c 7047     		bx	lr
+ 1188              	.LVL188:
+ 1189              	.L82:
+ 150:User/dm_motor_ctrl.c **** 			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
+ 1190              		.loc 1 150 23 is_stmt 1 view .LVU383
+ 150:User/dm_motor_ctrl.c **** 			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
+ 1191              		.loc 1 150 43 is_stmt 0 view .LVU384
+ 1192 026e C0F8B030 		str	r3, [r0, #176]	@ float
+ 150:User/dm_motor_ctrl.c **** 			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
+ 1193              		.loc 1 150 54 is_stmt 1 view .LVU385
+ 150:User/dm_motor_ctrl.c **** 			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
+ 1194              		.loc 1 150 75 is_stmt 0 view .LVU386
+ 1195 0272 1723     		movs	r3, #23
+ 1196              	.LVL189:
+ 150:User/dm_motor_ctrl.c **** 			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
+ 1197              		.loc 1 150 75 view .LVU387
+ 1198 0274 80F85830 		strb	r3, [r0, #88]
+ 150:User/dm_motor_ctrl.c **** 			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 31
+
+
+ 1199              		.loc 1 150 81 is_stmt 1 view .LVU388
+ 150:User/dm_motor_ctrl.c **** 			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
+ 1200              		.loc 1 150 4 is_stmt 0 view .LVU389
+ 1201 0278 7047     		bx	lr
+ 1202              	.LVL190:
+ 1203              	.L81:
+ 151:User/dm_motor_ctrl.c **** 			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
+ 1204              		.loc 1 151 23 is_stmt 1 view .LVU390
+ 151:User/dm_motor_ctrl.c **** 			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
+ 1205              		.loc 1 151 43 is_stmt 0 view .LVU391
+ 1206 027a C0F8B430 		str	r3, [r0, #180]	@ float
+ 151:User/dm_motor_ctrl.c **** 			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
+ 1207              		.loc 1 151 54 is_stmt 1 view .LVU392
+ 151:User/dm_motor_ctrl.c **** 			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
+ 1208              		.loc 1 151 75 is_stmt 0 view .LVU393
+ 1209 027e 1823     		movs	r3, #24
+ 1210              	.LVL191:
+ 151:User/dm_motor_ctrl.c **** 			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
+ 1211              		.loc 1 151 75 view .LVU394
+ 1212 0280 80F85830 		strb	r3, [r0, #88]
+ 151:User/dm_motor_ctrl.c **** 			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
+ 1213              		.loc 1 151 81 is_stmt 1 view .LVU395
+ 151:User/dm_motor_ctrl.c **** 			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
+ 1214              		.loc 1 151 4 is_stmt 0 view .LVU396
+ 1215 0284 7047     		bx	lr
+ 1216              	.LVL192:
+ 1217              	.L80:
+ 152:User/dm_motor_ctrl.c **** 			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
+ 1218              		.loc 1 152 23 is_stmt 1 view .LVU397
+ 152:User/dm_motor_ctrl.c **** 			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
+ 1219              		.loc 1 152 43 is_stmt 0 view .LVU398
+ 1220 0286 C0F8B830 		str	r3, [r0, #184]	@ float
+ 152:User/dm_motor_ctrl.c **** 			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
+ 1221              		.loc 1 152 54 is_stmt 1 view .LVU399
+ 152:User/dm_motor_ctrl.c **** 			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
+ 1222              		.loc 1 152 75 is_stmt 0 view .LVU400
+ 1223 028a 1923     		movs	r3, #25
+ 1224              	.LVL193:
+ 152:User/dm_motor_ctrl.c **** 			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
+ 1225              		.loc 1 152 75 view .LVU401
+ 1226 028c 80F85830 		strb	r3, [r0, #88]
+ 152:User/dm_motor_ctrl.c **** 			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
+ 1227              		.loc 1 152 81 is_stmt 1 view .LVU402
+ 152:User/dm_motor_ctrl.c **** 			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
+ 1228              		.loc 1 152 4 is_stmt 0 view .LVU403
+ 1229 0290 7047     		bx	lr
+ 1230              	.LVL194:
+ 1231              	.L79:
+ 153:User/dm_motor_ctrl.c **** 			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
+ 1232              		.loc 1 153 23 is_stmt 1 view .LVU404
+ 153:User/dm_motor_ctrl.c **** 			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
+ 1233              		.loc 1 153 43 is_stmt 0 view .LVU405
+ 1234 0292 C0F8BC30 		str	r3, [r0, #188]	@ float
+ 153:User/dm_motor_ctrl.c **** 			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
+ 1235              		.loc 1 153 54 is_stmt 1 view .LVU406
+ 153:User/dm_motor_ctrl.c **** 			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
+ 1236              		.loc 1 153 75 is_stmt 0 view .LVU407
+ARM GAS  /tmp/ccYNYXys.s 			page 32
+
+
+ 1237 0296 1A23     		movs	r3, #26
+ 1238              	.LVL195:
+ 153:User/dm_motor_ctrl.c **** 			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
+ 1239              		.loc 1 153 75 view .LVU408
+ 1240 0298 80F85830 		strb	r3, [r0, #88]
+ 153:User/dm_motor_ctrl.c **** 			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
+ 1241              		.loc 1 153 81 is_stmt 1 view .LVU409
+ 153:User/dm_motor_ctrl.c **** 			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
+ 1242              		.loc 1 153 4 is_stmt 0 view .LVU410
+ 1243 029c 7047     		bx	lr
+ 1244              	.LVL196:
+ 1245              	.L78:
+ 154:User/dm_motor_ctrl.c **** 			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
+ 1246              		.loc 1 154 23 is_stmt 1 view .LVU411
+ 154:User/dm_motor_ctrl.c **** 			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
+ 1247              		.loc 1 154 43 is_stmt 0 view .LVU412
+ 1248 029e C0F8C030 		str	r3, [r0, #192]	@ float
+ 154:User/dm_motor_ctrl.c **** 			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
+ 1249              		.loc 1 154 54 is_stmt 1 view .LVU413
+ 154:User/dm_motor_ctrl.c **** 			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
+ 1250              		.loc 1 154 75 is_stmt 0 view .LVU414
+ 1251 02a2 1B23     		movs	r3, #27
+ 1252              	.LVL197:
+ 154:User/dm_motor_ctrl.c **** 			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
+ 1253              		.loc 1 154 75 view .LVU415
+ 1254 02a4 80F85830 		strb	r3, [r0, #88]
+ 154:User/dm_motor_ctrl.c **** 			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
+ 1255              		.loc 1 154 81 is_stmt 1 view .LVU416
+ 154:User/dm_motor_ctrl.c **** 			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
+ 1256              		.loc 1 154 4 is_stmt 0 view .LVU417
+ 1257 02a8 7047     		bx	lr
+ 1258              	.LVL198:
+ 1259              	.L77:
+ 155:User/dm_motor_ctrl.c **** 			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
+ 1260              		.loc 1 155 23 is_stmt 1 view .LVU418
+ 155:User/dm_motor_ctrl.c **** 			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
+ 1261              		.loc 1 155 43 is_stmt 0 view .LVU419
+ 1262 02aa C0F8C430 		str	r3, [r0, #196]	@ float
+ 155:User/dm_motor_ctrl.c **** 			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
+ 1263              		.loc 1 155 54 is_stmt 1 view .LVU420
+ 155:User/dm_motor_ctrl.c **** 			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
+ 1264              		.loc 1 155 75 is_stmt 0 view .LVU421
+ 1265 02ae 1C23     		movs	r3, #28
+ 1266              	.LVL199:
+ 155:User/dm_motor_ctrl.c **** 			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
+ 1267              		.loc 1 155 75 view .LVU422
+ 1268 02b0 80F85830 		strb	r3, [r0, #88]
+ 155:User/dm_motor_ctrl.c **** 			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
+ 1269              		.loc 1 155 81 is_stmt 1 view .LVU423
+ 155:User/dm_motor_ctrl.c **** 			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
+ 1270              		.loc 1 155 4 is_stmt 0 view .LVU424
+ 1271 02b4 7047     		bx	lr
+ 1272              	.LVL200:
+ 1273              	.L76:
+ 156:User/dm_motor_ctrl.c **** 			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
+ 1274              		.loc 1 156 23 is_stmt 1 view .LVU425
+ 156:User/dm_motor_ctrl.c **** 			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 33
+
+
+ 1275              		.loc 1 156 43 is_stmt 0 view .LVU426
+ 1276 02b6 C0F8C830 		str	r3, [r0, #200]	@ float
+ 156:User/dm_motor_ctrl.c **** 			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
+ 1277              		.loc 1 156 54 is_stmt 1 view .LVU427
+ 156:User/dm_motor_ctrl.c **** 			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
+ 1278              		.loc 1 156 75 is_stmt 0 view .LVU428
+ 1279 02ba 1D23     		movs	r3, #29
+ 1280              	.LVL201:
+ 156:User/dm_motor_ctrl.c **** 			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
+ 1281              		.loc 1 156 75 view .LVU429
+ 1282 02bc 80F85830 		strb	r3, [r0, #88]
+ 156:User/dm_motor_ctrl.c **** 			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
+ 1283              		.loc 1 156 81 is_stmt 1 view .LVU430
+ 156:User/dm_motor_ctrl.c **** 			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
+ 1284              		.loc 1 156 4 is_stmt 0 view .LVU431
+ 1285 02c0 7047     		bx	lr
+ 1286              	.LVL202:
+ 1287              	.L75:
+ 157:User/dm_motor_ctrl.c **** 			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
+ 1288              		.loc 1 157 23 is_stmt 1 view .LVU432
+ 157:User/dm_motor_ctrl.c **** 			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
+ 1289              		.loc 1 157 43 is_stmt 0 view .LVU433
+ 1290 02c2 C0F8CC30 		str	r3, [r0, #204]	@ float
+ 157:User/dm_motor_ctrl.c **** 			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
+ 1291              		.loc 1 157 54 is_stmt 1 view .LVU434
+ 157:User/dm_motor_ctrl.c **** 			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
+ 1292              		.loc 1 157 75 is_stmt 0 view .LVU435
+ 1293 02c6 1E23     		movs	r3, #30
+ 1294              	.LVL203:
+ 157:User/dm_motor_ctrl.c **** 			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
+ 1295              		.loc 1 157 75 view .LVU436
+ 1296 02c8 80F85830 		strb	r3, [r0, #88]
+ 157:User/dm_motor_ctrl.c **** 			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
+ 1297              		.loc 1 157 81 is_stmt 1 view .LVU437
+ 157:User/dm_motor_ctrl.c **** 			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
+ 1298              		.loc 1 157 4 is_stmt 0 view .LVU438
+ 1299 02cc 7047     		bx	lr
+ 1300              	.LVL204:
+ 1301              	.L74:
+ 158:User/dm_motor_ctrl.c **** 			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
+ 1302              		.loc 1 158 23 is_stmt 1 view .LVU439
+ 158:User/dm_motor_ctrl.c **** 			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
+ 1303              		.loc 1 158 43 is_stmt 0 view .LVU440
+ 1304 02ce C0F8D030 		str	r3, [r0, #208]	@ float
+ 158:User/dm_motor_ctrl.c **** 			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
+ 1305              		.loc 1 158 54 is_stmt 1 view .LVU441
+ 158:User/dm_motor_ctrl.c **** 			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
+ 1306              		.loc 1 158 75 is_stmt 0 view .LVU442
+ 1307 02d2 1F23     		movs	r3, #31
+ 1308              	.LVL205:
+ 158:User/dm_motor_ctrl.c **** 			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
+ 1309              		.loc 1 158 75 view .LVU443
+ 1310 02d4 80F85830 		strb	r3, [r0, #88]
+ 158:User/dm_motor_ctrl.c **** 			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
+ 1311              		.loc 1 158 81 is_stmt 1 view .LVU444
+ 158:User/dm_motor_ctrl.c **** 			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
+ 1312              		.loc 1 158 4 is_stmt 0 view .LVU445
+ARM GAS  /tmp/ccYNYXys.s 			page 34
+
+
+ 1313 02d8 7047     		bx	lr
+ 1314              	.LVL206:
+ 1315              	.L73:
+ 159:User/dm_motor_ctrl.c **** 			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
+ 1316              		.loc 1 159 23 is_stmt 1 view .LVU446
+ 159:User/dm_motor_ctrl.c **** 			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
+ 1317              		.loc 1 159 43 is_stmt 0 view .LVU447
+ 1318 02da C0F8D430 		str	r3, [r0, #212]	@ float
+ 159:User/dm_motor_ctrl.c **** 			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
+ 1319              		.loc 1 159 54 is_stmt 1 view .LVU448
+ 159:User/dm_motor_ctrl.c **** 			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
+ 1320              		.loc 1 159 75 is_stmt 0 view .LVU449
+ 1321 02de 2023     		movs	r3, #32
+ 1322              	.LVL207:
+ 159:User/dm_motor_ctrl.c **** 			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
+ 1323              		.loc 1 159 75 view .LVU450
+ 1324 02e0 80F85830 		strb	r3, [r0, #88]
+ 159:User/dm_motor_ctrl.c **** 			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
+ 1325              		.loc 1 159 81 is_stmt 1 view .LVU451
+ 159:User/dm_motor_ctrl.c **** 			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
+ 1326              		.loc 1 159 4 is_stmt 0 view .LVU452
+ 1327 02e4 7047     		bx	lr
+ 1328              	.LVL208:
+ 1329              	.L72:
+ 160:User/dm_motor_ctrl.c **** 			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
+ 1330              		.loc 1 160 23 is_stmt 1 view .LVU453
+ 160:User/dm_motor_ctrl.c **** 			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
+ 1331              		.loc 1 160 43 is_stmt 0 view .LVU454
+ 1332 02e6 C0F8D830 		str	r3, [r0, #216]	@ float
+ 160:User/dm_motor_ctrl.c **** 			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
+ 1333              		.loc 1 160 54 is_stmt 1 view .LVU455
+ 160:User/dm_motor_ctrl.c **** 			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
+ 1334              		.loc 1 160 75 is_stmt 0 view .LVU456
+ 1335 02ea 2123     		movs	r3, #33
+ 1336              	.LVL209:
+ 160:User/dm_motor_ctrl.c **** 			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
+ 1337              		.loc 1 160 75 view .LVU457
+ 1338 02ec 80F85830 		strb	r3, [r0, #88]
+ 160:User/dm_motor_ctrl.c **** 			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
+ 1339              		.loc 1 160 81 is_stmt 1 view .LVU458
+ 160:User/dm_motor_ctrl.c **** 			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
+ 1340              		.loc 1 160 4 is_stmt 0 view .LVU459
+ 1341 02f0 7047     		bx	lr
+ 1342              	.LVL210:
+ 1343              	.L71:
+ 161:User/dm_motor_ctrl.c **** 			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
+ 1344              		.loc 1 161 23 is_stmt 1 view .LVU460
+ 161:User/dm_motor_ctrl.c **** 			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
+ 1345              		.loc 1 161 43 is_stmt 0 view .LVU461
+ 1346 02f2 C0F8DC30 		str	r3, [r0, #220]	@ float
+ 161:User/dm_motor_ctrl.c **** 			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
+ 1347              		.loc 1 161 54 is_stmt 1 view .LVU462
+ 161:User/dm_motor_ctrl.c **** 			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
+ 1348              		.loc 1 161 75 is_stmt 0 view .LVU463
+ 1349 02f6 2223     		movs	r3, #34
+ 1350              	.LVL211:
+ 161:User/dm_motor_ctrl.c **** 			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 35
+
+
+ 1351              		.loc 1 161 75 view .LVU464
+ 1352 02f8 80F85830 		strb	r3, [r0, #88]
+ 161:User/dm_motor_ctrl.c **** 			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
+ 1353              		.loc 1 161 81 is_stmt 1 view .LVU465
+ 161:User/dm_motor_ctrl.c **** 			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
+ 1354              		.loc 1 161 4 is_stmt 0 view .LVU466
+ 1355 02fc 7047     		bx	lr
+ 1356              	.LVL212:
+ 1357              	.L70:
+ 162:User/dm_motor_ctrl.c **** 			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
+ 1358              		.loc 1 162 23 is_stmt 1 view .LVU467
+ 162:User/dm_motor_ctrl.c **** 			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
+ 1359              		.loc 1 162 43 is_stmt 0 view .LVU468
+ 1360 02fe C0F8E030 		str	r3, [r0, #224]	@ float
+ 162:User/dm_motor_ctrl.c **** 			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
+ 1361              		.loc 1 162 54 is_stmt 1 view .LVU469
+ 162:User/dm_motor_ctrl.c **** 			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
+ 1362              		.loc 1 162 75 is_stmt 0 view .LVU470
+ 1363 0302 2323     		movs	r3, #35
+ 1364              	.LVL213:
+ 162:User/dm_motor_ctrl.c **** 			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
+ 1365              		.loc 1 162 75 view .LVU471
+ 1366 0304 80F85830 		strb	r3, [r0, #88]
+ 162:User/dm_motor_ctrl.c **** 			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
+ 1367              		.loc 1 162 81 is_stmt 1 view .LVU472
+ 162:User/dm_motor_ctrl.c **** 			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
+ 1368              		.loc 1 162 4 is_stmt 0 view .LVU473
+ 1369 0308 7047     		bx	lr
+ 1370              	.LVL214:
+ 1371              	.L69:
+ 163:User/dm_motor_ctrl.c **** 			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
+ 1372              		.loc 1 163 23 is_stmt 1 view .LVU474
+ 163:User/dm_motor_ctrl.c **** 			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
+ 1373              		.loc 1 163 43 is_stmt 0 view .LVU475
+ 1374 030a C0F8E430 		str	r3, [r0, #228]	@ float
+ 163:User/dm_motor_ctrl.c **** 			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
+ 1375              		.loc 1 163 54 is_stmt 1 view .LVU476
+ 163:User/dm_motor_ctrl.c **** 			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
+ 1376              		.loc 1 163 75 is_stmt 0 view .LVU477
+ 1377 030e 2423     		movs	r3, #36
+ 1378              	.LVL215:
+ 163:User/dm_motor_ctrl.c **** 			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
+ 1379              		.loc 1 163 75 view .LVU478
+ 1380 0310 80F85830 		strb	r3, [r0, #88]
+ 163:User/dm_motor_ctrl.c **** 			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
+ 1381              		.loc 1 163 81 is_stmt 1 view .LVU479
+ 163:User/dm_motor_ctrl.c **** 			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
+ 1382              		.loc 1 163 4 is_stmt 0 view .LVU480
+ 1383 0314 7047     		bx	lr
+ 1384              	.LVL216:
+ 1385              	.L68:
+ 164:User/dm_motor_ctrl.c **** 			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
+ 1386              		.loc 1 164 23 is_stmt 1 view .LVU481
+ 164:User/dm_motor_ctrl.c **** 			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
+ 1387              		.loc 1 164 43 is_stmt 0 view .LVU482
+ 1388 0316 C0F8E830 		str	r3, [r0, #232]
+ 164:User/dm_motor_ctrl.c **** 			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 36
+
+
+ 1389              		.loc 1 164 54 is_stmt 1 view .LVU483
+ 164:User/dm_motor_ctrl.c **** 			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
+ 1390              		.loc 1 164 75 is_stmt 0 view .LVU484
+ 1391 031a 2523     		movs	r3, #37
+ 1392              	.LVL217:
+ 164:User/dm_motor_ctrl.c **** 			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
+ 1393              		.loc 1 164 75 view .LVU485
+ 1394 031c 80F85830 		strb	r3, [r0, #88]
+ 164:User/dm_motor_ctrl.c **** 			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
+ 1395              		.loc 1 164 81 is_stmt 1 view .LVU486
+ 164:User/dm_motor_ctrl.c **** 			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
+ 1396              		.loc 1 164 4 is_stmt 0 view .LVU487
+ 1397 0320 7047     		bx	lr
+ 1398              	.LVL218:
+ 1399              	.L67:
+ 165:User/dm_motor_ctrl.c **** 			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
+ 1400              		.loc 1 165 23 is_stmt 1 view .LVU488
+ 165:User/dm_motor_ctrl.c **** 			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
+ 1401              		.loc 1 165 43 is_stmt 0 view .LVU489
+ 1402 0322 C0F8EC30 		str	r3, [r0, #236]
+ 165:User/dm_motor_ctrl.c **** 			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
+ 1403              		.loc 1 165 54 is_stmt 1 view .LVU490
+ 165:User/dm_motor_ctrl.c **** 			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
+ 1404              		.loc 1 165 75 is_stmt 0 view .LVU491
+ 1405 0326 2623     		movs	r3, #38
+ 1406              	.LVL219:
+ 165:User/dm_motor_ctrl.c **** 			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
+ 1407              		.loc 1 165 75 view .LVU492
+ 1408 0328 80F85830 		strb	r3, [r0, #88]
+ 165:User/dm_motor_ctrl.c **** 			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
+ 1409              		.loc 1 165 81 is_stmt 1 view .LVU493
+ 165:User/dm_motor_ctrl.c **** 			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
+ 1410              		.loc 1 165 4 is_stmt 0 view .LVU494
+ 1411 032c 7047     		bx	lr
+ 1412              	.LVL220:
+ 1413              	.L66:
+ 166:User/dm_motor_ctrl.c **** 			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
+ 1414              		.loc 1 166 23 is_stmt 1 view .LVU495
+ 166:User/dm_motor_ctrl.c **** 			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
+ 1415              		.loc 1 166 43 is_stmt 0 view .LVU496
+ 1416 032e C0F8F030 		str	r3, [r0, #240]	@ float
+ 166:User/dm_motor_ctrl.c **** 			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
+ 1417              		.loc 1 166 54 is_stmt 1 view .LVU497
+ 166:User/dm_motor_ctrl.c **** 			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
+ 1418              		.loc 1 166 75 is_stmt 0 view .LVU498
+ 1419 0332 2723     		movs	r3, #39
+ 1420              	.LVL221:
+ 166:User/dm_motor_ctrl.c **** 			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
+ 1421              		.loc 1 166 75 view .LVU499
+ 1422 0334 80F85830 		strb	r3, [r0, #88]
+ 166:User/dm_motor_ctrl.c **** 			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
+ 1423              		.loc 1 166 81 is_stmt 1 view .LVU500
+ 166:User/dm_motor_ctrl.c **** 			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
+ 1424              		.loc 1 166 4 is_stmt 0 view .LVU501
+ 1425 0338 7047     		bx	lr
+ 1426              	.LVL222:
+ 1427              	.L65:
+ARM GAS  /tmp/ccYNYXys.s 			page 37
+
+
+ 167:User/dm_motor_ctrl.c **** 			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
+ 1428              		.loc 1 167 23 is_stmt 1 view .LVU502
+ 167:User/dm_motor_ctrl.c **** 			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
+ 1429              		.loc 1 167 43 is_stmt 0 view .LVU503
+ 1430 033a C0F8F430 		str	r3, [r0, #244]	@ float
+ 167:User/dm_motor_ctrl.c **** 			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
+ 1431              		.loc 1 167 54 is_stmt 1 view .LVU504
+ 167:User/dm_motor_ctrl.c **** 			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
+ 1432              		.loc 1 167 75 is_stmt 0 view .LVU505
+ 1433 033e 2823     		movs	r3, #40
+ 1434              	.LVL223:
+ 167:User/dm_motor_ctrl.c **** 			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
+ 1435              		.loc 1 167 75 view .LVU506
+ 1436 0340 80F85830 		strb	r3, [r0, #88]
+ 167:User/dm_motor_ctrl.c **** 			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
+ 1437              		.loc 1 167 81 is_stmt 1 view .LVU507
+ 167:User/dm_motor_ctrl.c **** 			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
+ 1438              		.loc 1 167 4 is_stmt 0 view .LVU508
+ 1439 0344 7047     		bx	lr
+ 1440              	.LVL224:
+ 1441              	.L64:
+ 168:User/dm_motor_ctrl.c **** 			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
+ 1442              		.loc 1 168 23 is_stmt 1 view .LVU509
+ 168:User/dm_motor_ctrl.c **** 			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
+ 1443              		.loc 1 168 43 is_stmt 0 view .LVU510
+ 1444 0346 C0F8F830 		str	r3, [r0, #248]	@ float
+ 168:User/dm_motor_ctrl.c **** 			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
+ 1445              		.loc 1 168 54 is_stmt 1 view .LVU511
+ 168:User/dm_motor_ctrl.c **** 			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
+ 1446              		.loc 1 168 75 is_stmt 0 view .LVU512
+ 1447 034a 2923     		movs	r3, #41
+ 1448              	.LVL225:
+ 168:User/dm_motor_ctrl.c **** 			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
+ 1449              		.loc 1 168 75 view .LVU513
+ 1450 034c 80F85830 		strb	r3, [r0, #88]
+ 168:User/dm_motor_ctrl.c **** 			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
+ 1451              		.loc 1 168 81 is_stmt 1 view .LVU514
+ 168:User/dm_motor_ctrl.c **** 			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
+ 1452              		.loc 1 168 4 is_stmt 0 view .LVU515
+ 1453 0350 7047     		bx	lr
+ 1454              	.LVL226:
+ 1455              	.L63:
+ 169:User/dm_motor_ctrl.c **** 			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
+ 1456              		.loc 1 169 23 is_stmt 1 view .LVU516
+ 169:User/dm_motor_ctrl.c **** 			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
+ 1457              		.loc 1 169 43 is_stmt 0 view .LVU517
+ 1458 0352 C0F8FC30 		str	r3, [r0, #252]	@ float
+ 169:User/dm_motor_ctrl.c **** 			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
+ 1459              		.loc 1 169 54 is_stmt 1 view .LVU518
+ 169:User/dm_motor_ctrl.c **** 			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
+ 1460              		.loc 1 169 75 is_stmt 0 view .LVU519
+ 1461 0356 2A23     		movs	r3, #42
+ 1462              	.LVL227:
+ 169:User/dm_motor_ctrl.c **** 			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
+ 1463              		.loc 1 169 75 view .LVU520
+ 1464 0358 80F85830 		strb	r3, [r0, #88]
+ 169:User/dm_motor_ctrl.c **** 			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
+ARM GAS  /tmp/ccYNYXys.s 			page 38
+
+
+ 1465              		.loc 1 169 81 is_stmt 1 view .LVU521
+ 169:User/dm_motor_ctrl.c **** 			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
+ 1466              		.loc 1 169 4 is_stmt 0 view .LVU522
+ 1467 035c 7047     		bx	lr
+ 1468              	.LVL228:
+ 1469              	.L62:
+ 170:User/dm_motor_ctrl.c **** 			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
+ 1470              		.loc 1 170 23 is_stmt 1 view .LVU523
+ 170:User/dm_motor_ctrl.c **** 			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
+ 1471              		.loc 1 170 43 is_stmt 0 view .LVU524
+ 1472 035e C0F80031 		str	r3, [r0, #256]	@ float
+ 170:User/dm_motor_ctrl.c **** 			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
+ 1473              		.loc 1 170 54 is_stmt 1 view .LVU525
+ 170:User/dm_motor_ctrl.c **** 			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
+ 1474              		.loc 1 170 75 is_stmt 0 view .LVU526
+ 1475 0362 2B23     		movs	r3, #43
+ 1476              	.LVL229:
+ 170:User/dm_motor_ctrl.c **** 			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
+ 1477              		.loc 1 170 75 view .LVU527
+ 1478 0364 80F85830 		strb	r3, [r0, #88]
+ 170:User/dm_motor_ctrl.c **** 			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
+ 1479              		.loc 1 170 81 is_stmt 1 view .LVU528
+ 170:User/dm_motor_ctrl.c **** 			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
+ 1480              		.loc 1 170 4 is_stmt 0 view .LVU529
+ 1481 0368 7047     		bx	lr
+ 1482              	.LVL230:
+ 1483              	.L61:
+ 171:User/dm_motor_ctrl.c **** 			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
+ 1484              		.loc 1 171 23 is_stmt 1 view .LVU530
+ 171:User/dm_motor_ctrl.c **** 			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
+ 1485              		.loc 1 171 43 is_stmt 0 view .LVU531
+ 1486 036a C0F80431 		str	r3, [r0, #260]	@ float
+ 171:User/dm_motor_ctrl.c **** 			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
+ 1487              		.loc 1 171 54 is_stmt 1 view .LVU532
+ 171:User/dm_motor_ctrl.c **** 			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
+ 1488              		.loc 1 171 75 is_stmt 0 view .LVU533
+ 1489 036e 2C23     		movs	r3, #44
+ 1490              	.LVL231:
+ 171:User/dm_motor_ctrl.c **** 			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
+ 1491              		.loc 1 171 75 view .LVU534
+ 1492 0370 80F85830 		strb	r3, [r0, #88]
+ 171:User/dm_motor_ctrl.c **** 			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
+ 1493              		.loc 1 171 81 is_stmt 1 view .LVU535
+ 171:User/dm_motor_ctrl.c **** 			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
+ 1494              		.loc 1 171 4 is_stmt 0 view .LVU536
+ 1495 0374 7047     		bx	lr
+ 1496              	.LVL232:
+ 1497              	.L60:
+ 172:User/dm_motor_ctrl.c **** 			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
+ 1498              		.loc 1 172 23 is_stmt 1 view .LVU537
+ 172:User/dm_motor_ctrl.c **** 			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
+ 1499              		.loc 1 172 43 is_stmt 0 view .LVU538
+ 1500 0376 C0F80831 		str	r3, [r0, #264]	@ float
+ 172:User/dm_motor_ctrl.c **** 			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
+ 1501              		.loc 1 172 54 is_stmt 1 view .LVU539
+ 172:User/dm_motor_ctrl.c **** 			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
+ 1502              		.loc 1 172 75 is_stmt 0 view .LVU540
+ARM GAS  /tmp/ccYNYXys.s 			page 39
+
+
+ 1503 037a 2D23     		movs	r3, #45
+ 1504              	.LVL233:
+ 172:User/dm_motor_ctrl.c **** 			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
+ 1505              		.loc 1 172 75 view .LVU541
+ 1506 037c 80F85830 		strb	r3, [r0, #88]
+ 172:User/dm_motor_ctrl.c **** 			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
+ 1507              		.loc 1 172 81 is_stmt 1 view .LVU542
+ 172:User/dm_motor_ctrl.c **** 			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
+ 1508              		.loc 1 172 4 is_stmt 0 view .LVU543
+ 1509 0380 7047     		bx	lr
+ 1510              	.LVL234:
+ 1511              	.L58:
+ 173:User/dm_motor_ctrl.c **** 		}
+ 1512              		.loc 1 173 23 is_stmt 1 view .LVU544
+ 173:User/dm_motor_ctrl.c **** 		}
+ 1513              		.loc 1 173 43 is_stmt 0 view .LVU545
+ 1514 0382 C0F80C31 		str	r3, [r0, #268]	@ float
+ 173:User/dm_motor_ctrl.c **** 		}
+ 1515              		.loc 1 173 54 is_stmt 1 view .LVU546
+ 173:User/dm_motor_ctrl.c **** 		}
+ 1516              		.loc 1 173 75 is_stmt 0 view .LVU547
+ 1517 0386 0023     		movs	r3, #0
+ 1518              	.LVL235:
+ 173:User/dm_motor_ctrl.c **** 		}
+ 1519              		.loc 1 173 75 view .LVU548
+ 1520 0388 80F85830 		strb	r3, [r0, #88]
+ 173:User/dm_motor_ctrl.c **** 		}
+ 1521              		.loc 1 173 81 is_stmt 1 view .LVU549
+ 173:User/dm_motor_ctrl.c **** 		}
+ 1522              		.loc 1 173 4 is_stmt 0 view .LVU550
+ 1523 038c 3EE6     		b	.L54
+ 1524              	.LBE2:
+ 1525              		.cfi_endproc
+ 1526              	.LFE146:
+ 1528 038e 00BF     		.section	.text.fdcan1_rx_callback,"ax",%progbits
+ 1529              		.align	1
+ 1530              		.global	fdcan1_rx_callback
+ 1531              		.syntax unified
+ 1532              		.thumb
+ 1533              		.thumb_func
+ 1534              		.fpu fpv5-d16
+ 1536              	fdcan1_rx_callback:
+ 1537              	.LFB147:
+ 177:User/dm_motor_ctrl.c **** 
+ 178:User/dm_motor_ctrl.c **** /**
+ 179:User/dm_motor_ctrl.c **** ************************************************************************
+ 180:User/dm_motor_ctrl.c **** * @brief:      	fdcan1_rx_callback: CAN1接收回调函数
+ 181:User/dm_motor_ctrl.c **** * @param:      	void
+ 182:User/dm_motor_ctrl.c **** * @retval:     	void
+ 183:User/dm_motor_ctrl.c **** * @details:    	处理CAN1接收中断回调，根据接收到的ID和数据，执行相应的处理。
+ 184:User/dm_motor_ctrl.c **** *               当接收到ID为0时，调用dm4310_fbdata函数更新Motor的反馈数据。
+ 185:User/dm_motor_ctrl.c **** ************************************************************************
+ 186:User/dm_motor_ctrl.c **** **/
+ 187:User/dm_motor_ctrl.c **** void fdcan1_rx_callback(void)
+ 188:User/dm_motor_ctrl.c **** {
+ 1538              		.loc 1 188 1 is_stmt 1 view -0
+ 1539              		.cfi_startproc
+ARM GAS  /tmp/ccYNYXys.s 			page 40
+
+
+ 1540              		@ args = 0, pretend = 0, frame = 16
+ 1541              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1542 0000 10B5     		push	{r4, lr}
+ 1543              	.LCFI2:
+ 1544              		.cfi_def_cfa_offset 8
+ 1545              		.cfi_offset 4, -8
+ 1546              		.cfi_offset 14, -4
+ 1547 0002 84B0     		sub	sp, sp, #16
+ 1548              	.LCFI3:
+ 1549              		.cfi_def_cfa_offset 24
+ 189:User/dm_motor_ctrl.c **** 	uint16_t rec_id;
+ 1550              		.loc 1 189 2 view .LVU552
+ 190:User/dm_motor_ctrl.c **** 	uint8_t rx_data[8] = {0};
+ 1551              		.loc 1 190 2 view .LVU553
+ 1552              		.loc 1 190 10 is_stmt 0 view .LVU554
+ 1553 0004 0023     		movs	r3, #0
+ 1554 0006 0193     		str	r3, [sp, #4]
+ 1555 0008 0293     		str	r3, [sp, #8]
+ 191:User/dm_motor_ctrl.c **** 	fdcanx_receive(&hfdcan1, &rec_id, rx_data);
+ 1556              		.loc 1 191 2 is_stmt 1 view .LVU555
+ 1557 000a 01AA     		add	r2, sp, #4
+ 1558 000c 0DF10E01 		add	r1, sp, #14
+ 1559 0010 0848     		ldr	r0, .L109
+ 1560 0012 FFF7FEFF 		bl	fdcanx_receive
+ 1561              	.LVL236:
+ 192:User/dm_motor_ctrl.c **** 	switch (rec_id)
+ 1562              		.loc 1 192 2 view .LVU556
+ 1563 0016 BDF80E30 		ldrh	r3, [sp, #14]
+ 1564 001a 0BB1     		cbz	r3, .L108
+ 1565              	.L105:
+ 193:User/dm_motor_ctrl.c **** 	{
+ 194:User/dm_motor_ctrl.c ****  		case 0x00: dm_motor_fbdata(&motor[Motor1], rx_data); receive_motor_data(&motor[Motor1], rx_data)
+ 195:User/dm_motor_ctrl.c **** 	}
+ 196:User/dm_motor_ctrl.c **** }
+ 1566              		.loc 1 196 1 is_stmt 0 view .LVU557
+ 1567 001c 04B0     		add	sp, sp, #16
+ 1568              	.LCFI4:
+ 1569              		.cfi_remember_state
+ 1570              		.cfi_def_cfa_offset 8
+ 1571              		@ sp needed
+ 1572 001e 10BD     		pop	{r4, pc}
+ 1573              	.L108:
+ 1574              	.LCFI5:
+ 1575              		.cfi_restore_state
+ 194:User/dm_motor_ctrl.c **** 	}
+ 1576              		.loc 1 194 15 is_stmt 1 view .LVU558
+ 1577 0020 054C     		ldr	r4, .L109+4
+ 1578 0022 01A9     		add	r1, sp, #4
+ 1579 0024 2046     		mov	r0, r4
+ 1580 0026 FFF7FEFF 		bl	dm_motor_fbdata
+ 1581              	.LVL237:
+ 194:User/dm_motor_ctrl.c **** 	}
+ 1582              		.loc 1 194 57 view .LVU559
+ 1583 002a 01A9     		add	r1, sp, #4
+ 1584 002c 2046     		mov	r0, r4
+ 1585 002e FFF7FEFF 		bl	receive_motor_data
+ 1586              	.LVL238:
+ARM GAS  /tmp/ccYNYXys.s 			page 41
+
+
+ 194:User/dm_motor_ctrl.c **** 	}
+ 1587              		.loc 1 194 102 view .LVU560
+ 1588              		.loc 1 196 1 is_stmt 0 view .LVU561
+ 1589 0032 F3E7     		b	.L105
+ 1590              	.L110:
+ 1591              		.align	2
+ 1592              	.L109:
+ 1593 0034 00000000 		.word	hfdcan1
+ 1594 0038 00000000 		.word	.LANCHOR0
+ 1595              		.cfi_endproc
+ 1596              	.LFE147:
+ 1598              		.global	motor
+ 1599              		.section	.bss.motor,"aw",%nobits
+ 1600              		.align	2
+ 1601              		.set	.LANCHOR0,. + 0
+ 1604              	motor:
+ 1605 0000 00000000 		.space	2720
+ 1605      00000000 
+ 1605      00000000 
+ 1605      00000000 
+ 1605      00000000 
+ 1606              		.text
+ 1607              	.Letext0:
+ 1608              		.file 2 "/usr/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h"
+ 1609              		.file 3 "Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h"
+ 1610              		.file 4 "Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h"
+ 1611              		.file 5 "Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h"
+ 1612              		.file 6 "Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_fdcan.h"
+ 1613              		.file 7 "User/dm_motor_drv.h"
+ 1614              		.file 8 "Core/Inc/fdcan.h"
+ 1615              		.file 9 "User/dm_motor_ctrl.h"
+ 1616              		.file 10 "User/bsp_fdcan.h"
+ 1617              		.file 11 "<built-in>"
+ARM GAS  /tmp/ccYNYXys.s 			page 42
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 dm_motor_ctrl.c
+     /tmp/ccYNYXys.s:17     .text.dm_motor_init:0000000000000000 $t
+     /tmp/ccYNYXys.s:25     .text.dm_motor_init:0000000000000000 dm_motor_init
+     /tmp/ccYNYXys.s:118    .text.dm_motor_init:0000000000000078 $d
+     /tmp/ccYNYXys.s:127    .text.read_all_motor_data:0000000000000000 $t
+     /tmp/ccYNYXys.s:134    .text.read_all_motor_data:0000000000000000 read_all_motor_data
+     /tmp/ccYNYXys.s:156    .text.read_all_motor_data:0000000000000010 $d
+     /tmp/ccYNYXys.s:201    .text.read_all_motor_data:000000000000006a $t
+     /tmp/ccYNYXys.s:746    .text.receive_motor_data:0000000000000000 $t
+     /tmp/ccYNYXys.s:753    .text.receive_motor_data:0000000000000000 receive_motor_data
+     /tmp/ccYNYXys.s:812    .text.receive_motor_data:000000000000003c $d
+     /tmp/ccYNYXys.s:894    .text.receive_motor_data:0000000000000184 $t
+     /tmp/ccYNYXys.s:1529   .text.fdcan1_rx_callback:0000000000000000 $t
+     /tmp/ccYNYXys.s:1536   .text.fdcan1_rx_callback:0000000000000000 fdcan1_rx_callback
+     /tmp/ccYNYXys.s:1593   .text.fdcan1_rx_callback:0000000000000034 $d
+     /tmp/ccYNYXys.s:1604   .bss.motor:0000000000000000 motor
+     /tmp/ccYNYXys.s:1600   .bss.motor:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+memset
+read_motor_data
+fdcanx_receive
+dm_motor_fbdata
+hfdcan1

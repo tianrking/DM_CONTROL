@@ -1,0 +1,1306 @@
+ARM GAS  /tmp/ccteTKJp.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"bsp_fdcan.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.text.can_filter_init,"ax",%progbits
+  17              		.align	1
+  18              		.global	can_filter_init
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	can_filter_init:
+  26              	.LFB145:
+  27              		.file 1 "User/bsp_fdcan.c"
+   1:User/bsp_fdcan.c **** #include "bsp_fdcan.h"
+   2:User/bsp_fdcan.c **** /**
+   3:User/bsp_fdcan.c **** ************************************************************************
+   4:User/bsp_fdcan.c **** * @brief:      	bsp_can_init(void)
+   5:User/bsp_fdcan.c **** * @param:       void
+   6:User/bsp_fdcan.c **** * @retval:     	void
+   7:User/bsp_fdcan.c **** * @details:    	CAN 使能
+   8:User/bsp_fdcan.c **** ************************************************************************
+   9:User/bsp_fdcan.c **** **/
+  10:User/bsp_fdcan.c **** void bsp_can_init(void)
+  11:User/bsp_fdcan.c **** {
+  12:User/bsp_fdcan.c **** 	
+  13:User/bsp_fdcan.c **** 	can_filter_init();
+  14:User/bsp_fdcan.c **** 	HAL_FDCAN_Start(&hfdcan1);                               //开启FDCAN
+  15:User/bsp_fdcan.c **** //	HAL_FDCAN_Start(&hfdcan2);
+  16:User/bsp_fdcan.c **** //	HAL_FDCAN_Start(&hfdcan3);
+  17:User/bsp_fdcan.c **** //	HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_WATERMARK, 0);
+  18:User/bsp_fdcan.c **** //	HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO1_WATERMARK, 0);
+  19:User/bsp_fdcan.c **** //	HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_BUFFER_NEW_MESSAGE, 0);
+  20:User/bsp_fdcan.c **** 	HAL_FDCAN_ActivateNotification(&hfdcan1,
+  21:User/bsp_fdcan.c ****                                        0 | FDCAN_IT_RX_FIFO0_WATERMARK | FDCAN_IT_RX_FIFO0_WATERMAR
+  22:User/bsp_fdcan.c ****                                            | FDCAN_IT_TX_COMPLETE | FDCAN_IT_TX_FIFO_EMPTY | FDCAN_
+  23:User/bsp_fdcan.c ****                                            | FDCAN_IT_ARB_PROTOCOL_ERROR | FDCAN_IT_DATA_PROTOCOL_E
+  24:User/bsp_fdcan.c ****                                            | FDCAN_IT_ERROR_PASSIVE | FDCAN_IT_ERROR_WARNING,
+  25:User/bsp_fdcan.c ****                                        0x00000F00);
+  26:User/bsp_fdcan.c **** }
+  27:User/bsp_fdcan.c **** /**
+  28:User/bsp_fdcan.c **** ************************************************************************
+  29:User/bsp_fdcan.c **** * @brief:      	can_filter_init(void)
+  30:User/bsp_fdcan.c **** * @param:       void
+  31:User/bsp_fdcan.c **** * @retval:     	void
+ARM GAS  /tmp/ccteTKJp.s 			page 2
+
+
+  32:User/bsp_fdcan.c **** * @details:    	CAN滤波器初始化
+  33:User/bsp_fdcan.c **** ************************************************************************
+  34:User/bsp_fdcan.c **** **/
+  35:User/bsp_fdcan.c **** void can_filter_init(void)
+  36:User/bsp_fdcan.c **** {
+  28              		.loc 1 36 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 32
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 70B5     		push	{r4, r5, r6, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 4, -16
+  36              		.cfi_offset 5, -12
+  37              		.cfi_offset 6, -8
+  38              		.cfi_offset 14, -4
+  39 0002 8AB0     		sub	sp, sp, #40
+  40              	.LCFI1:
+  41              		.cfi_def_cfa_offset 56
+  37:User/bsp_fdcan.c **** 	FDCAN_FilterTypeDef fdcan_filter;
+  42              		.loc 1 37 2 view .LVU1
+  38:User/bsp_fdcan.c **** 	
+  39:User/bsp_fdcan.c **** 	fdcan_filter.IdType = FDCAN_STANDARD_ID;                       //标准ID
+  43              		.loc 1 39 2 view .LVU2
+  44              		.loc 1 39 22 is_stmt 0 view .LVU3
+  45 0004 0023     		movs	r3, #0
+  46 0006 0293     		str	r3, [sp, #8]
+  40:User/bsp_fdcan.c **** 	fdcan_filter.FilterIndex = 0;                                  //滤波器索引                  
+  47              		.loc 1 40 2 is_stmt 1 view .LVU4
+  48              		.loc 1 40 27 is_stmt 0 view .LVU5
+  49 0008 0393     		str	r3, [sp, #12]
+  41:User/bsp_fdcan.c **** 	fdcan_filter.FilterType = FDCAN_FILTER_MASK;                   
+  50              		.loc 1 41 2 is_stmt 1 view .LVU6
+  51              		.loc 1 41 26 is_stmt 0 view .LVU7
+  52 000a 0226     		movs	r6, #2
+  53 000c 0496     		str	r6, [sp, #16]
+  42:User/bsp_fdcan.c **** 	fdcan_filter.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;           //过滤器0关联到FIFO0  
+  54              		.loc 1 42 2 is_stmt 1 view .LVU8
+  55              		.loc 1 42 28 is_stmt 0 view .LVU9
+  56 000e 0124     		movs	r4, #1
+  57 0010 0594     		str	r4, [sp, #20]
+  43:User/bsp_fdcan.c **** 	fdcan_filter.FilterID1 = 0x00;                               
+  58              		.loc 1 43 2 is_stmt 1 view .LVU10
+  59              		.loc 1 43 25 is_stmt 0 view .LVU11
+  60 0012 0693     		str	r3, [sp, #24]
+  44:User/bsp_fdcan.c **** 	fdcan_filter.FilterID2 = 0x00;
+  61              		.loc 1 44 2 is_stmt 1 view .LVU12
+  62              		.loc 1 44 25 is_stmt 0 view .LVU13
+  63 0014 0793     		str	r3, [sp, #28]
+  45:User/bsp_fdcan.c **** 
+  46:User/bsp_fdcan.c **** 	HAL_FDCAN_ConfigFilter(&hfdcan1,&fdcan_filter); 		 				  //接收ID2
+  64              		.loc 1 46 2 is_stmt 1 view .LVU14
+  65 0016 094D     		ldr	r5, .L3
+  66 0018 02A9     		add	r1, sp, #8
+  67 001a 2846     		mov	r0, r5
+  68 001c FFF7FEFF 		bl	HAL_FDCAN_ConfigFilter
+  69              	.LVL0:
+ARM GAS  /tmp/ccteTKJp.s 			page 3
+
+
+  47:User/bsp_fdcan.c **** 	//拒绝接收匹配不成功的标准ID和扩展ID,不接受远程帧
+  48:User/bsp_fdcan.c **** 	HAL_FDCAN_ConfigGlobalFilter(&hfdcan1,FDCAN_REJECT,FDCAN_REJECT,FDCAN_REJECT_REMOTE,FDCAN_REJECT_R
+  70              		.loc 1 48 2 view .LVU15
+  71 0020 0094     		str	r4, [sp]
+  72 0022 2346     		mov	r3, r4
+  73 0024 3246     		mov	r2, r6
+  74 0026 3146     		mov	r1, r6
+  75 0028 2846     		mov	r0, r5
+  76 002a FFF7FEFF 		bl	HAL_FDCAN_ConfigGlobalFilter
+  77              	.LVL1:
+  49:User/bsp_fdcan.c **** 	HAL_FDCAN_ConfigFifoWatermark(&hfdcan1, FDCAN_CFG_RX_FIFO0, 1);
+  78              		.loc 1 49 2 view .LVU16
+  79 002e 2246     		mov	r2, r4
+  80 0030 2146     		mov	r1, r4
+  81 0032 2846     		mov	r0, r5
+  82 0034 FFF7FEFF 		bl	HAL_FDCAN_ConfigFifoWatermark
+  83              	.LVL2:
+  50:User/bsp_fdcan.c **** //	HAL_FDCAN_ConfigFifoWatermark(&hfdcan1, FDCAN_CFG_RX_FIFO1, 1);
+  51:User/bsp_fdcan.c **** //	HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_TX_COMPLETE, FDCAN_TX_BUFFER0);
+  52:User/bsp_fdcan.c **** }
+  84              		.loc 1 52 1 is_stmt 0 view .LVU17
+  85 0038 0AB0     		add	sp, sp, #40
+  86              	.LCFI2:
+  87              		.cfi_def_cfa_offset 16
+  88              		@ sp needed
+  89 003a 70BD     		pop	{r4, r5, r6, pc}
+  90              	.L4:
+  91              		.align	2
+  92              	.L3:
+  93 003c 00000000 		.word	hfdcan1
+  94              		.cfi_endproc
+  95              	.LFE145:
+  97              		.section	.text.bsp_can_init,"ax",%progbits
+  98              		.align	1
+  99              		.global	bsp_can_init
+ 100              		.syntax unified
+ 101              		.thumb
+ 102              		.thumb_func
+ 103              		.fpu fpv5-d16
+ 105              	bsp_can_init:
+ 106              	.LFB144:
+  11:User/bsp_fdcan.c **** 	
+ 107              		.loc 1 11 1 is_stmt 1 view -0
+ 108              		.cfi_startproc
+ 109              		@ args = 0, pretend = 0, frame = 0
+ 110              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111 0000 10B5     		push	{r4, lr}
+ 112              	.LCFI3:
+ 113              		.cfi_def_cfa_offset 8
+ 114              		.cfi_offset 4, -8
+ 115              		.cfi_offset 14, -4
+  13:User/bsp_fdcan.c **** 	HAL_FDCAN_Start(&hfdcan1);                               //开启FDCAN
+ 116              		.loc 1 13 2 view .LVU19
+ 117 0002 FFF7FEFF 		bl	can_filter_init
+ 118              	.LVL3:
+  14:User/bsp_fdcan.c **** //	HAL_FDCAN_Start(&hfdcan2);
+ 119              		.loc 1 14 2 view .LVU20
+ARM GAS  /tmp/ccteTKJp.s 			page 4
+
+
+ 120 0006 054C     		ldr	r4, .L7
+ 121 0008 2046     		mov	r0, r4
+ 122 000a FFF7FEFF 		bl	HAL_FDCAN_Start
+ 123              	.LVL4:
+  20:User/bsp_fdcan.c ****                                        0 | FDCAN_IT_RX_FIFO0_WATERMARK | FDCAN_IT_RX_FIFO0_WATERMAR
+ 124              		.loc 1 20 2 view .LVU21
+ 125 000e 4FF47062 		mov	r2, #3840
+ 126 0012 0349     		ldr	r1, .L7+4
+ 127 0014 2046     		mov	r0, r4
+ 128 0016 FFF7FEFF 		bl	HAL_FDCAN_ActivateNotification
+ 129              	.LVL5:
+  26:User/bsp_fdcan.c **** /**
+ 130              		.loc 1 26 1 is_stmt 0 view .LVU22
+ 131 001a 10BD     		pop	{r4, pc}
+ 132              	.L8:
+ 133              		.align	2
+ 134              	.L7:
+ 135 001c 00000000 		.word	hfdcan1
+ 136 0020 020A801B 		.word	461376002
+ 137              		.cfi_endproc
+ 138              	.LFE144:
+ 140              		.section	.text.bsp_fdcan_set_baud,"ax",%progbits
+ 141              		.align	1
+ 142              		.global	bsp_fdcan_set_baud
+ 143              		.syntax unified
+ 144              		.thumb
+ 145              		.thumb_func
+ 146              		.fpu fpv5-d16
+ 148              	bsp_fdcan_set_baud:
+ 149              	.LVL6:
+ 150              	.LFB146:
+  53:User/bsp_fdcan.c **** 
+  54:User/bsp_fdcan.c **** void bsp_fdcan_set_baud(hcan_t *hfdcan, uint8_t mode, uint8_t baud)
+  55:User/bsp_fdcan.c **** {
+ 151              		.loc 1 55 1 is_stmt 1 view -0
+ 152              		.cfi_startproc
+ 153              		@ args = 0, pretend = 0, frame = 0
+ 154              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155              		.loc 1 55 1 is_stmt 0 view .LVU24
+ 156 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 157              	.LCFI4:
+ 158              		.cfi_def_cfa_offset 32
+ 159              		.cfi_offset 4, -32
+ 160              		.cfi_offset 5, -28
+ 161              		.cfi_offset 6, -24
+ 162              		.cfi_offset 7, -20
+ 163              		.cfi_offset 8, -16
+ 164              		.cfi_offset 9, -12
+ 165              		.cfi_offset 10, -8
+ 166              		.cfi_offset 14, -4
+ 167 0004 0446     		mov	r4, r0
+  56:User/bsp_fdcan.c **** 	uint32_t nom_brp=0, nom_seg1=0, nom_seg2=0, nom_sjw=0;
+ 168              		.loc 1 56 2 is_stmt 1 view .LVU25
+ 169              	.LVL7:
+  57:User/bsp_fdcan.c **** 	uint32_t dat_brp=0, dat_seg1=0, dat_seg2=0, dat_sjw=0;
+ 170              		.loc 1 57 2 view .LVU26
+  58:User/bsp_fdcan.c **** 	
+ARM GAS  /tmp/ccteTKJp.s 			page 5
+
+
+  59:User/bsp_fdcan.c **** 	/*	nominal_baud = 80M/brp/(1+seg1+seg2)
+  60:User/bsp_fdcan.c **** 		sample point = (1+seg1)/(1+seg1+sjw)  */
+  61:User/bsp_fdcan.c **** 	if(mode == CAN_CLASS)
+ 171              		.loc 1 61 2 view .LVU27
+ 172              		.loc 1 61 4 is_stmt 0 view .LVU28
+ 173 0006 0B46     		mov	r3, r1
+ 174 0008 71BB     		cbnz	r1, .L26
+  62:User/bsp_fdcan.c **** 	{
+  63:User/bsp_fdcan.c **** 		switch (baud)
+ 175              		.loc 1 63 3 is_stmt 1 view .LVU29
+ 176 000a 042A     		cmp	r2, #4
+ 177 000c 04D8     		bhi	.L11
+ 178 000e DFE802F0 		tbb	[pc, r2]
+ 179              	.LVL8:
+ 180              	.L13:
+ 181 0012 1F       		.byte	(.L27-.L13)/2
+ 182 0013 07       		.byte	(.L16-.L13)/2
+ 183 0014 0D       		.byte	(.L15-.L13)/2
+ 184 0015 13       		.byte	(.L14-.L13)/2
+ 185 0016 19       		.byte	(.L12-.L13)/2
+ 186 0017 00       		.p2align 1
+ 187              	.L11:
+ 188              		.loc 1 63 3 is_stmt 0 view .LVU30
+ 189 0018 0026     		movs	r6, #0
+ 190 001a B146     		mov	r9, r6
+ 191 001c B246     		mov	r10, r6
+ 192 001e 1CE0     		b	.L17
+ 193              	.L16:
+  64:User/bsp_fdcan.c **** 		{
+  65:User/bsp_fdcan.c **** 			case CAN_BR_125K: 	nom_brp=4 ; nom_seg1=139; nom_seg2=20; nom_sjw=20; break; // sample point 87.
+  66:User/bsp_fdcan.c **** 			case CAN_BR_200K: 	nom_brp=2 ; nom_seg1=174; nom_seg2=25; nom_sjw=25; break; // sample point 87.
+ 194              		.loc 1 66 23 is_stmt 1 view .LVU31
+ 195              	.LVL9:
+ 196              		.loc 1 66 35 view .LVU32
+ 197              		.loc 1 66 49 view .LVU33
+ 198              		.loc 1 66 62 view .LVU34
+ 199              		.loc 1 66 74 view .LVU35
+ 200              		.loc 1 66 57 is_stmt 0 view .LVU36
+ 201 0020 1926     		movs	r6, #25
+ 202              		.loc 1 66 43 view .LVU37
+ 203 0022 4FF0AE09 		mov	r9, #174
+ 204              		.loc 1 66 30 view .LVU38
+ 205 0026 4FF0020A 		mov	r10, #2
+ 206              		.loc 1 66 4 view .LVU39
+ 207 002a 16E0     		b	.L17
+ 208              	.LVL10:
+ 209              	.L15:
+  67:User/bsp_fdcan.c **** 			case CAN_BR_250K: 	nom_brp=2 ; nom_seg1=139; nom_seg2=20; nom_sjw=20; break; // sample point 87.
+ 210              		.loc 1 67 23 is_stmt 1 view .LVU40
+ 211              		.loc 1 67 35 view .LVU41
+ 212              		.loc 1 67 49 view .LVU42
+ 213              		.loc 1 67 62 view .LVU43
+ 214              		.loc 1 67 74 view .LVU44
+ 215              		.loc 1 67 57 is_stmt 0 view .LVU45
+ 216 002c 1426     		movs	r6, #20
+ 217              		.loc 1 67 43 view .LVU46
+ 218 002e 4FF08B09 		mov	r9, #139
+ARM GAS  /tmp/ccteTKJp.s 			page 6
+
+
+ 219              		.loc 1 67 30 view .LVU47
+ 220 0032 4FF0020A 		mov	r10, #2
+ 221              		.loc 1 67 4 view .LVU48
+ 222 0036 10E0     		b	.L17
+ 223              	.LVL11:
+ 224              	.L14:
+  68:User/bsp_fdcan.c **** 			case CAN_BR_500K: 	nom_brp=1 ; nom_seg1=139; nom_seg2=20; nom_sjw=20; break; // sample point 87.
+ 225              		.loc 1 68 23 is_stmt 1 view .LVU49
+ 226              		.loc 1 68 35 view .LVU50
+ 227              		.loc 1 68 49 view .LVU51
+ 228              		.loc 1 68 62 view .LVU52
+ 229              		.loc 1 68 74 view .LVU53
+ 230              		.loc 1 68 57 is_stmt 0 view .LVU54
+ 231 0038 1426     		movs	r6, #20
+ 232              		.loc 1 68 43 view .LVU55
+ 233 003a 4FF08B09 		mov	r9, #139
+ 234              		.loc 1 68 30 view .LVU56
+ 235 003e 4FF0010A 		mov	r10, #1
+ 236              		.loc 1 68 4 view .LVU57
+ 237 0042 0AE0     		b	.L17
+ 238              	.LVL12:
+ 239              	.L12:
+  69:User/bsp_fdcan.c **** 			case CAN_BR_1M:		nom_brp=1 ; nom_seg1=59 ; nom_seg2=20; nom_sjw=20; break; // sample point 75%
+ 240              		.loc 1 69 21 is_stmt 1 view .LVU58
+ 241              		.loc 1 69 33 view .LVU59
+ 242              		.loc 1 69 47 view .LVU60
+ 243              		.loc 1 69 60 view .LVU61
+ 244              		.loc 1 69 72 view .LVU62
+ 245              		.loc 1 69 55 is_stmt 0 view .LVU63
+ 246 0044 1426     		movs	r6, #20
+ 247              		.loc 1 69 41 view .LVU64
+ 248 0046 4FF03B09 		mov	r9, #59
+ 249              		.loc 1 69 28 view .LVU65
+ 250 004a 4FF0010A 		mov	r10, #1
+ 251              		.loc 1 69 4 view .LVU66
+ 252 004e 04E0     		b	.L17
+ 253              	.LVL13:
+ 254              	.L27:
+  65:User/bsp_fdcan.c **** 			case CAN_BR_200K: 	nom_brp=2 ; nom_seg1=174; nom_seg2=25; nom_sjw=25; break; // sample point 87.
+ 255              		.loc 1 65 57 view .LVU67
+ 256 0050 1426     		movs	r6, #20
+  65:User/bsp_fdcan.c **** 			case CAN_BR_200K: 	nom_brp=2 ; nom_seg1=174; nom_seg2=25; nom_sjw=25; break; // sample point 87.
+ 257              		.loc 1 65 43 view .LVU68
+ 258 0052 4FF08B09 		mov	r9, #139
+  65:User/bsp_fdcan.c **** 			case CAN_BR_200K: 	nom_brp=2 ; nom_seg1=174; nom_seg2=25; nom_sjw=25; break; // sample point 87.
+ 259              		.loc 1 65 30 view .LVU69
+ 260 0056 4FF0040A 		mov	r10, #4
+ 261              	.LVL14:
+ 262              	.L17:
+  70:User/bsp_fdcan.c **** 		}
+  71:User/bsp_fdcan.c **** 		dat_brp=1 ; dat_seg1=29; dat_seg2=10; dat_sjw=10;	// 仲裁域默认1M
+ 263              		.loc 1 71 3 is_stmt 1 view .LVU70
+ 264              		.loc 1 71 15 view .LVU71
+ 265              		.loc 1 71 28 view .LVU72
+ 266              		.loc 1 71 41 view .LVU73
+  72:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+ 267              		.loc 1 72 3 view .LVU74
+ARM GAS  /tmp/ccteTKJp.s 			page 7
+
+
+ 268              		.loc 1 72 28 is_stmt 0 view .LVU75
+ 269 005a 0021     		movs	r1, #0
+ 270 005c A160     		str	r1, [r4, #8]
+  71:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+ 271              		.loc 1 71 36 view .LVU76
+ 272 005e 0A25     		movs	r5, #10
+  71:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+ 273              		.loc 1 71 23 view .LVU77
+ 274 0060 1D27     		movs	r7, #29
+  71:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+ 275              		.loc 1 71 10 view .LVU78
+ 276 0062 4FF00108 		mov	r8, #1
+ 277 0066 05E0     		b	.L10
+ 278              	.LVL15:
+ 279              	.L26:
+  57:User/bsp_fdcan.c **** 	
+ 280              		.loc 1 57 34 view .LVU79
+ 281 0068 0025     		movs	r5, #0
+  57:User/bsp_fdcan.c **** 	
+ 282              		.loc 1 57 22 view .LVU80
+ 283 006a 2F46     		mov	r7, r5
+  57:User/bsp_fdcan.c **** 	
+ 284              		.loc 1 57 11 view .LVU81
+ 285 006c A846     		mov	r8, r5
+  56:User/bsp_fdcan.c **** 	uint32_t dat_brp=0, dat_seg1=0, dat_seg2=0, dat_sjw=0;
+ 286              		.loc 1 56 34 view .LVU82
+ 287 006e 2E46     		mov	r6, r5
+  56:User/bsp_fdcan.c **** 	uint32_t dat_brp=0, dat_seg1=0, dat_seg2=0, dat_sjw=0;
+ 288              		.loc 1 56 22 view .LVU83
+ 289 0070 A946     		mov	r9, r5
+  56:User/bsp_fdcan.c **** 	uint32_t dat_brp=0, dat_seg1=0, dat_seg2=0, dat_sjw=0;
+ 290              		.loc 1 56 11 view .LVU84
+ 291 0072 AA46     		mov	r10, r5
+ 292              	.LVL16:
+ 293              	.L10:
+  73:User/bsp_fdcan.c **** 	}
+  74:User/bsp_fdcan.c **** 	/*	data_baud	 = 80M/brp/(1+seg1+seg2)
+  75:User/bsp_fdcan.c **** 		sample point = (1+seg1)/(1+seg1+sjw)  */
+  76:User/bsp_fdcan.c **** 	if(mode == CAN_FD_BRS)
+ 294              		.loc 1 76 2 is_stmt 1 view .LVU85
+ 295              		.loc 1 76 4 is_stmt 0 view .LVU86
+ 296 0074 012B     		cmp	r3, #1
+ 297 0076 12D0     		beq	.L30
+ 298              	.LVL17:
+ 299              	.L18:
+  77:User/bsp_fdcan.c **** 	{
+  78:User/bsp_fdcan.c **** 		switch (baud)
+  79:User/bsp_fdcan.c **** 		{
+  80:User/bsp_fdcan.c **** 			case CAN_BR_2M: 	dat_brp=1 ; dat_seg1=29; dat_seg2=10; dat_sjw=10; break;	// sample point 75%
+  81:User/bsp_fdcan.c **** 			case CAN_BR_2M5: 	dat_brp=1 ; dat_seg1=25; dat_seg2=6 ; dat_sjw=6 ; break;	// sample point 81.25
+  82:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+  83:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+  84:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+  85:User/bsp_fdcan.c **** 		}
+  86:User/bsp_fdcan.c **** 		nom_brp=1 ; nom_seg1=59 ; nom_seg2=20; nom_sjw=20; // 数据域默认1M
+  87:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+  88:User/bsp_fdcan.c **** 	}
+ARM GAS  /tmp/ccteTKJp.s 			page 8
+
+
+  89:User/bsp_fdcan.c **** 	
+  90:User/bsp_fdcan.c **** 	HAL_FDCAN_DeInit(hfdcan);
+ 300              		.loc 1 90 2 is_stmt 1 view .LVU87
+ 301 0078 2046     		mov	r0, r4
+ 302              	.LVL18:
+ 303              		.loc 1 90 2 is_stmt 0 view .LVU88
+ 304 007a FFF7FEFF 		bl	HAL_FDCAN_DeInit
+ 305              	.LVL19:
+  91:User/bsp_fdcan.c **** 	
+  92:User/bsp_fdcan.c **** 	hfdcan->Init.NominalPrescaler = nom_brp;
+ 306              		.loc 1 92 2 is_stmt 1 view .LVU89
+ 307              		.loc 1 92 32 is_stmt 0 view .LVU90
+ 308 007e C4F814A0 		str	r10, [r4, #20]
+  93:User/bsp_fdcan.c **** 	hfdcan->Init.NominalTimeSeg1  = nom_seg1;
+ 309              		.loc 1 93 2 is_stmt 1 view .LVU91
+ 310              		.loc 1 93 32 is_stmt 0 view .LVU92
+ 311 0082 C4F81C90 		str	r9, [r4, #28]
+  94:User/bsp_fdcan.c **** 	hfdcan->Init.NominalTimeSeg2  = nom_seg2;
+ 312              		.loc 1 94 2 is_stmt 1 view .LVU93
+ 313              		.loc 1 94 32 is_stmt 0 view .LVU94
+ 314 0086 2662     		str	r6, [r4, #32]
+  95:User/bsp_fdcan.c **** 	hfdcan->Init.NominalSyncJumpWidth = nom_sjw;
+ 315              		.loc 1 95 2 is_stmt 1 view .LVU95
+ 316              		.loc 1 95 36 is_stmt 0 view .LVU96
+ 317 0088 A661     		str	r6, [r4, #24]
+  96:User/bsp_fdcan.c **** 	
+  97:User/bsp_fdcan.c **** 	hfdcan->Init.DataPrescaler = dat_brp;
+ 318              		.loc 1 97 2 is_stmt 1 view .LVU97
+ 319              		.loc 1 97 29 is_stmt 0 view .LVU98
+ 320 008a C4F82480 		str	r8, [r4, #36]
+  98:User/bsp_fdcan.c **** 	hfdcan->Init.DataTimeSeg1  = dat_seg1;
+ 321              		.loc 1 98 2 is_stmt 1 view .LVU99
+ 322              		.loc 1 98 29 is_stmt 0 view .LVU100
+ 323 008e E762     		str	r7, [r4, #44]
+  99:User/bsp_fdcan.c **** 	hfdcan->Init.DataTimeSeg2  = dat_seg2;
+ 324              		.loc 1 99 2 is_stmt 1 view .LVU101
+ 325              		.loc 1 99 29 is_stmt 0 view .LVU102
+ 326 0090 2563     		str	r5, [r4, #48]
+ 100:User/bsp_fdcan.c **** 	hfdcan->Init.DataSyncJumpWidth = dat_sjw;
+ 327              		.loc 1 100 2 is_stmt 1 view .LVU103
+ 328              		.loc 1 100 33 is_stmt 0 view .LVU104
+ 329 0092 A562     		str	r5, [r4, #40]
+ 101:User/bsp_fdcan.c **** 	
+ 102:User/bsp_fdcan.c **** 	HAL_FDCAN_Init(hfdcan);
+ 330              		.loc 1 102 2 is_stmt 1 view .LVU105
+ 331 0094 2046     		mov	r0, r4
+ 332 0096 FFF7FEFF 		bl	HAL_FDCAN_Init
+ 333              	.LVL20:
+ 103:User/bsp_fdcan.c **** }
+ 334              		.loc 1 103 1 is_stmt 0 view .LVU106
+ 335 009a BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 336              	.LVL21:
+ 337              	.L30:
+  78:User/bsp_fdcan.c **** 		{
+ 338              		.loc 1 78 3 is_stmt 1 view .LVU107
+ 339 009e 053A     		subs	r2, r2, #5
+ 340              	.LVL22:
+ARM GAS  /tmp/ccteTKJp.s 			page 9
+
+
+  78:User/bsp_fdcan.c **** 		{
+ 341              		.loc 1 78 3 is_stmt 0 view .LVU108
+ 342 00a0 042A     		cmp	r2, #4
+ 343 00a2 1CD8     		bhi	.L25
+ 344 00a4 DFE802F0 		tbb	[pc, r2]
+ 345              	.L21:
+ 346 00a8 17       		.byte	(.L28-.L21)/2
+ 347 00a9 03       		.byte	(.L24-.L21)/2
+ 348 00aa 08       		.byte	(.L23-.L21)/2
+ 349 00ab 0D       		.byte	(.L22-.L21)/2
+ 350 00ac 12       		.byte	(.L20-.L21)/2
+ 351 00ad 00       		.p2align 1
+ 352              	.L24:
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 353              		.loc 1 81 22 is_stmt 1 view .LVU109
+ 354              	.LVL23:
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 355              		.loc 1 81 34 view .LVU110
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 356              		.loc 1 81 47 view .LVU111
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 357              		.loc 1 81 60 view .LVU112
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 358              		.loc 1 81 72 view .LVU113
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 359              		.loc 1 81 55 is_stmt 0 view .LVU114
+ 360 00ae 0625     		movs	r5, #6
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 361              		.loc 1 81 42 view .LVU115
+ 362 00b0 1927     		movs	r7, #25
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 363              		.loc 1 81 29 view .LVU116
+ 364 00b2 4FF00108 		mov	r8, #1
+  81:User/bsp_fdcan.c **** 			case CAN_BR_3M2: 	dat_brp=1 ; dat_seg1=19; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 80%
+ 365              		.loc 1 81 4 view .LVU117
+ 366 00b6 12E0     		b	.L25
+ 367              	.LVL24:
+ 368              	.L23:
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 369              		.loc 1 82 22 is_stmt 1 view .LVU118
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 370              		.loc 1 82 34 view .LVU119
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 371              		.loc 1 82 47 view .LVU120
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 372              		.loc 1 82 60 view .LVU121
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 373              		.loc 1 82 72 view .LVU122
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 374              		.loc 1 82 55 is_stmt 0 view .LVU123
+ 375 00b8 0525     		movs	r5, #5
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 376              		.loc 1 82 42 view .LVU124
+ 377 00ba 1327     		movs	r7, #19
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 378              		.loc 1 82 29 view .LVU125
+ 379 00bc 4FF00108 		mov	r8, #1
+ARM GAS  /tmp/ccteTKJp.s 			page 10
+
+
+  82:User/bsp_fdcan.c **** 			case CAN_BR_4M: 	dat_brp=1 ; dat_seg1=14; dat_seg2=5 ; dat_sjw=5 ; break;	// sample point 75%
+ 380              		.loc 1 82 4 view .LVU126
+ 381 00c0 0DE0     		b	.L25
+ 382              	.LVL25:
+ 383              	.L22:
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 384              		.loc 1 83 21 is_stmt 1 view .LVU127
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 385              		.loc 1 83 33 view .LVU128
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 386              		.loc 1 83 46 view .LVU129
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 387              		.loc 1 83 59 view .LVU130
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 388              		.loc 1 83 71 view .LVU131
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 389              		.loc 1 83 54 is_stmt 0 view .LVU132
+ 390 00c2 0525     		movs	r5, #5
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 391              		.loc 1 83 41 view .LVU133
+ 392 00c4 0E27     		movs	r7, #14
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 393              		.loc 1 83 28 view .LVU134
+ 394 00c6 4FF00108 		mov	r8, #1
+  83:User/bsp_fdcan.c **** 			case CAN_BR_5M:		dat_brp=1 ; dat_seg1=13; dat_seg2=2 ; dat_sjw=2 ; break;	// sample point 87.5%
+ 395              		.loc 1 83 4 view .LVU135
+ 396 00ca 08E0     		b	.L25
+ 397              	.LVL26:
+ 398              	.L20:
+  84:User/bsp_fdcan.c **** 		}
+ 399              		.loc 1 84 21 is_stmt 1 view .LVU136
+  84:User/bsp_fdcan.c **** 		}
+ 400              		.loc 1 84 33 view .LVU137
+  84:User/bsp_fdcan.c **** 		}
+ 401              		.loc 1 84 46 view .LVU138
+  84:User/bsp_fdcan.c **** 		}
+ 402              		.loc 1 84 59 view .LVU139
+  84:User/bsp_fdcan.c **** 		}
+ 403              		.loc 1 84 71 view .LVU140
+  84:User/bsp_fdcan.c **** 		}
+ 404              		.loc 1 84 54 is_stmt 0 view .LVU141
+ 405 00cc 0225     		movs	r5, #2
+  84:User/bsp_fdcan.c **** 		}
+ 406              		.loc 1 84 41 view .LVU142
+ 407 00ce 0D27     		movs	r7, #13
+  84:User/bsp_fdcan.c **** 		}
+ 408              		.loc 1 84 28 view .LVU143
+ 409 00d0 4FF00108 		mov	r8, #1
+  84:User/bsp_fdcan.c **** 		}
+ 410              		.loc 1 84 4 view .LVU144
+ 411 00d4 03E0     		b	.L25
+ 412              	.LVL27:
+ 413              	.L28:
+  80:User/bsp_fdcan.c **** 			case CAN_BR_2M5: 	dat_brp=1 ; dat_seg1=25; dat_seg2=6 ; dat_sjw=6 ; break;	// sample point 81.25
+ 414              		.loc 1 80 54 view .LVU145
+ 415 00d6 0A25     		movs	r5, #10
+ 416              	.LVL28:
+ARM GAS  /tmp/ccteTKJp.s 			page 11
+
+
+  80:User/bsp_fdcan.c **** 			case CAN_BR_2M5: 	dat_brp=1 ; dat_seg1=25; dat_seg2=6 ; dat_sjw=6 ; break;	// sample point 81.25
+ 417              		.loc 1 80 41 view .LVU146
+ 418 00d8 1D27     		movs	r7, #29
+ 419              	.LVL29:
+  80:User/bsp_fdcan.c **** 			case CAN_BR_2M5: 	dat_brp=1 ; dat_seg1=25; dat_seg2=6 ; dat_sjw=6 ; break;	// sample point 81.25
+ 420              		.loc 1 80 28 view .LVU147
+ 421 00da 4FF00108 		mov	r8, #1
+ 422              	.LVL30:
+ 423              	.L25:
+  86:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+ 424              		.loc 1 86 3 is_stmt 1 view .LVU148
+  86:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+ 425              		.loc 1 86 15 view .LVU149
+  86:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+ 426              		.loc 1 86 29 view .LVU150
+  86:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+ 427              		.loc 1 86 42 view .LVU151
+  87:User/bsp_fdcan.c **** 	}
+ 428              		.loc 1 87 3 view .LVU152
+  87:User/bsp_fdcan.c **** 	}
+ 429              		.loc 1 87 28 is_stmt 0 view .LVU153
+ 430 00de 4FF44073 		mov	r3, #768
+ 431 00e2 A360     		str	r3, [r4, #8]
+  86:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+ 432              		.loc 1 86 37 view .LVU154
+ 433 00e4 1426     		movs	r6, #20
+  86:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+ 434              		.loc 1 86 23 view .LVU155
+ 435 00e6 4FF03B09 		mov	r9, #59
+  86:User/bsp_fdcan.c **** 		hfdcan->Init.FrameFormat = FDCAN_FRAME_FD_BRS;
+ 436              		.loc 1 86 10 view .LVU156
+ 437 00ea 4FF0010A 		mov	r10, #1
+ 438 00ee C3E7     		b	.L18
+ 439              		.cfi_endproc
+ 440              	.LFE146:
+ 442              		.section	.text.fdcanx_send_data,"ax",%progbits
+ 443              		.align	1
+ 444              		.global	fdcanx_send_data
+ 445              		.syntax unified
+ 446              		.thumb
+ 447              		.thumb_func
+ 448              		.fpu fpv5-d16
+ 450              	fdcanx_send_data:
+ 451              	.LVL31:
+ 452              	.LFB147:
+ 104:User/bsp_fdcan.c **** 
+ 105:User/bsp_fdcan.c **** 
+ 106:User/bsp_fdcan.c **** /**
+ 107:User/bsp_fdcan.c **** ************************************************************************
+ 108:User/bsp_fdcan.c **** * @brief:      	fdcanx_send_data(FDCAN_HandleTypeDef *hfdcan, uint16_t id, uint8_t *data, uint32_t 
+ 109:User/bsp_fdcan.c **** * @param:       hfdcan：FDCAN句柄
+ 110:User/bsp_fdcan.c **** * @param:       id：CAN设备ID
+ 111:User/bsp_fdcan.c **** * @param:       data：发送的数据
+ 112:User/bsp_fdcan.c **** * @param:       len：发送的数据长度
+ 113:User/bsp_fdcan.c **** * @retval:     	void
+ 114:User/bsp_fdcan.c **** * @details:    	发送数据
+ 115:User/bsp_fdcan.c **** ************************************************************************
+ARM GAS  /tmp/ccteTKJp.s 			page 12
+
+
+ 116:User/bsp_fdcan.c **** **/
+ 117:User/bsp_fdcan.c **** uint8_t fdcanx_send_data(hcan_t *hfdcan, uint16_t id, uint8_t *data, uint32_t len)
+ 118:User/bsp_fdcan.c **** {	
+ 453              		.loc 1 118 1 is_stmt 1 view -0
+ 454              		.cfi_startproc
+ 455              		@ args = 0, pretend = 0, frame = 40
+ 456              		@ frame_needed = 0, uses_anonymous_args = 0
+ 457              		.loc 1 118 1 is_stmt 0 view .LVU158
+ 458 0000 00B5     		push	{lr}
+ 459              	.LCFI5:
+ 460              		.cfi_def_cfa_offset 4
+ 461              		.cfi_offset 14, -4
+ 462 0002 8BB0     		sub	sp, sp, #44
+ 463              	.LCFI6:
+ 464              		.cfi_def_cfa_offset 48
+ 119:User/bsp_fdcan.c ****     FDCAN_TxHeaderTypeDef pTxHeader;
+ 465              		.loc 1 119 5 is_stmt 1 view .LVU159
+ 120:User/bsp_fdcan.c ****     pTxHeader.Identifier=id;
+ 466              		.loc 1 120 5 view .LVU160
+ 467              		.loc 1 120 25 is_stmt 0 view .LVU161
+ 468 0004 0191     		str	r1, [sp, #4]
+ 121:User/bsp_fdcan.c ****     pTxHeader.IdType=FDCAN_STANDARD_ID;
+ 469              		.loc 1 121 5 is_stmt 1 view .LVU162
+ 470              		.loc 1 121 21 is_stmt 0 view .LVU163
+ 471 0006 0021     		movs	r1, #0
+ 472              	.LVL32:
+ 473              		.loc 1 121 21 view .LVU164
+ 474 0008 0291     		str	r1, [sp, #8]
+ 122:User/bsp_fdcan.c ****     pTxHeader.TxFrameType=FDCAN_DATA_FRAME;
+ 475              		.loc 1 122 5 is_stmt 1 view .LVU165
+ 476              		.loc 1 122 26 is_stmt 0 view .LVU166
+ 477 000a 0391     		str	r1, [sp, #12]
+ 123:User/bsp_fdcan.c **** 	
+ 124:User/bsp_fdcan.c **** 	if(len<=8)
+ 478              		.loc 1 124 2 is_stmt 1 view .LVU167
+ 479              		.loc 1 124 4 is_stmt 0 view .LVU168
+ 480 000c 082B     		cmp	r3, #8
+ 481 000e 11D8     		bhi	.L32
+ 125:User/bsp_fdcan.c **** 		pTxHeader.DataLength = len;
+ 482              		.loc 1 125 3 is_stmt 1 view .LVU169
+ 483              		.loc 1 125 24 is_stmt 0 view .LVU170
+ 484 0010 0493     		str	r3, [sp, #16]
+ 485              	.LVL33:
+ 486              	.L33:
+ 126:User/bsp_fdcan.c **** 	else if(len==12)
+ 127:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_12;
+ 128:User/bsp_fdcan.c **** 	else if(len==16)
+ 129:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_16;
+ 130:User/bsp_fdcan.c **** 	else if(len==20)
+ 131:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_20;
+ 132:User/bsp_fdcan.c **** 	else if(len==24)
+ 133:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_24;
+ 134:User/bsp_fdcan.c **** 	else if(len==32)
+ 135:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_32;
+ 136:User/bsp_fdcan.c **** 	else if(len==48)
+ 137:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_48;
+ 138:User/bsp_fdcan.c **** 	else if(len==64)
+ARM GAS  /tmp/ccteTKJp.s 			page 13
+
+
+ 139:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_64;
+ 140:User/bsp_fdcan.c **** 	
+ 141:User/bsp_fdcan.c ****     pTxHeader.ErrorStateIndicator=FDCAN_ESI_ACTIVE;
+ 487              		.loc 1 141 5 is_stmt 1 view .LVU171
+ 488              		.loc 1 141 34 is_stmt 0 view .LVU172
+ 489 0012 0023     		movs	r3, #0
+ 490 0014 0593     		str	r3, [sp, #20]
+ 142:User/bsp_fdcan.c ****     pTxHeader.BitRateSwitch=FDCAN_BRS_ON;
+ 491              		.loc 1 142 5 is_stmt 1 view .LVU173
+ 492              		.loc 1 142 28 is_stmt 0 view .LVU174
+ 493 0016 4FF48011 		mov	r1, #1048576
+ 494 001a 0691     		str	r1, [sp, #24]
+ 143:User/bsp_fdcan.c ****     pTxHeader.FDFormat=FDCAN_FD_CAN;
+ 495              		.loc 1 143 5 is_stmt 1 view .LVU175
+ 496              		.loc 1 143 23 is_stmt 0 view .LVU176
+ 497 001c 4FF40011 		mov	r1, #2097152
+ 498 0020 0791     		str	r1, [sp, #28]
+ 144:User/bsp_fdcan.c ****     pTxHeader.TxEventFifoControl=FDCAN_NO_TX_EVENTS;
+ 499              		.loc 1 144 5 is_stmt 1 view .LVU177
+ 500              		.loc 1 144 33 is_stmt 0 view .LVU178
+ 501 0022 0893     		str	r3, [sp, #32]
+ 145:User/bsp_fdcan.c ****     pTxHeader.MessageMarker=0;
+ 502              		.loc 1 145 5 is_stmt 1 view .LVU179
+ 503              		.loc 1 145 28 is_stmt 0 view .LVU180
+ 504 0024 0993     		str	r3, [sp, #36]
+ 146:User/bsp_fdcan.c ****  
+ 147:User/bsp_fdcan.c **** 	if(HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &pTxHeader, data)!=HAL_OK) 
+ 505              		.loc 1 147 2 is_stmt 1 view .LVU181
+ 506              		.loc 1 147 5 is_stmt 0 view .LVU182
+ 507 0026 01A9     		add	r1, sp, #4
+ 508 0028 FFF7FEFF 		bl	HAL_FDCAN_AddMessageToTxFifoQ
+ 509              	.LVL34:
+ 510              		.loc 1 147 4 view .LVU183
+ 511 002c 28BB     		cbnz	r0, .L43
+ 512              	.L40:
+ 148:User/bsp_fdcan.c **** 		return 1;//发送
+ 149:User/bsp_fdcan.c **** 	return 0;	
+ 150:User/bsp_fdcan.c **** }
+ 513              		.loc 1 150 1 view .LVU184
+ 514 002e 0BB0     		add	sp, sp, #44
+ 515              	.LCFI7:
+ 516              		.cfi_remember_state
+ 517              		.cfi_def_cfa_offset 4
+ 518              		@ sp needed
+ 519 0030 5DF804FB 		ldr	pc, [sp], #4
+ 520              	.LVL35:
+ 521              	.L32:
+ 522              	.LCFI8:
+ 523              		.cfi_restore_state
+ 126:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_12;
+ 524              		.loc 1 126 7 is_stmt 1 view .LVU185
+ 126:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_12;
+ 525              		.loc 1 126 9 is_stmt 0 view .LVU186
+ 526 0034 0C2B     		cmp	r3, #12
+ 527 0036 0ED0     		beq	.L44
+ 128:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_16;
+ 528              		.loc 1 128 7 is_stmt 1 view .LVU187
+ARM GAS  /tmp/ccteTKJp.s 			page 14
+
+
+ 128:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_16;
+ 529              		.loc 1 128 9 is_stmt 0 view .LVU188
+ 530 0038 102B     		cmp	r3, #16
+ 531 003a 0FD0     		beq	.L45
+ 130:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_20;
+ 532              		.loc 1 130 7 is_stmt 1 view .LVU189
+ 130:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_20;
+ 533              		.loc 1 130 9 is_stmt 0 view .LVU190
+ 534 003c 142B     		cmp	r3, #20
+ 535 003e 10D0     		beq	.L46
+ 132:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_24;
+ 536              		.loc 1 132 7 is_stmt 1 view .LVU191
+ 132:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_24;
+ 537              		.loc 1 132 9 is_stmt 0 view .LVU192
+ 538 0040 182B     		cmp	r3, #24
+ 539 0042 11D0     		beq	.L47
+ 134:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_32;
+ 540              		.loc 1 134 7 is_stmt 1 view .LVU193
+ 134:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_32;
+ 541              		.loc 1 134 9 is_stmt 0 view .LVU194
+ 542 0044 202B     		cmp	r3, #32
+ 543 0046 12D0     		beq	.L48
+ 136:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_48;
+ 544              		.loc 1 136 7 is_stmt 1 view .LVU195
+ 136:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_48;
+ 545              		.loc 1 136 9 is_stmt 0 view .LVU196
+ 546 0048 302B     		cmp	r3, #48
+ 547 004a 13D0     		beq	.L49
+ 138:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_64;
+ 548              		.loc 1 138 7 is_stmt 1 view .LVU197
+ 138:User/bsp_fdcan.c **** 		pTxHeader.DataLength = FDCAN_DLC_BYTES_64;
+ 549              		.loc 1 138 9 is_stmt 0 view .LVU198
+ 550 004c 402B     		cmp	r3, #64
+ 551 004e E0D1     		bne	.L33
+ 139:User/bsp_fdcan.c **** 	
+ 552              		.loc 1 139 3 is_stmt 1 view .LVU199
+ 139:User/bsp_fdcan.c **** 	
+ 553              		.loc 1 139 24 is_stmt 0 view .LVU200
+ 554 0050 0F23     		movs	r3, #15
+ 555              	.LVL36:
+ 139:User/bsp_fdcan.c **** 	
+ 556              		.loc 1 139 24 view .LVU201
+ 557 0052 0493     		str	r3, [sp, #16]
+ 558 0054 DDE7     		b	.L33
+ 559              	.LVL37:
+ 560              	.L44:
+ 127:User/bsp_fdcan.c **** 	else if(len==16)
+ 561              		.loc 1 127 3 is_stmt 1 view .LVU202
+ 127:User/bsp_fdcan.c **** 	else if(len==16)
+ 562              		.loc 1 127 24 is_stmt 0 view .LVU203
+ 563 0056 0923     		movs	r3, #9
+ 564              	.LVL38:
+ 127:User/bsp_fdcan.c **** 	else if(len==16)
+ 565              		.loc 1 127 24 view .LVU204
+ 566 0058 0493     		str	r3, [sp, #16]
+ 567 005a DAE7     		b	.L33
+ 568              	.LVL39:
+ARM GAS  /tmp/ccteTKJp.s 			page 15
+
+
+ 569              	.L45:
+ 129:User/bsp_fdcan.c **** 	else if(len==20)
+ 570              		.loc 1 129 3 is_stmt 1 view .LVU205
+ 129:User/bsp_fdcan.c **** 	else if(len==20)
+ 571              		.loc 1 129 24 is_stmt 0 view .LVU206
+ 572 005c 0A23     		movs	r3, #10
+ 573              	.LVL40:
+ 129:User/bsp_fdcan.c **** 	else if(len==20)
+ 574              		.loc 1 129 24 view .LVU207
+ 575 005e 0493     		str	r3, [sp, #16]
+ 576 0060 D7E7     		b	.L33
+ 577              	.LVL41:
+ 578              	.L46:
+ 131:User/bsp_fdcan.c **** 	else if(len==24)
+ 579              		.loc 1 131 3 is_stmt 1 view .LVU208
+ 131:User/bsp_fdcan.c **** 	else if(len==24)
+ 580              		.loc 1 131 24 is_stmt 0 view .LVU209
+ 581 0062 0B23     		movs	r3, #11
+ 582              	.LVL42:
+ 131:User/bsp_fdcan.c **** 	else if(len==24)
+ 583              		.loc 1 131 24 view .LVU210
+ 584 0064 0493     		str	r3, [sp, #16]
+ 585 0066 D4E7     		b	.L33
+ 586              	.LVL43:
+ 587              	.L47:
+ 133:User/bsp_fdcan.c **** 	else if(len==32)
+ 588              		.loc 1 133 3 is_stmt 1 view .LVU211
+ 133:User/bsp_fdcan.c **** 	else if(len==32)
+ 589              		.loc 1 133 24 is_stmt 0 view .LVU212
+ 590 0068 0C23     		movs	r3, #12
+ 591              	.LVL44:
+ 133:User/bsp_fdcan.c **** 	else if(len==32)
+ 592              		.loc 1 133 24 view .LVU213
+ 593 006a 0493     		str	r3, [sp, #16]
+ 594 006c D1E7     		b	.L33
+ 595              	.LVL45:
+ 596              	.L48:
+ 135:User/bsp_fdcan.c **** 	else if(len==48)
+ 597              		.loc 1 135 3 is_stmt 1 view .LVU214
+ 135:User/bsp_fdcan.c **** 	else if(len==48)
+ 598              		.loc 1 135 24 is_stmt 0 view .LVU215
+ 599 006e 0D23     		movs	r3, #13
+ 600              	.LVL46:
+ 135:User/bsp_fdcan.c **** 	else if(len==48)
+ 601              		.loc 1 135 24 view .LVU216
+ 602 0070 0493     		str	r3, [sp, #16]
+ 603 0072 CEE7     		b	.L33
+ 604              	.LVL47:
+ 605              	.L49:
+ 137:User/bsp_fdcan.c **** 	else if(len==64)
+ 606              		.loc 1 137 3 is_stmt 1 view .LVU217
+ 137:User/bsp_fdcan.c **** 	else if(len==64)
+ 607              		.loc 1 137 24 is_stmt 0 view .LVU218
+ 608 0074 0E23     		movs	r3, #14
+ 609              	.LVL48:
+ 137:User/bsp_fdcan.c **** 	else if(len==64)
+ 610              		.loc 1 137 24 view .LVU219
+ARM GAS  /tmp/ccteTKJp.s 			page 16
+
+
+ 611 0076 0493     		str	r3, [sp, #16]
+ 612 0078 CBE7     		b	.L33
+ 613              	.LVL49:
+ 614              	.L43:
+ 148:User/bsp_fdcan.c **** 	return 0;	
+ 615              		.loc 1 148 10 view .LVU220
+ 616 007a 0120     		movs	r0, #1
+ 617 007c D7E7     		b	.L40
+ 618              		.cfi_endproc
+ 619              	.LFE147:
+ 621              		.section	.text.fdcanx_receive,"ax",%progbits
+ 622              		.align	1
+ 623              		.global	fdcanx_receive
+ 624              		.syntax unified
+ 625              		.thumb
+ 626              		.thumb_func
+ 627              		.fpu fpv5-d16
+ 629              	fdcanx_receive:
+ 630              	.LVL50:
+ 631              	.LFB148:
+ 151:User/bsp_fdcan.c **** /**
+ 152:User/bsp_fdcan.c **** ************************************************************************
+ 153:User/bsp_fdcan.c **** * @brief:      	fdcanx_receive(FDCAN_HandleTypeDef *hfdcan, uint8_t *buf)
+ 154:User/bsp_fdcan.c **** * @param:       hfdcan：FDCAN句柄
+ 155:User/bsp_fdcan.c **** * @param:       buf：接收数据缓存
+ 156:User/bsp_fdcan.c **** * @retval:     	接收的数据长度
+ 157:User/bsp_fdcan.c **** * @details:    	接收数据
+ 158:User/bsp_fdcan.c **** ************************************************************************
+ 159:User/bsp_fdcan.c **** **/
+ 160:User/bsp_fdcan.c **** uint8_t fdcanx_receive(hcan_t *hfdcan, uint16_t *rec_id, uint8_t *buf)
+ 161:User/bsp_fdcan.c **** {	
+ 632              		.loc 1 161 1 is_stmt 1 view -0
+ 633              		.cfi_startproc
+ 634              		@ args = 0, pretend = 0, frame = 40
+ 635              		@ frame_needed = 0, uses_anonymous_args = 0
+ 636              		.loc 1 161 1 is_stmt 0 view .LVU222
+ 637 0000 30B5     		push	{r4, r5, lr}
+ 638              	.LCFI9:
+ 639              		.cfi_def_cfa_offset 12
+ 640              		.cfi_offset 4, -12
+ 641              		.cfi_offset 5, -8
+ 642              		.cfi_offset 14, -4
+ 643 0002 8BB0     		sub	sp, sp, #44
+ 644              	.LCFI10:
+ 645              		.cfi_def_cfa_offset 56
+ 646 0004 0C46     		mov	r4, r1
+ 647 0006 1346     		mov	r3, r2
+ 162:User/bsp_fdcan.c **** 	FDCAN_RxHeaderTypeDef pRxHeader;
+ 648              		.loc 1 162 2 is_stmt 1 view .LVU223
+ 163:User/bsp_fdcan.c **** 	uint8_t len;
+ 649              		.loc 1 163 2 view .LVU224
+ 164:User/bsp_fdcan.c **** 	
+ 165:User/bsp_fdcan.c **** 	if(HAL_FDCAN_GetRxMessage(hfdcan,FDCAN_RX_FIFO0, &pRxHeader, buf)==HAL_OK)
+ 650              		.loc 1 165 2 view .LVU225
+ 651              		.loc 1 165 5 is_stmt 0 view .LVU226
+ 652 0008 6A46     		mov	r2, sp
+ 653              	.LVL51:
+ARM GAS  /tmp/ccteTKJp.s 			page 17
+
+
+ 654              		.loc 1 165 5 view .LVU227
+ 655 000a 4021     		movs	r1, #64
+ 656              	.LVL52:
+ 657              		.loc 1 165 5 view .LVU228
+ 658 000c FFF7FEFF 		bl	HAL_FDCAN_GetRxMessage
+ 659              	.LVL53:
+ 660              		.loc 1 165 4 view .LVU229
+ 661 0010 18B1     		cbz	r0, .L63
+ 166:User/bsp_fdcan.c **** 	{
+ 167:User/bsp_fdcan.c **** 		*rec_id = pRxHeader.Identifier;
+ 168:User/bsp_fdcan.c **** 		if(pRxHeader.DataLength<=FDCAN_DLC_BYTES_8)
+ 169:User/bsp_fdcan.c **** 			len = pRxHeader.DataLength;
+ 170:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_12)
+ 171:User/bsp_fdcan.c **** 			len = 12;
+ 172:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_16)
+ 173:User/bsp_fdcan.c **** 			len = 16;
+ 174:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_20)
+ 175:User/bsp_fdcan.c **** 			len = 20;
+ 176:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_24)
+ 177:User/bsp_fdcan.c **** 			len = 24;
+ 178:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_32)
+ 179:User/bsp_fdcan.c **** 			len = 32;
+ 180:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_48)
+ 181:User/bsp_fdcan.c **** 			len = 48;
+ 182:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_64)
+ 183:User/bsp_fdcan.c **** 			len = 64;
+ 184:User/bsp_fdcan.c **** 		
+ 185:User/bsp_fdcan.c **** 		return len;//接收数据
+ 186:User/bsp_fdcan.c **** 	}
+ 187:User/bsp_fdcan.c **** 	return 0;	
+ 662              		.loc 1 187 9 view .LVU230
+ 663 0012 0025     		movs	r5, #0
+ 664              	.L51:
+ 188:User/bsp_fdcan.c **** }
+ 665              		.loc 1 188 1 view .LVU231
+ 666 0014 2846     		mov	r0, r5
+ 667 0016 0BB0     		add	sp, sp, #44
+ 668              	.LCFI11:
+ 669              		.cfi_remember_state
+ 670              		.cfi_def_cfa_offset 12
+ 671              		@ sp needed
+ 672 0018 30BD     		pop	{r4, r5, pc}
+ 673              	.LVL54:
+ 674              	.L63:
+ 675              	.LCFI12:
+ 676              		.cfi_restore_state
+ 167:User/bsp_fdcan.c **** 		if(pRxHeader.DataLength<=FDCAN_DLC_BYTES_8)
+ 677              		.loc 1 167 3 is_stmt 1 view .LVU232
+ 167:User/bsp_fdcan.c **** 		if(pRxHeader.DataLength<=FDCAN_DLC_BYTES_8)
+ 678              		.loc 1 167 22 is_stmt 0 view .LVU233
+ 679 001a 009B     		ldr	r3, [sp]
+ 167:User/bsp_fdcan.c **** 		if(pRxHeader.DataLength<=FDCAN_DLC_BYTES_8)
+ 680              		.loc 1 167 11 view .LVU234
+ 681 001c 2380     		strh	r3, [r4]	@ movhi
+ 168:User/bsp_fdcan.c **** 			len = pRxHeader.DataLength;
+ 682              		.loc 1 168 3 is_stmt 1 view .LVU235
+ 168:User/bsp_fdcan.c **** 			len = pRxHeader.DataLength;
+ARM GAS  /tmp/ccteTKJp.s 			page 18
+
+
+ 683              		.loc 1 168 15 is_stmt 0 view .LVU236
+ 684 001e 039B     		ldr	r3, [sp, #12]
+ 168:User/bsp_fdcan.c **** 			len = pRxHeader.DataLength;
+ 685              		.loc 1 168 5 view .LVU237
+ 686 0020 082B     		cmp	r3, #8
+ 687 0022 01D8     		bhi	.L52
+ 169:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_12)
+ 688              		.loc 1 169 4 is_stmt 1 view .LVU238
+ 169:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_12)
+ 689              		.loc 1 169 8 is_stmt 0 view .LVU239
+ 690 0024 DDB2     		uxtb	r5, r3
+ 691              	.LVL55:
+ 169:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_12)
+ 692              		.loc 1 169 8 view .LVU240
+ 693 0026 F5E7     		b	.L51
+ 694              	.LVL56:
+ 695              	.L52:
+ 170:User/bsp_fdcan.c **** 			len = 12;
+ 696              		.loc 1 170 8 is_stmt 1 view .LVU241
+ 170:User/bsp_fdcan.c **** 			len = 12;
+ 697              		.loc 1 170 10 is_stmt 0 view .LVU242
+ 698 0028 092B     		cmp	r3, #9
+ 699 002a 0DD0     		beq	.L55
+ 172:User/bsp_fdcan.c **** 			len = 16;
+ 700              		.loc 1 172 8 is_stmt 1 view .LVU243
+ 172:User/bsp_fdcan.c **** 			len = 16;
+ 701              		.loc 1 172 10 is_stmt 0 view .LVU244
+ 702 002c 0A2B     		cmp	r3, #10
+ 703 002e 0DD0     		beq	.L56
+ 174:User/bsp_fdcan.c **** 			len = 20;
+ 704              		.loc 1 174 8 is_stmt 1 view .LVU245
+ 174:User/bsp_fdcan.c **** 			len = 20;
+ 705              		.loc 1 174 10 is_stmt 0 view .LVU246
+ 706 0030 0B2B     		cmp	r3, #11
+ 707 0032 0DD0     		beq	.L57
+ 176:User/bsp_fdcan.c **** 			len = 24;
+ 708              		.loc 1 176 8 is_stmt 1 view .LVU247
+ 176:User/bsp_fdcan.c **** 			len = 24;
+ 709              		.loc 1 176 10 is_stmt 0 view .LVU248
+ 710 0034 0C2B     		cmp	r3, #12
+ 711 0036 0DD0     		beq	.L58
+ 178:User/bsp_fdcan.c **** 			len = 32;
+ 712              		.loc 1 178 8 is_stmt 1 view .LVU249
+ 178:User/bsp_fdcan.c **** 			len = 32;
+ 713              		.loc 1 178 10 is_stmt 0 view .LVU250
+ 714 0038 0D2B     		cmp	r3, #13
+ 715 003a 0DD0     		beq	.L59
+ 180:User/bsp_fdcan.c **** 			len = 48;
+ 716              		.loc 1 180 8 is_stmt 1 view .LVU251
+ 180:User/bsp_fdcan.c **** 			len = 48;
+ 717              		.loc 1 180 10 is_stmt 0 view .LVU252
+ 718 003c 0E2B     		cmp	r3, #14
+ 719 003e 0DD0     		beq	.L60
+ 182:User/bsp_fdcan.c **** 			len = 64;
+ 720              		.loc 1 182 8 is_stmt 1 view .LVU253
+ 182:User/bsp_fdcan.c **** 			len = 64;
+ 721              		.loc 1 182 10 is_stmt 0 view .LVU254
+ARM GAS  /tmp/ccteTKJp.s 			page 19
+
+
+ 722 0040 0F2B     		cmp	r3, #15
+ 723 0042 E7D1     		bne	.L51
+ 183:User/bsp_fdcan.c **** 		
+ 724              		.loc 1 183 8 view .LVU255
+ 725 0044 4025     		movs	r5, #64
+ 726              	.LVL57:
+ 185:User/bsp_fdcan.c **** 	}
+ 727              		.loc 1 185 3 is_stmt 1 view .LVU256
+ 185:User/bsp_fdcan.c **** 	}
+ 728              		.loc 1 185 10 is_stmt 0 view .LVU257
+ 729 0046 E5E7     		b	.L51
+ 730              	.LVL58:
+ 731              	.L55:
+ 171:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_16)
+ 732              		.loc 1 171 8 view .LVU258
+ 733 0048 0C25     		movs	r5, #12
+ 734 004a E3E7     		b	.L51
+ 735              	.L56:
+ 173:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_20)
+ 736              		.loc 1 173 8 view .LVU259
+ 737 004c 1025     		movs	r5, #16
+ 738 004e E1E7     		b	.L51
+ 739              	.L57:
+ 175:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_24)
+ 740              		.loc 1 175 8 view .LVU260
+ 741 0050 1425     		movs	r5, #20
+ 742 0052 DFE7     		b	.L51
+ 743              	.L58:
+ 177:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_32)
+ 744              		.loc 1 177 8 view .LVU261
+ 745 0054 1825     		movs	r5, #24
+ 746 0056 DDE7     		b	.L51
+ 747              	.L59:
+ 179:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_48)
+ 748              		.loc 1 179 8 view .LVU262
+ 749 0058 2025     		movs	r5, #32
+ 750 005a DBE7     		b	.L51
+ 751              	.L60:
+ 181:User/bsp_fdcan.c **** 		else if(pRxHeader.DataLength==FDCAN_DLC_BYTES_64)
+ 752              		.loc 1 181 8 view .LVU263
+ 753 005c 3025     		movs	r5, #48
+ 754 005e D9E7     		b	.L51
+ 755              		.cfi_endproc
+ 756              	.LFE148:
+ 758              		.section	.text.fdcan1_rx_callback,"ax",%progbits
+ 759              		.align	1
+ 760              		.weak	fdcan1_rx_callback
+ 761              		.syntax unified
+ 762              		.thumb
+ 763              		.thumb_func
+ 764              		.fpu fpv5-d16
+ 766              	fdcan1_rx_callback:
+ 767              	.LFB149:
+ 189:User/bsp_fdcan.c **** 
+ 190:User/bsp_fdcan.c **** 
+ 191:User/bsp_fdcan.c **** 
+ 192:User/bsp_fdcan.c **** __weak void fdcan1_rx_callback(void)
+ARM GAS  /tmp/ccteTKJp.s 			page 20
+
+
+ 193:User/bsp_fdcan.c **** {
+ 768              		.loc 1 193 1 is_stmt 1 view -0
+ 769              		.cfi_startproc
+ 770              		@ args = 0, pretend = 0, frame = 0
+ 771              		@ frame_needed = 0, uses_anonymous_args = 0
+ 772              		@ link register save eliminated.
+ 194:User/bsp_fdcan.c **** 
+ 195:User/bsp_fdcan.c **** }
+ 773              		.loc 1 195 1 view .LVU265
+ 774 0000 7047     		bx	lr
+ 775              		.cfi_endproc
+ 776              	.LFE149:
+ 778              		.section	.text.HAL_FDCAN_RxFifo0Callback,"ax",%progbits
+ 779              		.align	1
+ 780              		.global	HAL_FDCAN_RxFifo0Callback
+ 781              		.syntax unified
+ 782              		.thumb
+ 783              		.thumb_func
+ 784              		.fpu fpv5-d16
+ 786              	HAL_FDCAN_RxFifo0Callback:
+ 787              	.LVL59:
+ 788              	.LFB150:
+ 196:User/bsp_fdcan.c **** 
+ 197:User/bsp_fdcan.c **** void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
+ 198:User/bsp_fdcan.c **** {
+ 789              		.loc 1 198 1 view -0
+ 790              		.cfi_startproc
+ 791              		@ args = 0, pretend = 0, frame = 0
+ 792              		@ frame_needed = 0, uses_anonymous_args = 0
+ 793              		.loc 1 198 1 is_stmt 0 view .LVU267
+ 794 0000 08B5     		push	{r3, lr}
+ 795              	.LCFI13:
+ 796              		.cfi_def_cfa_offset 8
+ 797              		.cfi_offset 3, -8
+ 798              		.cfi_offset 14, -4
+ 199:User/bsp_fdcan.c ****     if (hfdcan == &hfdcan1)
+ 799              		.loc 1 199 5 is_stmt 1 view .LVU268
+ 800              		.loc 1 199 8 is_stmt 0 view .LVU269
+ 801 0002 034B     		ldr	r3, .L69
+ 802 0004 8342     		cmp	r3, r0
+ 803 0006 00D0     		beq	.L68
+ 804              	.LVL60:
+ 805              	.L65:
+ 200:User/bsp_fdcan.c ****     {
+ 201:User/bsp_fdcan.c **** 		fdcan1_rx_callback();
+ 202:User/bsp_fdcan.c ****     }
+ 203:User/bsp_fdcan.c **** }
+ 806              		.loc 1 203 1 view .LVU270
+ 807 0008 08BD     		pop	{r3, pc}
+ 808              	.LVL61:
+ 809              	.L68:
+ 201:User/bsp_fdcan.c ****     }
+ 810              		.loc 1 201 3 is_stmt 1 view .LVU271
+ 811 000a FFF7FEFF 		bl	fdcan1_rx_callback
+ 812              	.LVL62:
+ 813              		.loc 1 203 1 is_stmt 0 view .LVU272
+ 814 000e FBE7     		b	.L65
+ARM GAS  /tmp/ccteTKJp.s 			page 21
+
+
+ 815              	.L70:
+ 816              		.align	2
+ 817              	.L69:
+ 818 0010 00000000 		.word	hfdcan1
+ 819              		.cfi_endproc
+ 820              	.LFE150:
+ 822              		.section	.text.HAL_FDCAN_ErrorStatusCallback,"ax",%progbits
+ 823              		.align	1
+ 824              		.global	HAL_FDCAN_ErrorStatusCallback
+ 825              		.syntax unified
+ 826              		.thumb
+ 827              		.thumb_func
+ 828              		.fpu fpv5-d16
+ 830              	HAL_FDCAN_ErrorStatusCallback:
+ 831              	.LVL63:
+ 832              	.LFB151:
+ 204:User/bsp_fdcan.c **** 
+ 205:User/bsp_fdcan.c **** void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs)
+ 206:User/bsp_fdcan.c **** {
+ 833              		.loc 1 206 1 is_stmt 1 view -0
+ 834              		.cfi_startproc
+ 835              		@ args = 0, pretend = 0, frame = 0
+ 836              		@ frame_needed = 0, uses_anonymous_args = 0
+ 837              		@ link register save eliminated.
+ 207:User/bsp_fdcan.c **** 	if(ErrorStatusITs & FDCAN_IR_BO)
+ 838              		.loc 1 207 2 view .LVU274
+ 839              		.loc 1 207 4 is_stmt 0 view .LVU275
+ 840 0000 11F0007F 		tst	r1, #33554432
+ 841 0004 04D0     		beq	.L71
+ 208:User/bsp_fdcan.c **** 	{
+ 209:User/bsp_fdcan.c **** 		CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+ 842              		.loc 1 209 3 is_stmt 1 view .LVU276
+ 843 0006 0268     		ldr	r2, [r0]
+ 844 0008 9369     		ldr	r3, [r2, #24]
+ 845 000a 23F00103 		bic	r3, r3, #1
+ 846 000e 9361     		str	r3, [r2, #24]
+ 210:User/bsp_fdcan.c **** 	}
+ 211:User/bsp_fdcan.c **** 	if(ErrorStatusITs & FDCAN_IR_EP)
+ 847              		.loc 1 211 2 view .LVU277
+ 212:User/bsp_fdcan.c **** 	{
+ 213:User/bsp_fdcan.c **** 		// MX_FDCAN1_Init();
+ 214:User/bsp_fdcan.c **** 		// bsp_can_init();
+ 215:User/bsp_fdcan.c **** 	}
+ 848              		.loc 1 215 2 view .LVU278
+ 849              	.L71:
+ 216:User/bsp_fdcan.c **** }
+ 850              		.loc 1 216 1 is_stmt 0 view .LVU279
+ 851 0010 7047     		bx	lr
+ 852              		.cfi_endproc
+ 853              	.LFE151:
+ 855              		.text
+ 856              	.Letext0:
+ 857              		.file 2 "/usr/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h"
+ 858              		.file 3 "Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h"
+ 859              		.file 4 "Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h"
+ 860              		.file 5 "Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h"
+ 861              		.file 6 "Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_fdcan.h"
+ARM GAS  /tmp/ccteTKJp.s 			page 22
+
+
+ 862              		.file 7 "Core/Inc/fdcan.h"
+ARM GAS  /tmp/ccteTKJp.s 			page 23
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 bsp_fdcan.c
+     /tmp/ccteTKJp.s:17     .text.can_filter_init:0000000000000000 $t
+     /tmp/ccteTKJp.s:25     .text.can_filter_init:0000000000000000 can_filter_init
+     /tmp/ccteTKJp.s:93     .text.can_filter_init:000000000000003c $d
+     /tmp/ccteTKJp.s:98     .text.bsp_can_init:0000000000000000 $t
+     /tmp/ccteTKJp.s:105    .text.bsp_can_init:0000000000000000 bsp_can_init
+     /tmp/ccteTKJp.s:135    .text.bsp_can_init:000000000000001c $d
+     /tmp/ccteTKJp.s:141    .text.bsp_fdcan_set_baud:0000000000000000 $t
+     /tmp/ccteTKJp.s:148    .text.bsp_fdcan_set_baud:0000000000000000 bsp_fdcan_set_baud
+     /tmp/ccteTKJp.s:181    .text.bsp_fdcan_set_baud:0000000000000012 $d
+     /tmp/ccteTKJp.s:346    .text.bsp_fdcan_set_baud:00000000000000a8 $d
+     /tmp/ccteTKJp.s:443    .text.fdcanx_send_data:0000000000000000 $t
+     /tmp/ccteTKJp.s:450    .text.fdcanx_send_data:0000000000000000 fdcanx_send_data
+     /tmp/ccteTKJp.s:622    .text.fdcanx_receive:0000000000000000 $t
+     /tmp/ccteTKJp.s:629    .text.fdcanx_receive:0000000000000000 fdcanx_receive
+     /tmp/ccteTKJp.s:759    .text.fdcan1_rx_callback:0000000000000000 $t
+     /tmp/ccteTKJp.s:766    .text.fdcan1_rx_callback:0000000000000000 fdcan1_rx_callback
+     /tmp/ccteTKJp.s:779    .text.HAL_FDCAN_RxFifo0Callback:0000000000000000 $t
+     /tmp/ccteTKJp.s:786    .text.HAL_FDCAN_RxFifo0Callback:0000000000000000 HAL_FDCAN_RxFifo0Callback
+     /tmp/ccteTKJp.s:818    .text.HAL_FDCAN_RxFifo0Callback:0000000000000010 $d
+     /tmp/ccteTKJp.s:823    .text.HAL_FDCAN_ErrorStatusCallback:0000000000000000 $t
+     /tmp/ccteTKJp.s:830    .text.HAL_FDCAN_ErrorStatusCallback:0000000000000000 HAL_FDCAN_ErrorStatusCallback
+     /tmp/ccteTKJp.s:186    .text.bsp_fdcan_set_baud:0000000000000017 $d
+     /tmp/ccteTKJp.s:186    .text.bsp_fdcan_set_baud:0000000000000018 $t
+     /tmp/ccteTKJp.s:351    .text.bsp_fdcan_set_baud:00000000000000ad $d
+     /tmp/ccteTKJp.s:351    .text.bsp_fdcan_set_baud:00000000000000ae $t
+
+UNDEFINED SYMBOLS
+HAL_FDCAN_ConfigFilter
+HAL_FDCAN_ConfigGlobalFilter
+HAL_FDCAN_ConfigFifoWatermark
+hfdcan1
+HAL_FDCAN_Start
+HAL_FDCAN_ActivateNotification
+HAL_FDCAN_DeInit
+HAL_FDCAN_Init
+HAL_FDCAN_AddMessageToTxFifoQ
+HAL_FDCAN_GetRxMessage

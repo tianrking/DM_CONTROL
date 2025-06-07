@@ -1,0 +1,2412 @@
+ARM GAS  /tmp/ccS5fZTm.s 			page 1
+
+
+   1              		.cpu cortex-m7
+   2              		.eabi_attribute 28, 1
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 34, 1
+  11              		.eabi_attribute 18, 4
+  12              		.file	"dm_motor_drv.c"
+  13              		.text
+  14              	.Ltext0:
+  15              		.cfi_sections	.debug_frame
+  16              		.section	.text.dm_motor_clear_para,"ax",%progbits
+  17              		.align	1
+  18              		.global	dm_motor_clear_para
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv5-d16
+  25              	dm_motor_clear_para:
+  26              	.LVL0:
+  27              	.LFB147:
+  28              		.file 1 "User/dm_motor_drv.c"
+   1:User/dm_motor_drv.c **** #include "dm_motor_drv.h"
+   2:User/dm_motor_drv.c **** #include "fdcan.h"
+   3:User/dm_motor_drv.c **** 
+   4:User/dm_motor_drv.c **** 
+   5:User/dm_motor_drv.c **** /**
+   6:User/dm_motor_drv.c **** ************************************************************************
+   7:User/dm_motor_drv.c **** * @brief:      	dm4310_enable: 启用DM4310电机控制模式函数
+   8:User/dm_motor_drv.c **** * @param[in]:   hcan:    指向CAN_HandleTypeDef结构的指针
+   9:User/dm_motor_drv.c **** * @param[in]:   motor:   指向motor_t结构的指针，包含电机相关信息和控制参数
+  10:User/dm_motor_drv.c **** * @retval:     	void
+  11:User/dm_motor_drv.c **** * @details:    	根据电机控制模式启用相应的模式，通过CAN总线发送启用命令
+  12:User/dm_motor_drv.c **** *               支持的控制模式包括位置模式、位置速度控制模式和速度控制�
+  13:User/dm_motor_drv.c **** ************************************************************************
+  14:User/dm_motor_drv.c **** **/
+  15:User/dm_motor_drv.c **** void dm_motor_enable(hcan_t* hcan, motor_t *motor)
+  16:User/dm_motor_drv.c **** {
+  17:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+  18:User/dm_motor_drv.c **** 	{
+  19:User/dm_motor_drv.c **** 		case mit_mode:
+  20:User/dm_motor_drv.c **** 			enable_motor_mode(hcan, motor->id, MIT_MODE);
+  21:User/dm_motor_drv.c **** 			break;
+  22:User/dm_motor_drv.c **** 		case pos_mode:
+  23:User/dm_motor_drv.c **** 			enable_motor_mode(hcan, motor->id, POS_MODE);
+  24:User/dm_motor_drv.c **** 			break;
+  25:User/dm_motor_drv.c **** 		case spd_mode:
+  26:User/dm_motor_drv.c **** 			enable_motor_mode(hcan, motor->id, SPD_MODE);
+  27:User/dm_motor_drv.c **** 			break;
+  28:User/dm_motor_drv.c **** 		case psi_mode:
+  29:User/dm_motor_drv.c **** 			enable_motor_mode(hcan, motor->id, PSI_MODE);
+  30:User/dm_motor_drv.c **** 			break;
+ARM GAS  /tmp/ccS5fZTm.s 			page 2
+
+
+  31:User/dm_motor_drv.c **** 	}	
+  32:User/dm_motor_drv.c **** }
+  33:User/dm_motor_drv.c **** /**
+  34:User/dm_motor_drv.c **** ************************************************************************
+  35:User/dm_motor_drv.c **** * @brief:      	dm4310_disable: 禁用DM4310电机控制模式函数
+  36:User/dm_motor_drv.c **** * @param[in]:   hcan:    指向CAN_HandleTypeDef结构的指针
+  37:User/dm_motor_drv.c **** * @param[in]:   motor:   指向motor_t结构的指针，包含电机相关信息和控制参数
+  38:User/dm_motor_drv.c **** * @retval:     	void
+  39:User/dm_motor_drv.c **** * @details:    	根据电机控制模式禁用相应的模式，通过CAN总线发送禁用命令
+  40:User/dm_motor_drv.c **** *               支持的控制模式包括位置模式、位置速度控制模式和速度控制�
+  41:User/dm_motor_drv.c **** ************************************************************************
+  42:User/dm_motor_drv.c **** **/
+  43:User/dm_motor_drv.c **** void dm_motor_disable(hcan_t* hcan, motor_t *motor)
+  44:User/dm_motor_drv.c **** {
+  45:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+  46:User/dm_motor_drv.c **** 	{
+  47:User/dm_motor_drv.c **** 		case mit_mode:
+  48:User/dm_motor_drv.c **** 			disable_motor_mode(hcan, motor->id, MIT_MODE);
+  49:User/dm_motor_drv.c **** 			break;
+  50:User/dm_motor_drv.c **** 		case pos_mode:
+  51:User/dm_motor_drv.c **** 			disable_motor_mode(hcan, motor->id, POS_MODE);
+  52:User/dm_motor_drv.c **** 			break;
+  53:User/dm_motor_drv.c **** 		case spd_mode:
+  54:User/dm_motor_drv.c **** 			disable_motor_mode(hcan, motor->id, SPD_MODE);
+  55:User/dm_motor_drv.c **** 			break;
+  56:User/dm_motor_drv.c **** 		case psi_mode:
+  57:User/dm_motor_drv.c **** 			disable_motor_mode(hcan, motor->id, PSI_MODE);
+  58:User/dm_motor_drv.c **** 			break;
+  59:User/dm_motor_drv.c **** 	}	
+  60:User/dm_motor_drv.c **** 	dm_motor_clear_para(motor);
+  61:User/dm_motor_drv.c **** }
+  62:User/dm_motor_drv.c **** /**
+  63:User/dm_motor_drv.c **** ************************************************************************
+  64:User/dm_motor_drv.c **** * @brief:      	dm4310_ctrl_send: 发送DM4310电机控制命令函数
+  65:User/dm_motor_drv.c **** * @param[in]:   hcan:    指向CAN_HandleTypeDef结构的指针
+  66:User/dm_motor_drv.c **** * @param[in]:   motor:   指向motor_t结构的指针，包含电机相关信息和控制参数
+  67:User/dm_motor_drv.c **** * @retval:     	void
+  68:User/dm_motor_drv.c **** * @details:    	根据电机控制模式发送相应的命令到DM4310电机
+  69:User/dm_motor_drv.c **** *               支持的控制模式包括位置模式、位置速度控制模式和速度控制�
+  70:User/dm_motor_drv.c **** ************************************************************************
+  71:User/dm_motor_drv.c **** **/
+  72:User/dm_motor_drv.c **** void dm_motor_ctrl_send(hcan_t* hcan, motor_t *motor)
+  73:User/dm_motor_drv.c **** {
+  74:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+  75:User/dm_motor_drv.c **** 	{
+  76:User/dm_motor_drv.c **** 		case mit_mode:
+  77:User/dm_motor_drv.c **** 			mit_ctrl(hcan, motor, motor->id, motor->ctrl.pos_set, motor->ctrl.vel_set, motor->ctrl.kp_set, m
+  78:User/dm_motor_drv.c **** 			break;
+  79:User/dm_motor_drv.c **** 		case pos_mode:
+  80:User/dm_motor_drv.c **** 			pos_ctrl(hcan, motor->id, motor->ctrl.pos_set, motor->ctrl.vel_set);
+  81:User/dm_motor_drv.c **** 			break;
+  82:User/dm_motor_drv.c **** 		case spd_mode:
+  83:User/dm_motor_drv.c **** 			spd_ctrl(hcan, motor->id, motor->ctrl.vel_set);
+  84:User/dm_motor_drv.c **** 			break;
+  85:User/dm_motor_drv.c **** 		case psi_mode:
+  86:User/dm_motor_drv.c **** 			psi_ctrl(hcan, motor->id,motor->ctrl.pos_set, motor->ctrl.vel_set, motor->ctrl.cur_set);
+  87:User/dm_motor_drv.c **** 			break;
+ARM GAS  /tmp/ccS5fZTm.s 			page 3
+
+
+  88:User/dm_motor_drv.c **** 	}	
+  89:User/dm_motor_drv.c **** }
+  90:User/dm_motor_drv.c **** 
+  91:User/dm_motor_drv.c **** /**
+  92:User/dm_motor_drv.c **** ************************************************************************
+  93:User/dm_motor_drv.c **** * @brief:      	dm4310_clear: 清除DM4310电机控制参数函数
+  94:User/dm_motor_drv.c **** * @param[in]:   motor:   指向motor_t结构的指针，包含电机相关信息和控制参数
+  95:User/dm_motor_drv.c **** * @retval:     	void
+  96:User/dm_motor_drv.c **** * @details:    	将DM4310电机的命令参数和控制参数清零，包括位置、速度、
+  97:User/dm_motor_drv.c **** *               比例增益(KP)、微分增益(KD)和扭矩
+  98:User/dm_motor_drv.c **** ************************************************************************
+  99:User/dm_motor_drv.c **** **/
+ 100:User/dm_motor_drv.c **** void dm_motor_clear_para(motor_t *motor)
+ 101:User/dm_motor_drv.c **** {
+  29              		.loc 1 101 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+ 102:User/dm_motor_drv.c **** 	motor->ctrl.kd_set 	= 0;
+  34              		.loc 1 102 2 view .LVU1
+  35              		.loc 1 102 22 is_stmt 0 view .LVU2
+  36 0000 0023     		movs	r3, #0
+  37 0002 4365     		str	r3, [r0, #84]	@ float
+ 103:User/dm_motor_drv.c **** 	motor->ctrl.kp_set	= 0;
+  38              		.loc 1 103 2 is_stmt 1 view .LVU3
+  39              		.loc 1 103 21 is_stmt 0 view .LVU4
+  40 0004 0365     		str	r3, [r0, #80]	@ float
+ 104:User/dm_motor_drv.c **** 	motor->ctrl.pos_set = 0;
+  41              		.loc 1 104 2 is_stmt 1 view .LVU5
+  42              		.loc 1 104 22 is_stmt 0 view .LVU6
+  43 0006 0364     		str	r3, [r0, #64]	@ float
+ 105:User/dm_motor_drv.c **** 	motor->ctrl.vel_set = 0;
+  44              		.loc 1 105 2 is_stmt 1 view .LVU7
+  45              		.loc 1 105 22 is_stmt 0 view .LVU8
+  46 0008 4364     		str	r3, [r0, #68]	@ float
+ 106:User/dm_motor_drv.c **** 	motor->ctrl.tor_set = 0;
+  47              		.loc 1 106 2 is_stmt 1 view .LVU9
+  48              		.loc 1 106 22 is_stmt 0 view .LVU10
+  49 000a 8364     		str	r3, [r0, #72]	@ float
+ 107:User/dm_motor_drv.c **** 	motor->ctrl.cur_set = 0;
+  50              		.loc 1 107 2 is_stmt 1 view .LVU11
+  51              		.loc 1 107 22 is_stmt 0 view .LVU12
+  52 000c C364     		str	r3, [r0, #76]	@ float
+ 108:User/dm_motor_drv.c **** }
+  53              		.loc 1 108 1 view .LVU13
+  54 000e 7047     		bx	lr
+  55              		.cfi_endproc
+  56              	.LFE147:
+  58              		.section	.text.float_to_uint,"ax",%progbits
+  59              		.align	1
+  60              		.global	float_to_uint
+  61              		.syntax unified
+  62              		.thumb
+  63              		.thumb_func
+  64              		.fpu fpv5-d16
+  66              	float_to_uint:
+ARM GAS  /tmp/ccS5fZTm.s 			page 4
+
+
+  67              	.LVL1:
+  68              	.LFB150:
+ 109:User/dm_motor_drv.c **** /**
+ 110:User/dm_motor_drv.c **** ************************************************************************
+ 111:User/dm_motor_drv.c **** * @brief:      	dm4310_clear_err: 清除DM4310电机错误函数
+ 112:User/dm_motor_drv.c **** * @param[in]:   hcan: 	 指向CAN控制结构体的指针
+ 113:User/dm_motor_drv.c **** * @param[in]:  	motor:   指向电机结构体的指针
+ 114:User/dm_motor_drv.c **** * @retval:     	void
+ 115:User/dm_motor_drv.c **** * @details:    	根据电机的控制模式，调用对应模式的清除错误函数
+ 116:User/dm_motor_drv.c **** ************************************************************************
+ 117:User/dm_motor_drv.c **** **/
+ 118:User/dm_motor_drv.c **** void dm_motor_clear_err(hcan_t* hcan, motor_t *motor)
+ 119:User/dm_motor_drv.c **** {
+ 120:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 121:User/dm_motor_drv.c **** 	{
+ 122:User/dm_motor_drv.c **** 		case mit_mode:
+ 123:User/dm_motor_drv.c **** 			clear_err(hcan, motor->id, MIT_MODE);
+ 124:User/dm_motor_drv.c **** 			break;
+ 125:User/dm_motor_drv.c **** 		case pos_mode:
+ 126:User/dm_motor_drv.c **** 			clear_err(hcan, motor->id, POS_MODE);
+ 127:User/dm_motor_drv.c **** 			break;
+ 128:User/dm_motor_drv.c **** 		case spd_mode:
+ 129:User/dm_motor_drv.c **** 			clear_err(hcan, motor->id, SPD_MODE);
+ 130:User/dm_motor_drv.c **** 			break;
+ 131:User/dm_motor_drv.c **** 		case psi_mode:
+ 132:User/dm_motor_drv.c **** 			clear_err(hcan, motor->id, PSI_MODE);
+ 133:User/dm_motor_drv.c **** 			break;
+ 134:User/dm_motor_drv.c **** 	}	
+ 135:User/dm_motor_drv.c **** }
+ 136:User/dm_motor_drv.c **** /**
+ 137:User/dm_motor_drv.c **** ************************************************************************
+ 138:User/dm_motor_drv.c **** * @brief:      	dm4310_fbdata: 获取DM4310电机反馈数据函数
+ 139:User/dm_motor_drv.c **** * @param[in]:   motor:    指向motor_t结构的指针，包含电机相关信息和反馈数据
+ 140:User/dm_motor_drv.c **** * @param[in]:   rx_data:  指向包含反馈数据的数组指针
+ 141:User/dm_motor_drv.c **** * @retval:     	void
+ 142:User/dm_motor_drv.c **** * @details:    	从接收到的数据中提取DM4310电机的反馈信息，包括电机ID、
+ 143:User/dm_motor_drv.c **** *               状态、位置、速度、扭矩以及相关温度参数
+ 144:User/dm_motor_drv.c **** ************************************************************************
+ 145:User/dm_motor_drv.c **** **/
+ 146:User/dm_motor_drv.c **** void dm_motor_fbdata(motor_t *motor, uint8_t *rx_data)
+ 147:User/dm_motor_drv.c **** {
+ 148:User/dm_motor_drv.c **** 	motor->para.id = (rx_data[0])&0x0F;
+ 149:User/dm_motor_drv.c **** 	motor->para.state = (rx_data[0])>>4;
+ 150:User/dm_motor_drv.c **** 	motor->para.p_int=(rx_data[1]<<8)|rx_data[2];
+ 151:User/dm_motor_drv.c **** 	motor->para.v_int=(rx_data[3]<<4)|(rx_data[4]>>4);
+ 152:User/dm_motor_drv.c **** 	motor->para.t_int=((rx_data[4]&0xF)<<8)|rx_data[5];
+ 153:User/dm_motor_drv.c **** 	motor->para.pos = uint_to_float(motor->para.p_int, -motor->tmp.PMAX, motor->tmp.PMAX, 16); // (-12
+ 154:User/dm_motor_drv.c **** 	motor->para.vel = uint_to_float(motor->para.v_int, -motor->tmp.VMAX, motor->tmp.VMAX, 12); // (-45
+ 155:User/dm_motor_drv.c **** 	motor->para.tor = uint_to_float(motor->para.t_int, -motor->tmp.TMAX, motor->tmp.TMAX, 12); // (-18
+ 156:User/dm_motor_drv.c **** 	motor->para.Tmos = (float)(rx_data[6]);
+ 157:User/dm_motor_drv.c **** 	motor->para.Tcoil = (float)(rx_data[7]);
+ 158:User/dm_motor_drv.c **** }
+ 159:User/dm_motor_drv.c **** 
+ 160:User/dm_motor_drv.c **** /**
+ 161:User/dm_motor_drv.c **** ************************************************************************
+ 162:User/dm_motor_drv.c **** * @brief:      	float_to_uint: 浮点数转换为无符号整数函数
+ 163:User/dm_motor_drv.c **** * @param[in]:   x_float:	待转换的浮点数
+ARM GAS  /tmp/ccS5fZTm.s 			page 5
+
+
+ 164:User/dm_motor_drv.c **** * @param[in]:   x_min:		范围最小值
+ 165:User/dm_motor_drv.c **** * @param[in]:   x_max:		范围最大值
+ 166:User/dm_motor_drv.c **** * @param[in]:   bits: 		目标无符号整数的位数
+ 167:User/dm_motor_drv.c **** * @retval:     	无符号整数结果
+ 168:User/dm_motor_drv.c **** * @details:    	将给定的浮点数 x 在指定范围 [x_min, x_max] 内进行线性映射，映�
+ 169:User/dm_motor_drv.c **** ************************************************************************
+ 170:User/dm_motor_drv.c **** **/
+ 171:User/dm_motor_drv.c **** int float_to_uint(float x_float, float x_min, float x_max, int bits)
+ 172:User/dm_motor_drv.c **** {
+  69              		.loc 1 172 1 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  73              		@ link register save eliminated.
+ 173:User/dm_motor_drv.c **** 	/* Converts a float to an unsigned int, given range and number of bits */
+ 174:User/dm_motor_drv.c **** 	float span = x_max - x_min;
+  74              		.loc 1 174 2 view .LVU15
+  75              		.loc 1 174 8 is_stmt 0 view .LVU16
+  76 0000 31EE601A 		vsub.f32	s2, s2, s1
+  77              	.LVL2:
+ 175:User/dm_motor_drv.c **** 	float offset = x_min;
+  78              		.loc 1 175 2 is_stmt 1 view .LVU17
+ 176:User/dm_motor_drv.c **** 	return (int) ((x_float-offset)*((float)((1<<bits)-1))/span);
+  79              		.loc 1 176 2 view .LVU18
+  80              		.loc 1 176 24 is_stmt 0 view .LVU19
+  81 0004 30EE600A 		vsub.f32	s0, s0, s1
+  82              	.LVL3:
+  83              		.loc 1 176 44 view .LVU20
+  84 0008 0123     		movs	r3, #1
+  85 000a 8340     		lsls	r3, r3, r0
+  86              		.loc 1 176 51 view .LVU21
+  87 000c 013B     		subs	r3, r3, #1
+  88              		.loc 1 176 34 view .LVU22
+  89 000e 07EE903A 		vmov	s15, r3	@ int
+  90 0012 F8EEE77A 		vcvt.f32.s32	s15, s15
+  91              		.loc 1 176 32 view .LVU23
+  92 0016 60EE277A 		vmul.f32	s15, s0, s15
+  93              		.loc 1 176 55 view .LVU24
+  94 001a 87EE817A 		vdiv.f32	s14, s15, s2
+ 177:User/dm_motor_drv.c **** }
+  95              		.loc 1 177 1 view .LVU25
+  96 001e FDEEC77A 		vcvt.s32.f32	s15, s14
+  97 0022 17EE900A 		vmov	r0, s15	@ int
+  98              	.LVL4:
+  99              		.loc 1 177 1 view .LVU26
+ 100 0026 7047     		bx	lr
+ 101              		.cfi_endproc
+ 102              	.LFE150:
+ 104              		.section	.text.uint_to_float,"ax",%progbits
+ 105              		.align	1
+ 106              		.global	uint_to_float
+ 107              		.syntax unified
+ 108              		.thumb
+ 109              		.thumb_func
+ 110              		.fpu fpv5-d16
+ 112              	uint_to_float:
+ 113              	.LVL5:
+ARM GAS  /tmp/ccS5fZTm.s 			page 6
+
+
+ 114              	.LFB151:
+ 178:User/dm_motor_drv.c **** /**
+ 179:User/dm_motor_drv.c **** ************************************************************************
+ 180:User/dm_motor_drv.c **** * @brief:      	uint_to_float: 无符号整数转换为浮点数函数
+ 181:User/dm_motor_drv.c **** * @param[in]:   x_int: 待转换的无符号整数
+ 182:User/dm_motor_drv.c **** * @param[in]:   x_min: 范围最小值
+ 183:User/dm_motor_drv.c **** * @param[in]:   x_max: 范围最大值
+ 184:User/dm_motor_drv.c **** * @param[in]:   bits:  无符号整数的位数
+ 185:User/dm_motor_drv.c **** * @retval:     	浮点数结果
+ 186:User/dm_motor_drv.c **** * @details:    	将给定的无符号整数 x_int 在指定范围 [x_min, x_max] 内进行线性映
+ 187:User/dm_motor_drv.c **** ************************************************************************
+ 188:User/dm_motor_drv.c **** **/
+ 189:User/dm_motor_drv.c **** float uint_to_float(int x_int, float x_min, float x_max, int bits)
+ 190:User/dm_motor_drv.c **** {
+ 115              		.loc 1 190 1 is_stmt 1 view -0
+ 116              		.cfi_startproc
+ 117              		@ args = 0, pretend = 0, frame = 0
+ 118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119              		@ link register save eliminated.
+ 120              		.loc 1 190 1 is_stmt 0 view .LVU28
+ 121 0000 07EE900A 		vmov	s15, r0	@ int
+ 191:User/dm_motor_drv.c **** 	/* converts unsigned int to float, given range and number of bits */
+ 192:User/dm_motor_drv.c **** 	float span = x_max - x_min;
+ 122              		.loc 1 192 2 is_stmt 1 view .LVU29
+ 123              		.loc 1 192 8 is_stmt 0 view .LVU30
+ 124 0004 70EEC00A 		vsub.f32	s1, s1, s0
+ 125              	.LVL6:
+ 193:User/dm_motor_drv.c **** 	float offset = x_min;
+ 126              		.loc 1 193 2 is_stmt 1 view .LVU31
+ 194:User/dm_motor_drv.c **** 	return ((float)x_int)*span/((float)((1<<bits)-1)) + offset;
+ 127              		.loc 1 194 2 view .LVU32
+ 128              		.loc 1 194 10 is_stmt 0 view .LVU33
+ 129 0008 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 130              		.loc 1 194 23 view .LVU34
+ 131 000c 67EEA00A 		vmul.f32	s1, s15, s1
+ 132              	.LVL7:
+ 133              		.loc 1 194 40 view .LVU35
+ 134 0010 0123     		movs	r3, #1
+ 135 0012 8B40     		lsls	r3, r3, r1
+ 136              		.loc 1 194 47 view .LVU36
+ 137 0014 013B     		subs	r3, r3, #1
+ 138              		.loc 1 194 30 view .LVU37
+ 139 0016 07EE903A 		vmov	s15, r3	@ int
+ 140 001a F8EEE77A 		vcvt.f32.s32	s15, s15
+ 141              		.loc 1 194 28 view .LVU38
+ 142 001e 80EEA77A 		vdiv.f32	s14, s1, s15
+ 195:User/dm_motor_drv.c **** }
+ 143              		.loc 1 195 1 view .LVU39
+ 144 0022 37EE000A 		vadd.f32	s0, s14, s0
+ 145              	.LVL8:
+ 146              		.loc 1 195 1 view .LVU40
+ 147 0026 7047     		bx	lr
+ 148              		.cfi_endproc
+ 149              	.LFE151:
+ 151              		.section	.text.dm_motor_fbdata,"ax",%progbits
+ 152              		.align	1
+ 153              		.global	dm_motor_fbdata
+ARM GAS  /tmp/ccS5fZTm.s 			page 7
+
+
+ 154              		.syntax unified
+ 155              		.thumb
+ 156              		.thumb_func
+ 157              		.fpu fpv5-d16
+ 159              	dm_motor_fbdata:
+ 160              	.LVL9:
+ 161              	.LFB149:
+ 147:User/dm_motor_drv.c **** 	motor->para.id = (rx_data[0])&0x0F;
+ 162              		.loc 1 147 1 is_stmt 1 view -0
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 0
+ 165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 147:User/dm_motor_drv.c **** 	motor->para.id = (rx_data[0])&0x0F;
+ 166              		.loc 1 147 1 is_stmt 0 view .LVU42
+ 167 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 168              	.LCFI0:
+ 169              		.cfi_def_cfa_offset 24
+ 170              		.cfi_offset 3, -24
+ 171              		.cfi_offset 4, -20
+ 172              		.cfi_offset 5, -16
+ 173              		.cfi_offset 6, -12
+ 174              		.cfi_offset 7, -8
+ 175              		.cfi_offset 14, -4
+ 176 0002 0446     		mov	r4, r0
+ 177 0004 0D46     		mov	r5, r1
+ 148:User/dm_motor_drv.c **** 	motor->para.state = (rx_data[0])>>4;
+ 178              		.loc 1 148 2 is_stmt 1 view .LVU43
+ 148:User/dm_motor_drv.c **** 	motor->para.state = (rx_data[0])>>4;
+ 179              		.loc 1 148 27 is_stmt 0 view .LVU44
+ 180 0006 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 148:User/dm_motor_drv.c **** 	motor->para.state = (rx_data[0])>>4;
+ 181              		.loc 1 148 31 view .LVU45
+ 182 0008 03F00F03 		and	r3, r3, #15
+ 148:User/dm_motor_drv.c **** 	motor->para.state = (rx_data[0])>>4;
+ 183              		.loc 1 148 17 view .LVU46
+ 184 000c 4360     		str	r3, [r0, #4]
+ 149:User/dm_motor_drv.c **** 	motor->para.p_int=(rx_data[1]<<8)|rx_data[2];
+ 185              		.loc 1 149 2 is_stmt 1 view .LVU47
+ 149:User/dm_motor_drv.c **** 	motor->para.p_int=(rx_data[1]<<8)|rx_data[2];
+ 186              		.loc 1 149 30 is_stmt 0 view .LVU48
+ 187 000e 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 149:User/dm_motor_drv.c **** 	motor->para.p_int=(rx_data[1]<<8)|rx_data[2];
+ 188              		.loc 1 149 34 view .LVU49
+ 189 0010 1B09     		lsrs	r3, r3, #4
+ 149:User/dm_motor_drv.c **** 	motor->para.p_int=(rx_data[1]<<8)|rx_data[2];
+ 190              		.loc 1 149 20 view .LVU50
+ 191 0012 8360     		str	r3, [r0, #8]
+ 150:User/dm_motor_drv.c **** 	motor->para.v_int=(rx_data[3]<<4)|(rx_data[4]>>4);
+ 192              		.loc 1 150 2 is_stmt 1 view .LVU51
+ 150:User/dm_motor_drv.c **** 	motor->para.v_int=(rx_data[3]<<4)|(rx_data[4]>>4);
+ 193              		.loc 1 150 28 is_stmt 0 view .LVU52
+ 194 0014 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 150:User/dm_motor_drv.c **** 	motor->para.v_int=(rx_data[3]<<4)|(rx_data[4]>>4);
+ 195              		.loc 1 150 43 view .LVU53
+ 196 0016 8878     		ldrb	r0, [r1, #2]	@ zero_extendqisi2
+ 197              	.LVL10:
+ 150:User/dm_motor_drv.c **** 	motor->para.v_int=(rx_data[3]<<4)|(rx_data[4]>>4);
+ARM GAS  /tmp/ccS5fZTm.s 			page 8
+
+
+ 198              		.loc 1 150 35 view .LVU54
+ 199 0018 40EA0320 		orr	r0, r0, r3, lsl #8
+ 150:User/dm_motor_drv.c **** 	motor->para.v_int=(rx_data[3]<<4)|(rx_data[4]>>4);
+ 200              		.loc 1 150 19 view .LVU55
+ 201 001c E060     		str	r0, [r4, #12]
+ 151:User/dm_motor_drv.c **** 	motor->para.t_int=((rx_data[4]&0xF)<<8)|rx_data[5];
+ 202              		.loc 1 151 2 is_stmt 1 view .LVU56
+ 151:User/dm_motor_drv.c **** 	motor->para.t_int=((rx_data[4]&0xF)<<8)|rx_data[5];
+ 203              		.loc 1 151 28 is_stmt 0 view .LVU57
+ 204 001e CB78     		ldrb	r3, [r1, #3]	@ zero_extendqisi2
+ 151:User/dm_motor_drv.c **** 	motor->para.t_int=((rx_data[4]&0xF)<<8)|rx_data[5];
+ 205              		.loc 1 151 44 view .LVU58
+ 206 0020 0F79     		ldrb	r7, [r1, #4]	@ zero_extendqisi2
+ 151:User/dm_motor_drv.c **** 	motor->para.t_int=((rx_data[4]&0xF)<<8)|rx_data[5];
+ 207              		.loc 1 151 47 view .LVU59
+ 208 0022 3F09     		lsrs	r7, r7, #4
+ 151:User/dm_motor_drv.c **** 	motor->para.t_int=((rx_data[4]&0xF)<<8)|rx_data[5];
+ 209              		.loc 1 151 35 view .LVU60
+ 210 0024 47EA0317 		orr	r7, r7, r3, lsl #4
+ 151:User/dm_motor_drv.c **** 	motor->para.t_int=((rx_data[4]&0xF)<<8)|rx_data[5];
+ 211              		.loc 1 151 19 view .LVU61
+ 212 0028 2761     		str	r7, [r4, #16]
+ 152:User/dm_motor_drv.c **** 	motor->para.pos = uint_to_float(motor->para.p_int, -motor->tmp.PMAX, motor->tmp.PMAX, 16); // (-12
+ 213              		.loc 1 152 2 is_stmt 1 view .LVU62
+ 152:User/dm_motor_drv.c **** 	motor->para.pos = uint_to_float(motor->para.p_int, -motor->tmp.PMAX, motor->tmp.PMAX, 16); // (-12
+ 214              		.loc 1 152 29 is_stmt 0 view .LVU63
+ 215 002a 0E79     		ldrb	r6, [r1, #4]	@ zero_extendqisi2
+ 152:User/dm_motor_drv.c **** 	motor->para.pos = uint_to_float(motor->para.p_int, -motor->tmp.PMAX, motor->tmp.PMAX, 16); // (-12
+ 216              		.loc 1 152 37 view .LVU64
+ 217 002c 3602     		lsls	r6, r6, #8
+ 218 002e 06F47066 		and	r6, r6, #3840
+ 152:User/dm_motor_drv.c **** 	motor->para.pos = uint_to_float(motor->para.p_int, -motor->tmp.PMAX, motor->tmp.PMAX, 16); // (-12
+ 219              		.loc 1 152 49 view .LVU65
+ 220 0032 4B79     		ldrb	r3, [r1, #5]	@ zero_extendqisi2
+ 152:User/dm_motor_drv.c **** 	motor->para.pos = uint_to_float(motor->para.p_int, -motor->tmp.PMAX, motor->tmp.PMAX, 16); // (-12
+ 221              		.loc 1 152 41 view .LVU66
+ 222 0034 1E43     		orrs	r6, r6, r3
+ 152:User/dm_motor_drv.c **** 	motor->para.pos = uint_to_float(motor->para.p_int, -motor->tmp.PMAX, motor->tmp.PMAX, 16); // (-12
+ 223              		.loc 1 152 19 view .LVU67
+ 224 0036 6661     		str	r6, [r4, #20]
+ 153:User/dm_motor_drv.c **** 	motor->para.vel = uint_to_float(motor->para.v_int, -motor->tmp.VMAX, motor->tmp.VMAX, 12); // (-45
+ 225              		.loc 1 153 2 is_stmt 1 view .LVU68
+ 153:User/dm_motor_drv.c **** 	motor->para.vel = uint_to_float(motor->para.v_int, -motor->tmp.VMAX, motor->tmp.VMAX, 12); // (-45
+ 226              		.loc 1 153 64 is_stmt 0 view .LVU69
+ 227 0038 D4ED2C0A 		vldr.32	s1, [r4, #176]
+ 153:User/dm_motor_drv.c **** 	motor->para.vel = uint_to_float(motor->para.v_int, -motor->tmp.VMAX, motor->tmp.VMAX, 12); // (-45
+ 228              		.loc 1 153 20 view .LVU70
+ 229 003c 1021     		movs	r1, #16
+ 230              	.LVL11:
+ 153:User/dm_motor_drv.c **** 	motor->para.vel = uint_to_float(motor->para.v_int, -motor->tmp.VMAX, motor->tmp.VMAX, 12); // (-45
+ 231              		.loc 1 153 20 view .LVU71
+ 232 003e B1EE600A 		vneg.f32	s0, s1
+ 233 0042 FFF7FEFF 		bl	uint_to_float
+ 234              	.LVL12:
+ 153:User/dm_motor_drv.c **** 	motor->para.vel = uint_to_float(motor->para.v_int, -motor->tmp.VMAX, motor->tmp.VMAX, 12); // (-45
+ 235              		.loc 1 153 18 view .LVU72
+ 236 0046 84ED080A 		vstr.32	s0, [r4, #32]
+ARM GAS  /tmp/ccS5fZTm.s 			page 9
+
+
+ 154:User/dm_motor_drv.c **** 	motor->para.tor = uint_to_float(motor->para.t_int, -motor->tmp.TMAX, motor->tmp.TMAX, 12); // (-18
+ 237              		.loc 1 154 2 is_stmt 1 view .LVU73
+ 154:User/dm_motor_drv.c **** 	motor->para.tor = uint_to_float(motor->para.t_int, -motor->tmp.TMAX, motor->tmp.TMAX, 12); // (-18
+ 238              		.loc 1 154 64 is_stmt 0 view .LVU74
+ 239 004a D4ED2D0A 		vldr.32	s1, [r4, #180]
+ 154:User/dm_motor_drv.c **** 	motor->para.tor = uint_to_float(motor->para.t_int, -motor->tmp.TMAX, motor->tmp.TMAX, 12); // (-18
+ 240              		.loc 1 154 20 view .LVU75
+ 241 004e 0C21     		movs	r1, #12
+ 242 0050 B1EE600A 		vneg.f32	s0, s1
+ 243 0054 3846     		mov	r0, r7
+ 244 0056 FFF7FEFF 		bl	uint_to_float
+ 245              	.LVL13:
+ 154:User/dm_motor_drv.c **** 	motor->para.tor = uint_to_float(motor->para.t_int, -motor->tmp.TMAX, motor->tmp.TMAX, 12); // (-18
+ 246              		.loc 1 154 18 view .LVU76
+ 247 005a 84ED090A 		vstr.32	s0, [r4, #36]
+ 155:User/dm_motor_drv.c **** 	motor->para.Tmos = (float)(rx_data[6]);
+ 248              		.loc 1 155 2 is_stmt 1 view .LVU77
+ 155:User/dm_motor_drv.c **** 	motor->para.Tmos = (float)(rx_data[6]);
+ 249              		.loc 1 155 64 is_stmt 0 view .LVU78
+ 250 005e D4ED2E0A 		vldr.32	s1, [r4, #184]
+ 155:User/dm_motor_drv.c **** 	motor->para.Tmos = (float)(rx_data[6]);
+ 251              		.loc 1 155 20 view .LVU79
+ 252 0062 0C21     		movs	r1, #12
+ 253 0064 B1EE600A 		vneg.f32	s0, s1
+ 254 0068 3046     		mov	r0, r6
+ 255 006a FFF7FEFF 		bl	uint_to_float
+ 256              	.LVL14:
+ 155:User/dm_motor_drv.c **** 	motor->para.Tmos = (float)(rx_data[6]);
+ 257              		.loc 1 155 18 view .LVU80
+ 258 006e 84ED0A0A 		vstr.32	s0, [r4, #40]
+ 156:User/dm_motor_drv.c **** 	motor->para.Tcoil = (float)(rx_data[7]);
+ 259              		.loc 1 156 2 is_stmt 1 view .LVU81
+ 156:User/dm_motor_drv.c **** 	motor->para.Tcoil = (float)(rx_data[7]);
+ 260              		.loc 1 156 36 is_stmt 0 view .LVU82
+ 261 0072 AB79     		ldrb	r3, [r5, #6]	@ zero_extendqisi2
+ 262 0074 07EE903A 		vmov	s15, r3	@ int
+ 156:User/dm_motor_drv.c **** 	motor->para.Tcoil = (float)(rx_data[7]);
+ 263              		.loc 1 156 21 view .LVU83
+ 264 0078 F8EE677A 		vcvt.f32.u32	s15, s15
+ 156:User/dm_motor_drv.c **** 	motor->para.Tcoil = (float)(rx_data[7]);
+ 265              		.loc 1 156 19 view .LVU84
+ 266 007c C4ED0D7A 		vstr.32	s15, [r4, #52]
+ 157:User/dm_motor_drv.c **** }
+ 267              		.loc 1 157 2 is_stmt 1 view .LVU85
+ 157:User/dm_motor_drv.c **** }
+ 268              		.loc 1 157 37 is_stmt 0 view .LVU86
+ 269 0080 EB79     		ldrb	r3, [r5, #7]	@ zero_extendqisi2
+ 270 0082 07EE903A 		vmov	s15, r3	@ int
+ 157:User/dm_motor_drv.c **** }
+ 271              		.loc 1 157 22 view .LVU87
+ 272 0086 F8EE677A 		vcvt.f32.u32	s15, s15
+ 157:User/dm_motor_drv.c **** }
+ 273              		.loc 1 157 20 view .LVU88
+ 274 008a C4ED0E7A 		vstr.32	s15, [r4, #56]
+ 158:User/dm_motor_drv.c **** 
+ 275              		.loc 1 158 1 view .LVU89
+ 276 008e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ARM GAS  /tmp/ccS5fZTm.s 			page 10
+
+
+ 158:User/dm_motor_drv.c **** 
+ 277              		.loc 1 158 1 view .LVU90
+ 278              		.cfi_endproc
+ 279              	.LFE149:
+ 281              		.section	.text.enable_motor_mode,"ax",%progbits
+ 282              		.align	1
+ 283              		.global	enable_motor_mode
+ 284              		.syntax unified
+ 285              		.thumb
+ 286              		.thumb_func
+ 287              		.fpu fpv5-d16
+ 289              	enable_motor_mode:
+ 290              	.LVL15:
+ 291              	.LFB152:
+ 196:User/dm_motor_drv.c **** 
+ 197:User/dm_motor_drv.c **** /**
+ 198:User/dm_motor_drv.c **** ************************************************************************
+ 199:User/dm_motor_drv.c **** * @brief:      	enable_motor_mode: 启用电机模式函数
+ 200:User/dm_motor_drv.c **** * @param[in]:   hcan:     指向CAN_HandleTypeDef结构的指针
+ 201:User/dm_motor_drv.c **** * @param[in]:   motor_id: 电机ID，指定目标电机
+ 202:User/dm_motor_drv.c **** * @param[in]:   mode_id:  模式ID，指定要开启的模式
+ 203:User/dm_motor_drv.c **** * @retval:     	void
+ 204:User/dm_motor_drv.c **** * @details:    	通过CAN总线向特定电机发送启用特定模式的命令
+ 205:User/dm_motor_drv.c **** ************************************************************************
+ 206:User/dm_motor_drv.c **** **/
+ 207:User/dm_motor_drv.c **** void enable_motor_mode(hcan_t* hcan, uint16_t motor_id, uint16_t mode_id)
+ 208:User/dm_motor_drv.c **** {
+ 292              		.loc 1 208 1 is_stmt 1 view -0
+ 293              		.cfi_startproc
+ 294              		@ args = 0, pretend = 0, frame = 8
+ 295              		@ frame_needed = 0, uses_anonymous_args = 0
+ 296              		.loc 1 208 1 is_stmt 0 view .LVU92
+ 297 0000 00B5     		push	{lr}
+ 298              	.LCFI1:
+ 299              		.cfi_def_cfa_offset 4
+ 300              		.cfi_offset 14, -4
+ 301 0002 83B0     		sub	sp, sp, #12
+ 302              	.LCFI2:
+ 303              		.cfi_def_cfa_offset 16
+ 209:User/dm_motor_drv.c **** 	uint8_t data[8];
+ 304              		.loc 1 209 2 is_stmt 1 view .LVU93
+ 210:User/dm_motor_drv.c **** 	uint16_t id = motor_id + mode_id;
+ 305              		.loc 1 210 2 view .LVU94
+ 306              		.loc 1 210 11 is_stmt 0 view .LVU95
+ 307 0004 1144     		add	r1, r1, r2
+ 308              	.LVL16:
+ 211:User/dm_motor_drv.c **** 	
+ 212:User/dm_motor_drv.c **** 	data[0] = 0xFF;
+ 309              		.loc 1 212 2 is_stmt 1 view .LVU96
+ 310              		.loc 1 212 10 is_stmt 0 view .LVU97
+ 311 0006 FF23     		movs	r3, #255
+ 312 0008 8DF80030 		strb	r3, [sp]
+ 213:User/dm_motor_drv.c **** 	data[1] = 0xFF;
+ 313              		.loc 1 213 2 is_stmt 1 view .LVU98
+ 314              		.loc 1 213 10 is_stmt 0 view .LVU99
+ 315 000c 8DF80130 		strb	r3, [sp, #1]
+ 214:User/dm_motor_drv.c **** 	data[2] = 0xFF;
+ARM GAS  /tmp/ccS5fZTm.s 			page 11
+
+
+ 316              		.loc 1 214 2 is_stmt 1 view .LVU100
+ 317              		.loc 1 214 10 is_stmt 0 view .LVU101
+ 318 0010 8DF80230 		strb	r3, [sp, #2]
+ 215:User/dm_motor_drv.c **** 	data[3] = 0xFF;
+ 319              		.loc 1 215 2 is_stmt 1 view .LVU102
+ 320              		.loc 1 215 10 is_stmt 0 view .LVU103
+ 321 0014 8DF80330 		strb	r3, [sp, #3]
+ 216:User/dm_motor_drv.c **** 	data[4] = 0xFF;
+ 322              		.loc 1 216 2 is_stmt 1 view .LVU104
+ 323              		.loc 1 216 10 is_stmt 0 view .LVU105
+ 324 0018 8DF80430 		strb	r3, [sp, #4]
+ 217:User/dm_motor_drv.c **** 	data[5] = 0xFF;
+ 325              		.loc 1 217 2 is_stmt 1 view .LVU106
+ 326              		.loc 1 217 10 is_stmt 0 view .LVU107
+ 327 001c 8DF80530 		strb	r3, [sp, #5]
+ 218:User/dm_motor_drv.c **** 	data[6] = 0xFF;
+ 328              		.loc 1 218 2 is_stmt 1 view .LVU108
+ 329              		.loc 1 218 10 is_stmt 0 view .LVU109
+ 330 0020 8DF80630 		strb	r3, [sp, #6]
+ 219:User/dm_motor_drv.c **** 	data[7] = 0xFC;
+ 331              		.loc 1 219 2 is_stmt 1 view .LVU110
+ 332              		.loc 1 219 10 is_stmt 0 view .LVU111
+ 333 0024 FC23     		movs	r3, #252
+ 334 0026 8DF80730 		strb	r3, [sp, #7]
+ 220:User/dm_motor_drv.c **** 	
+ 221:User/dm_motor_drv.c **** 	fdcanx_send_data(hcan, id, data, 8);
+ 335              		.loc 1 221 2 is_stmt 1 view .LVU112
+ 336 002a 0823     		movs	r3, #8
+ 337 002c 6A46     		mov	r2, sp
+ 338              	.LVL17:
+ 339              		.loc 1 221 2 is_stmt 0 view .LVU113
+ 340 002e 89B2     		uxth	r1, r1
+ 341              		.loc 1 221 2 view .LVU114
+ 342 0030 FFF7FEFF 		bl	fdcanx_send_data
+ 343              	.LVL18:
+ 222:User/dm_motor_drv.c **** }
+ 344              		.loc 1 222 1 view .LVU115
+ 345 0034 03B0     		add	sp, sp, #12
+ 346              	.LCFI3:
+ 347              		.cfi_def_cfa_offset 4
+ 348              		@ sp needed
+ 349 0036 5DF804FB 		ldr	pc, [sp], #4
+ 350              		.cfi_endproc
+ 351              	.LFE152:
+ 353              		.section	.text.dm_motor_enable,"ax",%progbits
+ 354              		.align	1
+ 355              		.global	dm_motor_enable
+ 356              		.syntax unified
+ 357              		.thumb
+ 358              		.thumb_func
+ 359              		.fpu fpv5-d16
+ 361              	dm_motor_enable:
+ 362              	.LVL19:
+ 363              	.LFB144:
+  16:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 364              		.loc 1 16 1 is_stmt 1 view -0
+ 365              		.cfi_startproc
+ARM GAS  /tmp/ccS5fZTm.s 			page 12
+
+
+ 366              		@ args = 0, pretend = 0, frame = 0
+ 367              		@ frame_needed = 0, uses_anonymous_args = 0
+  16:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 368              		.loc 1 16 1 is_stmt 0 view .LVU117
+ 369 0000 08B5     		push	{r3, lr}
+ 370              	.LCFI4:
+ 371              		.cfi_def_cfa_offset 8
+ 372              		.cfi_offset 3, -8
+ 373              		.cfi_offset 14, -4
+  17:User/dm_motor_drv.c **** 	{
+ 374              		.loc 1 17 2 is_stmt 1 view .LVU118
+  17:User/dm_motor_drv.c **** 	{
+ 375              		.loc 1 17 20 is_stmt 0 view .LVU119
+ 376 0002 91F83C30 		ldrb	r3, [r1, #60]	@ zero_extendqisi2
+  17:User/dm_motor_drv.c **** 	{
+ 377              		.loc 1 17 2 view .LVU120
+ 378 0006 013B     		subs	r3, r3, #1
+ 379 0008 032B     		cmp	r3, #3
+ 380 000a 07D8     		bhi	.L8
+ 381 000c DFE803F0 		tbb	[pc, r3]
+ 382              	.L11:
+ 383 0010 02       		.byte	(.L14-.L11)/2
+ 384 0011 07       		.byte	(.L13-.L11)/2
+ 385 0012 0D       		.byte	(.L12-.L11)/2
+ 386 0013 13       		.byte	(.L10-.L11)/2
+ 387              		.p2align 1
+ 388              	.L14:
+  20:User/dm_motor_drv.c **** 			break;
+ 389              		.loc 1 20 4 is_stmt 1 view .LVU121
+ 390 0014 0022     		movs	r2, #0
+ 391 0016 0988     		ldrh	r1, [r1]
+ 392              	.LVL20:
+  20:User/dm_motor_drv.c **** 			break;
+ 393              		.loc 1 20 4 is_stmt 0 view .LVU122
+ 394 0018 FFF7FEFF 		bl	enable_motor_mode
+ 395              	.LVL21:
+  21:User/dm_motor_drv.c **** 		case pos_mode:
+ 396              		.loc 1 21 4 is_stmt 1 view .LVU123
+ 397              	.L8:
+  32:User/dm_motor_drv.c **** /**
+ 398              		.loc 1 32 1 is_stmt 0 view .LVU124
+ 399 001c 08BD     		pop	{r3, pc}
+ 400              	.LVL22:
+ 401              	.L13:
+  23:User/dm_motor_drv.c **** 			break;
+ 402              		.loc 1 23 4 is_stmt 1 view .LVU125
+ 403 001e 4FF48072 		mov	r2, #256
+ 404 0022 0988     		ldrh	r1, [r1]
+ 405              	.LVL23:
+  23:User/dm_motor_drv.c **** 			break;
+ 406              		.loc 1 23 4 is_stmt 0 view .LVU126
+ 407 0024 FFF7FEFF 		bl	enable_motor_mode
+ 408              	.LVL24:
+  24:User/dm_motor_drv.c **** 		case spd_mode:
+ 409              		.loc 1 24 4 is_stmt 1 view .LVU127
+ 410 0028 F8E7     		b	.L8
+ 411              	.LVL25:
+ARM GAS  /tmp/ccS5fZTm.s 			page 13
+
+
+ 412              	.L12:
+  26:User/dm_motor_drv.c **** 			break;
+ 413              		.loc 1 26 4 view .LVU128
+ 414 002a 4FF40072 		mov	r2, #512
+ 415 002e 0988     		ldrh	r1, [r1]
+ 416              	.LVL26:
+  26:User/dm_motor_drv.c **** 			break;
+ 417              		.loc 1 26 4 is_stmt 0 view .LVU129
+ 418 0030 FFF7FEFF 		bl	enable_motor_mode
+ 419              	.LVL27:
+  27:User/dm_motor_drv.c **** 		case psi_mode:
+ 420              		.loc 1 27 4 is_stmt 1 view .LVU130
+ 421 0034 F2E7     		b	.L8
+ 422              	.LVL28:
+ 423              	.L10:
+  29:User/dm_motor_drv.c **** 			break;
+ 424              		.loc 1 29 4 view .LVU131
+ 425 0036 4FF44072 		mov	r2, #768
+ 426 003a 0988     		ldrh	r1, [r1]
+ 427              	.LVL29:
+  29:User/dm_motor_drv.c **** 			break;
+ 428              		.loc 1 29 4 is_stmt 0 view .LVU132
+ 429 003c FFF7FEFF 		bl	enable_motor_mode
+ 430              	.LVL30:
+  30:User/dm_motor_drv.c **** 	}	
+ 431              		.loc 1 30 4 is_stmt 1 view .LVU133
+  32:User/dm_motor_drv.c **** /**
+ 432              		.loc 1 32 1 is_stmt 0 view .LVU134
+ 433 0040 ECE7     		b	.L8
+ 434              		.cfi_endproc
+ 435              	.LFE144:
+ 437              		.section	.text.disable_motor_mode,"ax",%progbits
+ 438              		.align	1
+ 439              		.global	disable_motor_mode
+ 440              		.syntax unified
+ 441              		.thumb
+ 442              		.thumb_func
+ 443              		.fpu fpv5-d16
+ 445              	disable_motor_mode:
+ 446              	.LVL31:
+ 447              	.LFB153:
+ 223:User/dm_motor_drv.c **** /**
+ 224:User/dm_motor_drv.c **** ************************************************************************
+ 225:User/dm_motor_drv.c **** * @brief:      	disable_motor_mode: 禁用电机模式函数
+ 226:User/dm_motor_drv.c **** * @param[in]:   hcan:     指向CAN_HandleTypeDef结构的指针
+ 227:User/dm_motor_drv.c **** * @param[in]:   motor_id: 电机ID，指定目标电机
+ 228:User/dm_motor_drv.c **** * @param[in]:   mode_id:  模式ID，指定要禁用的模式
+ 229:User/dm_motor_drv.c **** * @retval:     	void
+ 230:User/dm_motor_drv.c **** * @details:    	通过CAN总线向特定电机发送禁用特定模式的命令
+ 231:User/dm_motor_drv.c **** ************************************************************************
+ 232:User/dm_motor_drv.c **** **/
+ 233:User/dm_motor_drv.c **** void disable_motor_mode(hcan_t* hcan, uint16_t motor_id, uint16_t mode_id)
+ 234:User/dm_motor_drv.c **** {
+ 448              		.loc 1 234 1 is_stmt 1 view -0
+ 449              		.cfi_startproc
+ 450              		@ args = 0, pretend = 0, frame = 8
+ 451              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccS5fZTm.s 			page 14
+
+
+ 452              		.loc 1 234 1 is_stmt 0 view .LVU136
+ 453 0000 00B5     		push	{lr}
+ 454              	.LCFI5:
+ 455              		.cfi_def_cfa_offset 4
+ 456              		.cfi_offset 14, -4
+ 457 0002 83B0     		sub	sp, sp, #12
+ 458              	.LCFI6:
+ 459              		.cfi_def_cfa_offset 16
+ 235:User/dm_motor_drv.c **** 	uint8_t data[8];
+ 460              		.loc 1 235 2 is_stmt 1 view .LVU137
+ 236:User/dm_motor_drv.c **** 	uint16_t id = motor_id + mode_id;
+ 461              		.loc 1 236 2 view .LVU138
+ 462              		.loc 1 236 11 is_stmt 0 view .LVU139
+ 463 0004 1144     		add	r1, r1, r2
+ 464              	.LVL32:
+ 237:User/dm_motor_drv.c **** 	
+ 238:User/dm_motor_drv.c **** 	data[0] = 0xFF;
+ 465              		.loc 1 238 2 is_stmt 1 view .LVU140
+ 466              		.loc 1 238 10 is_stmt 0 view .LVU141
+ 467 0006 FF23     		movs	r3, #255
+ 468 0008 8DF80030 		strb	r3, [sp]
+ 239:User/dm_motor_drv.c **** 	data[1] = 0xFF;
+ 469              		.loc 1 239 2 is_stmt 1 view .LVU142
+ 470              		.loc 1 239 10 is_stmt 0 view .LVU143
+ 471 000c 8DF80130 		strb	r3, [sp, #1]
+ 240:User/dm_motor_drv.c **** 	data[2] = 0xFF;
+ 472              		.loc 1 240 2 is_stmt 1 view .LVU144
+ 473              		.loc 1 240 10 is_stmt 0 view .LVU145
+ 474 0010 8DF80230 		strb	r3, [sp, #2]
+ 241:User/dm_motor_drv.c **** 	data[3] = 0xFF;
+ 475              		.loc 1 241 2 is_stmt 1 view .LVU146
+ 476              		.loc 1 241 10 is_stmt 0 view .LVU147
+ 477 0014 8DF80330 		strb	r3, [sp, #3]
+ 242:User/dm_motor_drv.c **** 	data[4] = 0xFF;
+ 478              		.loc 1 242 2 is_stmt 1 view .LVU148
+ 479              		.loc 1 242 10 is_stmt 0 view .LVU149
+ 480 0018 8DF80430 		strb	r3, [sp, #4]
+ 243:User/dm_motor_drv.c **** 	data[5] = 0xFF;
+ 481              		.loc 1 243 2 is_stmt 1 view .LVU150
+ 482              		.loc 1 243 10 is_stmt 0 view .LVU151
+ 483 001c 8DF80530 		strb	r3, [sp, #5]
+ 244:User/dm_motor_drv.c **** 	data[6] = 0xFF;
+ 484              		.loc 1 244 2 is_stmt 1 view .LVU152
+ 485              		.loc 1 244 10 is_stmt 0 view .LVU153
+ 486 0020 8DF80630 		strb	r3, [sp, #6]
+ 245:User/dm_motor_drv.c **** 	data[7] = 0xFD;
+ 487              		.loc 1 245 2 is_stmt 1 view .LVU154
+ 488              		.loc 1 245 10 is_stmt 0 view .LVU155
+ 489 0024 FD23     		movs	r3, #253
+ 490 0026 8DF80730 		strb	r3, [sp, #7]
+ 246:User/dm_motor_drv.c **** 	
+ 247:User/dm_motor_drv.c **** 	fdcanx_send_data(hcan, id, data, 8);
+ 491              		.loc 1 247 2 is_stmt 1 view .LVU156
+ 492 002a 0823     		movs	r3, #8
+ 493 002c 6A46     		mov	r2, sp
+ 494              	.LVL33:
+ 495              		.loc 1 247 2 is_stmt 0 view .LVU157
+ARM GAS  /tmp/ccS5fZTm.s 			page 15
+
+
+ 496 002e 89B2     		uxth	r1, r1
+ 497              		.loc 1 247 2 view .LVU158
+ 498 0030 FFF7FEFF 		bl	fdcanx_send_data
+ 499              	.LVL34:
+ 248:User/dm_motor_drv.c **** }
+ 500              		.loc 1 248 1 view .LVU159
+ 501 0034 03B0     		add	sp, sp, #12
+ 502              	.LCFI7:
+ 503              		.cfi_def_cfa_offset 4
+ 504              		@ sp needed
+ 505 0036 5DF804FB 		ldr	pc, [sp], #4
+ 506              		.cfi_endproc
+ 507              	.LFE153:
+ 509              		.section	.text.dm_motor_disable,"ax",%progbits
+ 510              		.align	1
+ 511              		.global	dm_motor_disable
+ 512              		.syntax unified
+ 513              		.thumb
+ 514              		.thumb_func
+ 515              		.fpu fpv5-d16
+ 517              	dm_motor_disable:
+ 518              	.LVL35:
+ 519              	.LFB145:
+  44:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 520              		.loc 1 44 1 is_stmt 1 view -0
+ 521              		.cfi_startproc
+ 522              		@ args = 0, pretend = 0, frame = 0
+ 523              		@ frame_needed = 0, uses_anonymous_args = 0
+  44:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 524              		.loc 1 44 1 is_stmt 0 view .LVU161
+ 525 0000 10B5     		push	{r4, lr}
+ 526              	.LCFI8:
+ 527              		.cfi_def_cfa_offset 8
+ 528              		.cfi_offset 4, -8
+ 529              		.cfi_offset 14, -4
+ 530 0002 0C46     		mov	r4, r1
+  45:User/dm_motor_drv.c **** 	{
+ 531              		.loc 1 45 2 is_stmt 1 view .LVU162
+  45:User/dm_motor_drv.c **** 	{
+ 532              		.loc 1 45 20 is_stmt 0 view .LVU163
+ 533 0004 91F83C30 		ldrb	r3, [r1, #60]	@ zero_extendqisi2
+  45:User/dm_motor_drv.c **** 	{
+ 534              		.loc 1 45 2 view .LVU164
+ 535 0008 013B     		subs	r3, r3, #1
+ 536 000a 032B     		cmp	r3, #3
+ 537 000c 07D8     		bhi	.L19
+ 538 000e DFE803F0 		tbb	[pc, r3]
+ 539              	.L21:
+ 540 0012 02       		.byte	(.L24-.L21)/2
+ 541 0013 0A       		.byte	(.L23-.L21)/2
+ 542 0014 10       		.byte	(.L22-.L21)/2
+ 543 0015 16       		.byte	(.L20-.L21)/2
+ 544              		.p2align 1
+ 545              	.L24:
+  48:User/dm_motor_drv.c **** 			break;
+ 546              		.loc 1 48 4 is_stmt 1 view .LVU165
+ 547 0016 0022     		movs	r2, #0
+ARM GAS  /tmp/ccS5fZTm.s 			page 16
+
+
+ 548 0018 0988     		ldrh	r1, [r1]
+ 549              	.LVL36:
+  48:User/dm_motor_drv.c **** 			break;
+ 550              		.loc 1 48 4 is_stmt 0 view .LVU166
+ 551 001a FFF7FEFF 		bl	disable_motor_mode
+ 552              	.LVL37:
+  49:User/dm_motor_drv.c **** 		case pos_mode:
+ 553              		.loc 1 49 4 is_stmt 1 view .LVU167
+ 554              	.L19:
+  60:User/dm_motor_drv.c **** }
+ 555              		.loc 1 60 2 view .LVU168
+ 556 001e 2046     		mov	r0, r4
+ 557 0020 FFF7FEFF 		bl	dm_motor_clear_para
+ 558              	.LVL38:
+  61:User/dm_motor_drv.c **** /**
+ 559              		.loc 1 61 1 is_stmt 0 view .LVU169
+ 560 0024 10BD     		pop	{r4, pc}
+ 561              	.LVL39:
+ 562              	.L23:
+  51:User/dm_motor_drv.c **** 			break;
+ 563              		.loc 1 51 4 is_stmt 1 view .LVU170
+ 564 0026 4FF48072 		mov	r2, #256
+ 565 002a 0988     		ldrh	r1, [r1]
+ 566              	.LVL40:
+  51:User/dm_motor_drv.c **** 			break;
+ 567              		.loc 1 51 4 is_stmt 0 view .LVU171
+ 568 002c FFF7FEFF 		bl	disable_motor_mode
+ 569              	.LVL41:
+  52:User/dm_motor_drv.c **** 		case spd_mode:
+ 570              		.loc 1 52 4 is_stmt 1 view .LVU172
+ 571 0030 F5E7     		b	.L19
+ 572              	.LVL42:
+ 573              	.L22:
+  54:User/dm_motor_drv.c **** 			break;
+ 574              		.loc 1 54 4 view .LVU173
+ 575 0032 4FF40072 		mov	r2, #512
+ 576 0036 0988     		ldrh	r1, [r1]
+ 577              	.LVL43:
+  54:User/dm_motor_drv.c **** 			break;
+ 578              		.loc 1 54 4 is_stmt 0 view .LVU174
+ 579 0038 FFF7FEFF 		bl	disable_motor_mode
+ 580              	.LVL44:
+  55:User/dm_motor_drv.c **** 		case psi_mode:
+ 581              		.loc 1 55 4 is_stmt 1 view .LVU175
+ 582 003c EFE7     		b	.L19
+ 583              	.LVL45:
+ 584              	.L20:
+  57:User/dm_motor_drv.c **** 			break;
+ 585              		.loc 1 57 4 view .LVU176
+ 586 003e 4FF44072 		mov	r2, #768
+ 587 0042 0988     		ldrh	r1, [r1]
+ 588              	.LVL46:
+  57:User/dm_motor_drv.c **** 			break;
+ 589              		.loc 1 57 4 is_stmt 0 view .LVU177
+ 590 0044 FFF7FEFF 		bl	disable_motor_mode
+ 591              	.LVL47:
+  58:User/dm_motor_drv.c **** 	}	
+ARM GAS  /tmp/ccS5fZTm.s 			page 17
+
+
+ 592              		.loc 1 58 4 is_stmt 1 view .LVU178
+ 593 0048 E9E7     		b	.L19
+ 594              		.cfi_endproc
+ 595              	.LFE145:
+ 597              		.section	.text.save_pos_zero,"ax",%progbits
+ 598              		.align	1
+ 599              		.global	save_pos_zero
+ 600              		.syntax unified
+ 601              		.thumb
+ 602              		.thumb_func
+ 603              		.fpu fpv5-d16
+ 605              	save_pos_zero:
+ 606              	.LVL48:
+ 607              	.LFB154:
+ 249:User/dm_motor_drv.c **** /**
+ 250:User/dm_motor_drv.c **** ************************************************************************
+ 251:User/dm_motor_drv.c **** * @brief:      	save_pos_zero: 保存位置零点函数
+ 252:User/dm_motor_drv.c **** * @param[in]:   hcan:     指向CAN_HandleTypeDef结构的指针
+ 253:User/dm_motor_drv.c **** * @param[in]:   motor_id: 电机ID，指定目标电机
+ 254:User/dm_motor_drv.c **** * @param[in]:   mode_id:  模式ID，指定要保存位置零点的模式
+ 255:User/dm_motor_drv.c **** * @retval:     	void
+ 256:User/dm_motor_drv.c **** * @details:    	通过CAN总线向特定电机发送保存位置零点的命令
+ 257:User/dm_motor_drv.c **** ************************************************************************
+ 258:User/dm_motor_drv.c **** **/
+ 259:User/dm_motor_drv.c **** void save_pos_zero(hcan_t* hcan, uint16_t motor_id, uint16_t mode_id)
+ 260:User/dm_motor_drv.c **** {
+ 608              		.loc 1 260 1 view -0
+ 609              		.cfi_startproc
+ 610              		@ args = 0, pretend = 0, frame = 8
+ 611              		@ frame_needed = 0, uses_anonymous_args = 0
+ 612              		.loc 1 260 1 is_stmt 0 view .LVU180
+ 613 0000 00B5     		push	{lr}
+ 614              	.LCFI9:
+ 615              		.cfi_def_cfa_offset 4
+ 616              		.cfi_offset 14, -4
+ 617 0002 83B0     		sub	sp, sp, #12
+ 618              	.LCFI10:
+ 619              		.cfi_def_cfa_offset 16
+ 261:User/dm_motor_drv.c **** 	uint8_t data[8];
+ 620              		.loc 1 261 2 is_stmt 1 view .LVU181
+ 262:User/dm_motor_drv.c **** 	uint16_t id = motor_id + mode_id;
+ 621              		.loc 1 262 2 view .LVU182
+ 622              		.loc 1 262 11 is_stmt 0 view .LVU183
+ 623 0004 1144     		add	r1, r1, r2
+ 624              	.LVL49:
+ 263:User/dm_motor_drv.c **** 	
+ 264:User/dm_motor_drv.c **** 	data[0] = 0xFF;
+ 625              		.loc 1 264 2 is_stmt 1 view .LVU184
+ 626              		.loc 1 264 10 is_stmt 0 view .LVU185
+ 627 0006 FF23     		movs	r3, #255
+ 628 0008 8DF80030 		strb	r3, [sp]
+ 265:User/dm_motor_drv.c **** 	data[1] = 0xFF;
+ 629              		.loc 1 265 2 is_stmt 1 view .LVU186
+ 630              		.loc 1 265 10 is_stmt 0 view .LVU187
+ 631 000c 8DF80130 		strb	r3, [sp, #1]
+ 266:User/dm_motor_drv.c **** 	data[2] = 0xFF;
+ 632              		.loc 1 266 2 is_stmt 1 view .LVU188
+ARM GAS  /tmp/ccS5fZTm.s 			page 18
+
+
+ 633              		.loc 1 266 10 is_stmt 0 view .LVU189
+ 634 0010 8DF80230 		strb	r3, [sp, #2]
+ 267:User/dm_motor_drv.c **** 	data[3] = 0xFF;
+ 635              		.loc 1 267 2 is_stmt 1 view .LVU190
+ 636              		.loc 1 267 10 is_stmt 0 view .LVU191
+ 637 0014 8DF80330 		strb	r3, [sp, #3]
+ 268:User/dm_motor_drv.c **** 	data[4] = 0xFF;
+ 638              		.loc 1 268 2 is_stmt 1 view .LVU192
+ 639              		.loc 1 268 10 is_stmt 0 view .LVU193
+ 640 0018 8DF80430 		strb	r3, [sp, #4]
+ 269:User/dm_motor_drv.c **** 	data[5] = 0xFF;
+ 641              		.loc 1 269 2 is_stmt 1 view .LVU194
+ 642              		.loc 1 269 10 is_stmt 0 view .LVU195
+ 643 001c 8DF80530 		strb	r3, [sp, #5]
+ 270:User/dm_motor_drv.c **** 	data[6] = 0xFF;
+ 644              		.loc 1 270 2 is_stmt 1 view .LVU196
+ 645              		.loc 1 270 10 is_stmt 0 view .LVU197
+ 646 0020 8DF80630 		strb	r3, [sp, #6]
+ 271:User/dm_motor_drv.c **** 	data[7] = 0xFE;
+ 647              		.loc 1 271 2 is_stmt 1 view .LVU198
+ 648              		.loc 1 271 10 is_stmt 0 view .LVU199
+ 649 0024 FE23     		movs	r3, #254
+ 650 0026 8DF80730 		strb	r3, [sp, #7]
+ 272:User/dm_motor_drv.c **** 	
+ 273:User/dm_motor_drv.c **** 	fdcanx_send_data(hcan, id, data, 8);
+ 651              		.loc 1 273 2 is_stmt 1 view .LVU200
+ 652 002a 0823     		movs	r3, #8
+ 653 002c 6A46     		mov	r2, sp
+ 654              	.LVL50:
+ 655              		.loc 1 273 2 is_stmt 0 view .LVU201
+ 656 002e 89B2     		uxth	r1, r1
+ 657              		.loc 1 273 2 view .LVU202
+ 658 0030 FFF7FEFF 		bl	fdcanx_send_data
+ 659              	.LVL51:
+ 274:User/dm_motor_drv.c **** }
+ 660              		.loc 1 274 1 view .LVU203
+ 661 0034 03B0     		add	sp, sp, #12
+ 662              	.LCFI11:
+ 663              		.cfi_def_cfa_offset 4
+ 664              		@ sp needed
+ 665 0036 5DF804FB 		ldr	pc, [sp], #4
+ 666              		.cfi_endproc
+ 667              	.LFE154:
+ 669              		.section	.text.clear_err,"ax",%progbits
+ 670              		.align	1
+ 671              		.global	clear_err
+ 672              		.syntax unified
+ 673              		.thumb
+ 674              		.thumb_func
+ 675              		.fpu fpv5-d16
+ 677              	clear_err:
+ 678              	.LVL52:
+ 679              	.LFB155:
+ 275:User/dm_motor_drv.c **** /**
+ 276:User/dm_motor_drv.c **** ************************************************************************
+ 277:User/dm_motor_drv.c **** * @brief:      	clear_err: 清除电机错误函数
+ 278:User/dm_motor_drv.c **** * @param[in]:   hcan:     指向CAN_HandleTypeDef结构的指针
+ARM GAS  /tmp/ccS5fZTm.s 			page 19
+
+
+ 279:User/dm_motor_drv.c **** * @param[in]:   motor_id: 电机ID，指定目标电机
+ 280:User/dm_motor_drv.c **** * @param[in]:   mode_id:  模式ID，指定要清除错误的模式
+ 281:User/dm_motor_drv.c **** * @retval:     	void
+ 282:User/dm_motor_drv.c **** * @details:    	通过CAN总线向特定电机发送清除错误的命令。
+ 283:User/dm_motor_drv.c **** ************************************************************************
+ 284:User/dm_motor_drv.c **** **/
+ 285:User/dm_motor_drv.c **** void clear_err(hcan_t* hcan, uint16_t motor_id, uint16_t mode_id)
+ 286:User/dm_motor_drv.c **** {
+ 680              		.loc 1 286 1 is_stmt 1 view -0
+ 681              		.cfi_startproc
+ 682              		@ args = 0, pretend = 0, frame = 8
+ 683              		@ frame_needed = 0, uses_anonymous_args = 0
+ 684              		.loc 1 286 1 is_stmt 0 view .LVU205
+ 685 0000 00B5     		push	{lr}
+ 686              	.LCFI12:
+ 687              		.cfi_def_cfa_offset 4
+ 688              		.cfi_offset 14, -4
+ 689 0002 83B0     		sub	sp, sp, #12
+ 690              	.LCFI13:
+ 691              		.cfi_def_cfa_offset 16
+ 287:User/dm_motor_drv.c **** 	uint8_t data[8];
+ 692              		.loc 1 287 2 is_stmt 1 view .LVU206
+ 288:User/dm_motor_drv.c **** 	uint16_t id = motor_id + mode_id;
+ 693              		.loc 1 288 2 view .LVU207
+ 694              		.loc 1 288 11 is_stmt 0 view .LVU208
+ 695 0004 1144     		add	r1, r1, r2
+ 696              	.LVL53:
+ 289:User/dm_motor_drv.c **** 	
+ 290:User/dm_motor_drv.c **** 	data[0] = 0xFF;
+ 697              		.loc 1 290 2 is_stmt 1 view .LVU209
+ 698              		.loc 1 290 10 is_stmt 0 view .LVU210
+ 699 0006 FF23     		movs	r3, #255
+ 700 0008 8DF80030 		strb	r3, [sp]
+ 291:User/dm_motor_drv.c **** 	data[1] = 0xFF;
+ 701              		.loc 1 291 2 is_stmt 1 view .LVU211
+ 702              		.loc 1 291 10 is_stmt 0 view .LVU212
+ 703 000c 8DF80130 		strb	r3, [sp, #1]
+ 292:User/dm_motor_drv.c **** 	data[2] = 0xFF;
+ 704              		.loc 1 292 2 is_stmt 1 view .LVU213
+ 705              		.loc 1 292 10 is_stmt 0 view .LVU214
+ 706 0010 8DF80230 		strb	r3, [sp, #2]
+ 293:User/dm_motor_drv.c **** 	data[3] = 0xFF;
+ 707              		.loc 1 293 2 is_stmt 1 view .LVU215
+ 708              		.loc 1 293 10 is_stmt 0 view .LVU216
+ 709 0014 8DF80330 		strb	r3, [sp, #3]
+ 294:User/dm_motor_drv.c **** 	data[4] = 0xFF;
+ 710              		.loc 1 294 2 is_stmt 1 view .LVU217
+ 711              		.loc 1 294 10 is_stmt 0 view .LVU218
+ 712 0018 8DF80430 		strb	r3, [sp, #4]
+ 295:User/dm_motor_drv.c **** 	data[5] = 0xFF;
+ 713              		.loc 1 295 2 is_stmt 1 view .LVU219
+ 714              		.loc 1 295 10 is_stmt 0 view .LVU220
+ 715 001c 8DF80530 		strb	r3, [sp, #5]
+ 296:User/dm_motor_drv.c **** 	data[6] = 0xFF;
+ 716              		.loc 1 296 2 is_stmt 1 view .LVU221
+ 717              		.loc 1 296 10 is_stmt 0 view .LVU222
+ 718 0020 8DF80630 		strb	r3, [sp, #6]
+ARM GAS  /tmp/ccS5fZTm.s 			page 20
+
+
+ 297:User/dm_motor_drv.c **** 	data[7] = 0xFB;
+ 719              		.loc 1 297 2 is_stmt 1 view .LVU223
+ 720              		.loc 1 297 10 is_stmt 0 view .LVU224
+ 721 0024 FB23     		movs	r3, #251
+ 722 0026 8DF80730 		strb	r3, [sp, #7]
+ 298:User/dm_motor_drv.c **** 	
+ 299:User/dm_motor_drv.c **** 	fdcanx_send_data(hcan, id, data, 8);
+ 723              		.loc 1 299 2 is_stmt 1 view .LVU225
+ 724 002a 0823     		movs	r3, #8
+ 725 002c 6A46     		mov	r2, sp
+ 726              	.LVL54:
+ 727              		.loc 1 299 2 is_stmt 0 view .LVU226
+ 728 002e 89B2     		uxth	r1, r1
+ 729              		.loc 1 299 2 view .LVU227
+ 730 0030 FFF7FEFF 		bl	fdcanx_send_data
+ 731              	.LVL55:
+ 300:User/dm_motor_drv.c **** }
+ 732              		.loc 1 300 1 view .LVU228
+ 733 0034 03B0     		add	sp, sp, #12
+ 734              	.LCFI14:
+ 735              		.cfi_def_cfa_offset 4
+ 736              		@ sp needed
+ 737 0036 5DF804FB 		ldr	pc, [sp], #4
+ 738              		.cfi_endproc
+ 739              	.LFE155:
+ 741              		.section	.text.dm_motor_clear_err,"ax",%progbits
+ 742              		.align	1
+ 743              		.global	dm_motor_clear_err
+ 744              		.syntax unified
+ 745              		.thumb
+ 746              		.thumb_func
+ 747              		.fpu fpv5-d16
+ 749              	dm_motor_clear_err:
+ 750              	.LVL56:
+ 751              	.LFB148:
+ 119:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 752              		.loc 1 119 1 is_stmt 1 view -0
+ 753              		.cfi_startproc
+ 754              		@ args = 0, pretend = 0, frame = 0
+ 755              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 756              		.loc 1 119 1 is_stmt 0 view .LVU230
+ 757 0000 08B5     		push	{r3, lr}
+ 758              	.LCFI15:
+ 759              		.cfi_def_cfa_offset 8
+ 760              		.cfi_offset 3, -8
+ 761              		.cfi_offset 14, -4
+ 120:User/dm_motor_drv.c **** 	{
+ 762              		.loc 1 120 2 is_stmt 1 view .LVU231
+ 120:User/dm_motor_drv.c **** 	{
+ 763              		.loc 1 120 20 is_stmt 0 view .LVU232
+ 764 0002 91F83C30 		ldrb	r3, [r1, #60]	@ zero_extendqisi2
+ 120:User/dm_motor_drv.c **** 	{
+ 765              		.loc 1 120 2 view .LVU233
+ 766 0006 013B     		subs	r3, r3, #1
+ 767 0008 032B     		cmp	r3, #3
+ 768 000a 07D8     		bhi	.L30
+ARM GAS  /tmp/ccS5fZTm.s 			page 21
+
+
+ 769 000c DFE803F0 		tbb	[pc, r3]
+ 770              	.L33:
+ 771 0010 02       		.byte	(.L36-.L33)/2
+ 772 0011 07       		.byte	(.L35-.L33)/2
+ 773 0012 0D       		.byte	(.L34-.L33)/2
+ 774 0013 13       		.byte	(.L32-.L33)/2
+ 775              		.p2align 1
+ 776              	.L36:
+ 123:User/dm_motor_drv.c **** 			break;
+ 777              		.loc 1 123 4 is_stmt 1 view .LVU234
+ 778 0014 0022     		movs	r2, #0
+ 779 0016 0988     		ldrh	r1, [r1]
+ 780              	.LVL57:
+ 123:User/dm_motor_drv.c **** 			break;
+ 781              		.loc 1 123 4 is_stmt 0 view .LVU235
+ 782 0018 FFF7FEFF 		bl	clear_err
+ 783              	.LVL58:
+ 124:User/dm_motor_drv.c **** 		case pos_mode:
+ 784              		.loc 1 124 4 is_stmt 1 view .LVU236
+ 785              	.L30:
+ 135:User/dm_motor_drv.c **** /**
+ 786              		.loc 1 135 1 is_stmt 0 view .LVU237
+ 787 001c 08BD     		pop	{r3, pc}
+ 788              	.LVL59:
+ 789              	.L35:
+ 126:User/dm_motor_drv.c **** 			break;
+ 790              		.loc 1 126 4 is_stmt 1 view .LVU238
+ 791 001e 4FF48072 		mov	r2, #256
+ 792 0022 0988     		ldrh	r1, [r1]
+ 793              	.LVL60:
+ 126:User/dm_motor_drv.c **** 			break;
+ 794              		.loc 1 126 4 is_stmt 0 view .LVU239
+ 795 0024 FFF7FEFF 		bl	clear_err
+ 796              	.LVL61:
+ 127:User/dm_motor_drv.c **** 		case spd_mode:
+ 797              		.loc 1 127 4 is_stmt 1 view .LVU240
+ 798 0028 F8E7     		b	.L30
+ 799              	.LVL62:
+ 800              	.L34:
+ 129:User/dm_motor_drv.c **** 			break;
+ 801              		.loc 1 129 4 view .LVU241
+ 802 002a 4FF40072 		mov	r2, #512
+ 803 002e 0988     		ldrh	r1, [r1]
+ 804              	.LVL63:
+ 129:User/dm_motor_drv.c **** 			break;
+ 805              		.loc 1 129 4 is_stmt 0 view .LVU242
+ 806 0030 FFF7FEFF 		bl	clear_err
+ 807              	.LVL64:
+ 130:User/dm_motor_drv.c **** 		case psi_mode:
+ 808              		.loc 1 130 4 is_stmt 1 view .LVU243
+ 809 0034 F2E7     		b	.L30
+ 810              	.LVL65:
+ 811              	.L32:
+ 132:User/dm_motor_drv.c **** 			break;
+ 812              		.loc 1 132 4 view .LVU244
+ 813 0036 4FF44072 		mov	r2, #768
+ 814 003a 0988     		ldrh	r1, [r1]
+ARM GAS  /tmp/ccS5fZTm.s 			page 22
+
+
+ 815              	.LVL66:
+ 132:User/dm_motor_drv.c **** 			break;
+ 816              		.loc 1 132 4 is_stmt 0 view .LVU245
+ 817 003c FFF7FEFF 		bl	clear_err
+ 818              	.LVL67:
+ 133:User/dm_motor_drv.c **** 	}	
+ 819              		.loc 1 133 4 is_stmt 1 view .LVU246
+ 135:User/dm_motor_drv.c **** /**
+ 820              		.loc 1 135 1 is_stmt 0 view .LVU247
+ 821 0040 ECE7     		b	.L30
+ 822              		.cfi_endproc
+ 823              	.LFE148:
+ 825              		.section	.text.mit_ctrl,"ax",%progbits
+ 826              		.align	1
+ 827              		.global	mit_ctrl
+ 828              		.syntax unified
+ 829              		.thumb
+ 830              		.thumb_func
+ 831              		.fpu fpv5-d16
+ 833              	mit_ctrl:
+ 834              	.LVL68:
+ 835              	.LFB156:
+ 301:User/dm_motor_drv.c **** /**
+ 302:User/dm_motor_drv.c **** ************************************************************************
+ 303:User/dm_motor_drv.c **** * @brief:      	mit_ctrl: MIT模式下的电机控制函数
+ 304:User/dm_motor_drv.c **** * @param[in]:   hcan:			指向CAN_HandleTypeDef结构的指针，用于指定CAN总线
+ 305:User/dm_motor_drv.c **** * @param[in]:   motor_id:	电机ID，指定目标电机
+ 306:User/dm_motor_drv.c **** * @param[in]:   pos:			位置给定值
+ 307:User/dm_motor_drv.c **** * @param[in]:   vel:			速度给定值
+ 308:User/dm_motor_drv.c **** * @param[in]:   kp:				位置比例系数
+ 309:User/dm_motor_drv.c **** * @param[in]:   kd:				位置微分系数
+ 310:User/dm_motor_drv.c **** * @param[in]:   torq:			转矩给定值
+ 311:User/dm_motor_drv.c **** * @retval:     	void
+ 312:User/dm_motor_drv.c **** * @details:    	通过CAN总线向电机发送MIT模式下的控制帧。
+ 313:User/dm_motor_drv.c **** ************************************************************************
+ 314:User/dm_motor_drv.c **** **/
+ 315:User/dm_motor_drv.c **** void mit_ctrl(hcan_t* hcan, motor_t *motor, uint16_t motor_id, float pos, float vel,float kp, float
+ 316:User/dm_motor_drv.c **** {
+ 836              		.loc 1 316 1 is_stmt 1 view -0
+ 837              		.cfi_startproc
+ 838              		@ args = 0, pretend = 0, frame = 16
+ 839              		@ frame_needed = 0, uses_anonymous_args = 0
+ 840              		.loc 1 316 1 is_stmt 0 view .LVU249
+ 841 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 842              	.LCFI16:
+ 843              		.cfi_def_cfa_offset 36
+ 844              		.cfi_offset 4, -36
+ 845              		.cfi_offset 5, -32
+ 846              		.cfi_offset 6, -28
+ 847              		.cfi_offset 7, -24
+ 848              		.cfi_offset 8, -20
+ 849              		.cfi_offset 9, -16
+ 850              		.cfi_offset 10, -12
+ 851              		.cfi_offset 11, -8
+ 852              		.cfi_offset 14, -4
+ 853 0004 2DED048B 		vpush.64	{d8, d9}
+ 854              	.LCFI17:
+ARM GAS  /tmp/ccS5fZTm.s 			page 23
+
+
+ 855              		.cfi_def_cfa_offset 52
+ 856              		.cfi_offset 80, -52
+ 857              		.cfi_offset 81, -48
+ 858              		.cfi_offset 82, -44
+ 859              		.cfi_offset 83, -40
+ 860 0008 85B0     		sub	sp, sp, #20
+ 861              	.LCFI18:
+ 862              		.cfi_def_cfa_offset 72
+ 863 000a 8246     		mov	r10, r0
+ 864 000c 0C46     		mov	r4, r1
+ 865 000e 0192     		str	r2, [sp, #4]
+ 866 0010 F0EE609A 		vmov.f32	s19, s1
+ 867 0014 F0EE418A 		vmov.f32	s17, s2
+ 868 0018 B0EE618A 		vmov.f32	s16, s3
+ 869 001c B0EE429A 		vmov.f32	s18, s4
+ 317:User/dm_motor_drv.c **** 	uint8_t data[8];
+ 870              		.loc 1 317 2 is_stmt 1 view .LVU250
+ 318:User/dm_motor_drv.c **** 	uint16_t pos_tmp,vel_tmp,kp_tmp,kd_tmp,tor_tmp;
+ 871              		.loc 1 318 2 view .LVU251
+ 319:User/dm_motor_drv.c **** 	uint16_t id = motor_id + MIT_MODE;
+ 872              		.loc 1 319 2 view .LVU252
+ 873              	.LVL69:
+ 320:User/dm_motor_drv.c **** 
+ 321:User/dm_motor_drv.c **** 	pos_tmp = float_to_uint(pos, -motor->tmp.PMAX, motor->tmp.PMAX, 16);
+ 874              		.loc 1 321 2 view .LVU253
+ 875              		.loc 1 321 42 is_stmt 0 view .LVU254
+ 876 0020 91ED2C1A 		vldr.32	s2, [r1, #176]
+ 877              	.LVL70:
+ 878              		.loc 1 321 12 view .LVU255
+ 879 0024 1020     		movs	r0, #16
+ 880              	.LVL71:
+ 881              		.loc 1 321 12 view .LVU256
+ 882 0026 F1EE410A 		vneg.f32	s1, s2
+ 883              	.LVL72:
+ 884              		.loc 1 321 12 view .LVU257
+ 885 002a FFF7FEFF 		bl	float_to_uint
+ 886              	.LVL73:
+ 887              		.loc 1 321 12 view .LVU258
+ 888 002e 8146     		mov	r9, r0
+ 889              		.loc 1 321 10 view .LVU259
+ 890 0030 1FFA80FB 		uxth	fp, r0
+ 891              	.LVL74:
+ 322:User/dm_motor_drv.c **** 	vel_tmp = float_to_uint(vel, -motor->tmp.VMAX, motor->tmp.VMAX, 12);
+ 892              		.loc 1 322 2 is_stmt 1 view .LVU260
+ 893              		.loc 1 322 42 is_stmt 0 view .LVU261
+ 894 0034 94ED2D1A 		vldr.32	s2, [r4, #180]
+ 895              		.loc 1 322 12 view .LVU262
+ 896 0038 0C20     		movs	r0, #12
+ 897 003a F1EE410A 		vneg.f32	s1, s2
+ 898 003e B0EE690A 		vmov.f32	s0, s19
+ 899 0042 FFF7FEFF 		bl	float_to_uint
+ 900              	.LVL75:
+ 901              		.loc 1 322 10 view .LVU263
+ 902 0046 1FFA80F8 		uxth	r8, r0
+ 903              	.LVL76:
+ 323:User/dm_motor_drv.c **** 	tor_tmp = float_to_uint(tor, -motor->tmp.TMAX, motor->tmp.TMAX, 12);
+ 904              		.loc 1 323 2 is_stmt 1 view .LVU264
+ARM GAS  /tmp/ccS5fZTm.s 			page 24
+
+
+ 905              		.loc 1 323 42 is_stmt 0 view .LVU265
+ 906 004a 94ED2E1A 		vldr.32	s2, [r4, #184]
+ 907              		.loc 1 323 12 view .LVU266
+ 908 004e 0C20     		movs	r0, #12
+ 909 0050 F1EE410A 		vneg.f32	s1, s2
+ 910 0054 B0EE490A 		vmov.f32	s0, s18
+ 911 0058 FFF7FEFF 		bl	float_to_uint
+ 912              	.LVL77:
+ 913 005c 0646     		mov	r6, r0
+ 914              		.loc 1 323 10 view .LVU267
+ 915 005e 84B2     		uxth	r4, r0
+ 916              	.LVL78:
+ 324:User/dm_motor_drv.c **** 	kp_tmp  = float_to_uint(kp,  KP_MIN, KP_MAX, 12);
+ 917              		.loc 1 324 2 is_stmt 1 view .LVU268
+ 918              		.loc 1 324 12 is_stmt 0 view .LVU269
+ 919 0060 9FED1F9A 		vldr.32	s18, .L40
+ 920              	.LVL79:
+ 921              		.loc 1 324 12 view .LVU270
+ 922 0064 0C20     		movs	r0, #12
+ 923 0066 9FED1F1A 		vldr.32	s2, .L40+4
+ 924 006a F0EE490A 		vmov.f32	s1, s18
+ 925 006e B0EE680A 		vmov.f32	s0, s17
+ 926 0072 FFF7FEFF 		bl	float_to_uint
+ 927              	.LVL80:
+ 928 0076 0746     		mov	r7, r0
+ 929              		.loc 1 324 10 view .LVU271
+ 930 0078 85B2     		uxth	r5, r0
+ 931              	.LVL81:
+ 325:User/dm_motor_drv.c **** 	kd_tmp  = float_to_uint(kd,  KD_MIN, KD_MAX, 12);
+ 932              		.loc 1 325 2 is_stmt 1 view .LVU272
+ 933              		.loc 1 325 12 is_stmt 0 view .LVU273
+ 934 007a 0C20     		movs	r0, #12
+ 935 007c B1EE041A 		vmov.f32	s2, #5.0e+0
+ 936 0080 F0EE490A 		vmov.f32	s1, s18
+ 937 0084 B0EE480A 		vmov.f32	s0, s16
+ 938 0088 FFF7FEFF 		bl	float_to_uint
+ 939              	.LVL82:
+ 940              		.loc 1 325 10 view .LVU274
+ 941 008c 83B2     		uxth	r3, r0
+ 942              	.LVL83:
+ 326:User/dm_motor_drv.c **** 
+ 327:User/dm_motor_drv.c **** 	data[0] = (pos_tmp >> 8);
+ 943              		.loc 1 327 2 is_stmt 1 view .LVU275
+ 944              		.loc 1 327 10 is_stmt 0 view .LVU276
+ 945 008e 4FEA1B2B 		lsr	fp, fp, #8
+ 946              	.LVL84:
+ 947              		.loc 1 327 10 view .LVU277
+ 948 0092 8DF808B0 		strb	fp, [sp, #8]
+ 328:User/dm_motor_drv.c **** 	data[1] = pos_tmp;
+ 949              		.loc 1 328 2 is_stmt 1 view .LVU278
+ 950              		.loc 1 328 10 is_stmt 0 view .LVU279
+ 951 0096 8DF80990 		strb	r9, [sp, #9]
+ 329:User/dm_motor_drv.c **** 	data[2] = (vel_tmp >> 4);
+ 952              		.loc 1 329 2 is_stmt 1 view .LVU280
+ 953              		.loc 1 329 10 is_stmt 0 view .LVU281
+ 954 009a 4FEA1812 		lsr	r2, r8, #4
+ 955 009e 8DF80A20 		strb	r2, [sp, #10]
+ARM GAS  /tmp/ccS5fZTm.s 			page 25
+
+
+ 330:User/dm_motor_drv.c **** 	data[3] = ((vel_tmp&0xF)<<4)|(kp_tmp>>8);
+ 956              		.loc 1 330 2 is_stmt 1 view .LVU282
+ 957              		.loc 1 330 30 is_stmt 0 view .LVU283
+ 958 00a2 2D0A     		lsrs	r5, r5, #8
+ 959              	.LVL85:
+ 960              		.loc 1 330 30 view .LVU284
+ 961 00a4 45EA0818 		orr	r8, r5, r8, lsl #4
+ 962              	.LVL86:
+ 963              		.loc 1 330 10 view .LVU285
+ 964 00a8 8DF80B80 		strb	r8, [sp, #11]
+ 331:User/dm_motor_drv.c **** 	data[4] = kp_tmp;
+ 965              		.loc 1 331 2 is_stmt 1 view .LVU286
+ 966              		.loc 1 331 10 is_stmt 0 view .LVU287
+ 967 00ac 8DF80C70 		strb	r7, [sp, #12]
+ 332:User/dm_motor_drv.c **** 	data[5] = (kd_tmp >> 4);
+ 968              		.loc 1 332 2 is_stmt 1 view .LVU288
+ 969              		.loc 1 332 10 is_stmt 0 view .LVU289
+ 970 00b0 C0F30B10 		ubfx	r0, r0, #4, #12
+ 971 00b4 8DF80D00 		strb	r0, [sp, #13]
+ 333:User/dm_motor_drv.c **** 	data[6] = ((kd_tmp&0xF)<<4)|(tor_tmp>>8);
+ 972              		.loc 1 333 2 is_stmt 1 view .LVU290
+ 973              		.loc 1 333 29 is_stmt 0 view .LVU291
+ 974 00b8 240A     		lsrs	r4, r4, #8
+ 975              	.LVL87:
+ 976              		.loc 1 333 29 view .LVU292
+ 977 00ba 44EA0314 		orr	r4, r4, r3, lsl #4
+ 978              		.loc 1 333 10 view .LVU293
+ 979 00be 8DF80E40 		strb	r4, [sp, #14]
+ 334:User/dm_motor_drv.c **** 	data[7] = tor_tmp;
+ 980              		.loc 1 334 2 is_stmt 1 view .LVU294
+ 981              		.loc 1 334 10 is_stmt 0 view .LVU295
+ 982 00c2 8DF80F60 		strb	r6, [sp, #15]
+ 335:User/dm_motor_drv.c **** 	
+ 336:User/dm_motor_drv.c **** 	fdcanx_send_data(hcan, id, data, 8);
+ 983              		.loc 1 336 2 is_stmt 1 view .LVU296
+ 984 00c6 0823     		movs	r3, #8
+ 985              	.LVL88:
+ 986              		.loc 1 336 2 is_stmt 0 view .LVU297
+ 987 00c8 0DEB0302 		add	r2, sp, r3
+ 988 00cc 0199     		ldr	r1, [sp, #4]
+ 989 00ce 5046     		mov	r0, r10
+ 990 00d0 FFF7FEFF 		bl	fdcanx_send_data
+ 991              	.LVL89:
+ 337:User/dm_motor_drv.c **** }
+ 992              		.loc 1 337 1 view .LVU298
+ 993 00d4 05B0     		add	sp, sp, #20
+ 994              	.LCFI19:
+ 995              		.cfi_def_cfa_offset 52
+ 996              		@ sp needed
+ 997 00d6 BDEC048B 		vldm	sp!, {d8-d9}
+ 998              	.LCFI20:
+ 999              		.cfi_restore 82
+ 1000              		.cfi_restore 83
+ 1001              		.cfi_restore 80
+ 1002              		.cfi_restore 81
+ 1003              		.cfi_def_cfa_offset 36
+ 1004              	.LVL90:
+ARM GAS  /tmp/ccS5fZTm.s 			page 26
+
+
+ 1005              		.loc 1 337 1 view .LVU299
+ 1006 00da BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1007              	.LVL91:
+ 1008              	.L41:
+ 1009              		.loc 1 337 1 view .LVU300
+ 1010 00de 00BF     		.align	2
+ 1011              	.L40:
+ 1012 00e0 00000000 		.word	0
+ 1013 00e4 0000FA43 		.word	1140457472
+ 1014              		.cfi_endproc
+ 1015              	.LFE156:
+ 1017              		.section	.text.pos_ctrl,"ax",%progbits
+ 1018              		.align	1
+ 1019              		.global	pos_ctrl
+ 1020              		.syntax unified
+ 1021              		.thumb
+ 1022              		.thumb_func
+ 1023              		.fpu fpv5-d16
+ 1025              	pos_ctrl:
+ 1026              	.LVL92:
+ 1027              	.LFB157:
+ 338:User/dm_motor_drv.c **** /**
+ 339:User/dm_motor_drv.c **** ************************************************************************
+ 340:User/dm_motor_drv.c **** * @brief:      	pos_speed_ctrl: 位置速度控制函数
+ 341:User/dm_motor_drv.c **** * @param[in]:   hcan:			指向CAN_HandleTypeDef结构的指针，用于指定CAN总线
+ 342:User/dm_motor_drv.c **** * @param[in]:   motor_id:	电机ID，指定目标电机
+ 343:User/dm_motor_drv.c **** * @param[in]:   vel:			速度给定值
+ 344:User/dm_motor_drv.c **** * @retval:     	void
+ 345:User/dm_motor_drv.c **** * @details:    	通过CAN总线向电机发送位置速度控制命令
+ 346:User/dm_motor_drv.c **** ************************************************************************
+ 347:User/dm_motor_drv.c **** **/
+ 348:User/dm_motor_drv.c **** void pos_ctrl(hcan_t* hcan,uint16_t motor_id, float pos, float vel)
+ 349:User/dm_motor_drv.c **** {
+ 1028              		.loc 1 349 1 is_stmt 1 view -0
+ 1029              		.cfi_startproc
+ 1030              		@ args = 0, pretend = 0, frame = 16
+ 1031              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1032              		.loc 1 349 1 is_stmt 0 view .LVU302
+ 1033 0000 00B5     		push	{lr}
+ 1034              	.LCFI21:
+ 1035              		.cfi_def_cfa_offset 4
+ 1036              		.cfi_offset 14, -4
+ 1037 0002 85B0     		sub	sp, sp, #20
+ 1038              	.LCFI22:
+ 1039              		.cfi_def_cfa_offset 24
+ 1040 0004 8DED000A 		vstr.32	s0, [sp]
+ 1041 0008 CDED010A 		vstr.32	s1, [sp, #4]
+ 350:User/dm_motor_drv.c **** 	uint16_t id;
+ 1042              		.loc 1 350 2 is_stmt 1 view .LVU303
+ 351:User/dm_motor_drv.c **** 	uint8_t *pbuf, *vbuf;
+ 1043              		.loc 1 351 2 view .LVU304
+ 352:User/dm_motor_drv.c **** 	uint8_t data[8];
+ 1044              		.loc 1 352 2 view .LVU305
+ 353:User/dm_motor_drv.c **** 	
+ 354:User/dm_motor_drv.c **** 	id = motor_id + POS_MODE;
+ 1045              		.loc 1 354 2 view .LVU306
+ 1046              		.loc 1 354 5 is_stmt 0 view .LVU307
+ARM GAS  /tmp/ccS5fZTm.s 			page 27
+
+
+ 1047 000c 01F58071 		add	r1, r1, #256
+ 1048              	.LVL93:
+ 355:User/dm_motor_drv.c **** 	pbuf=(uint8_t*)&pos;
+ 1049              		.loc 1 355 2 is_stmt 1 view .LVU308
+ 356:User/dm_motor_drv.c **** 	vbuf=(uint8_t*)&vel;
+ 1050              		.loc 1 356 2 view .LVU309
+ 357:User/dm_motor_drv.c **** 	
+ 358:User/dm_motor_drv.c **** 	data[0] = *pbuf;
+ 1051              		.loc 1 358 2 view .LVU310
+ 1052              		.loc 1 358 12 is_stmt 0 view .LVU311
+ 1053 0010 009B     		ldr	r3, [sp]
+ 1054              		.loc 1 358 10 view .LVU312
+ 1055 0012 8DF80830 		strb	r3, [sp, #8]
+ 359:User/dm_motor_drv.c **** 	data[1] = *(pbuf+1);
+ 1056              		.loc 1 359 2 is_stmt 1 view .LVU313
+ 1057              		.loc 1 359 10 is_stmt 0 view .LVU314
+ 1058 0016 C3F30722 		ubfx	r2, r3, #8, #8
+ 1059 001a 8DF80920 		strb	r2, [sp, #9]
+ 360:User/dm_motor_drv.c **** 	data[2] = *(pbuf+2);
+ 1060              		.loc 1 360 2 is_stmt 1 view .LVU315
+ 1061              		.loc 1 360 10 is_stmt 0 view .LVU316
+ 1062 001e C3F30742 		ubfx	r2, r3, #16, #8
+ 1063 0022 8DF80A20 		strb	r2, [sp, #10]
+ 361:User/dm_motor_drv.c **** 	data[3] = *(pbuf+3);
+ 1064              		.loc 1 361 2 is_stmt 1 view .LVU317
+ 1065              		.loc 1 361 10 is_stmt 0 view .LVU318
+ 1066 0026 C3F30763 		ubfx	r3, r3, #24, #8
+ 1067 002a 8DF80B30 		strb	r3, [sp, #11]
+ 362:User/dm_motor_drv.c **** 
+ 363:User/dm_motor_drv.c **** 	data[4] = *vbuf;
+ 1068              		.loc 1 363 2 is_stmt 1 view .LVU319
+ 1069              		.loc 1 363 12 is_stmt 0 view .LVU320
+ 1070 002e 019B     		ldr	r3, [sp, #4]
+ 1071              		.loc 1 363 10 view .LVU321
+ 1072 0030 8DF80C30 		strb	r3, [sp, #12]
+ 364:User/dm_motor_drv.c **** 	data[5] = *(vbuf+1);
+ 1073              		.loc 1 364 2 is_stmt 1 view .LVU322
+ 1074              		.loc 1 364 10 is_stmt 0 view .LVU323
+ 1075 0034 C3F30722 		ubfx	r2, r3, #8, #8
+ 1076 0038 8DF80D20 		strb	r2, [sp, #13]
+ 365:User/dm_motor_drv.c **** 	data[6] = *(vbuf+2);
+ 1077              		.loc 1 365 2 is_stmt 1 view .LVU324
+ 1078              		.loc 1 365 10 is_stmt 0 view .LVU325
+ 1079 003c C3F30742 		ubfx	r2, r3, #16, #8
+ 1080 0040 8DF80E20 		strb	r2, [sp, #14]
+ 366:User/dm_motor_drv.c **** 	data[7] = *(vbuf+3);
+ 1081              		.loc 1 366 2 is_stmt 1 view .LVU326
+ 1082              		.loc 1 366 10 is_stmt 0 view .LVU327
+ 1083 0044 C3F30763 		ubfx	r3, r3, #24, #8
+ 1084 0048 8DF80F30 		strb	r3, [sp, #15]
+ 367:User/dm_motor_drv.c **** 	
+ 368:User/dm_motor_drv.c **** 	fdcanx_send_data(hcan, id, data, 8);
+ 1085              		.loc 1 368 2 is_stmt 1 view .LVU328
+ 1086 004c 0823     		movs	r3, #8
+ 1087 004e 0DEB0302 		add	r2, sp, r3
+ 1088 0052 89B2     		uxth	r1, r1
+ 1089              		.loc 1 368 2 is_stmt 0 view .LVU329
+ARM GAS  /tmp/ccS5fZTm.s 			page 28
+
+
+ 1090 0054 FFF7FEFF 		bl	fdcanx_send_data
+ 1091              	.LVL94:
+ 369:User/dm_motor_drv.c **** }
+ 1092              		.loc 1 369 1 view .LVU330
+ 1093 0058 05B0     		add	sp, sp, #20
+ 1094              	.LCFI23:
+ 1095              		.cfi_def_cfa_offset 4
+ 1096              	.LVL95:
+ 1097              		.loc 1 369 1 view .LVU331
+ 1098              		@ sp needed
+ 1099 005a 5DF804FB 		ldr	pc, [sp], #4
+ 1100              		.loc 1 369 1 view .LVU332
+ 1101              		.cfi_endproc
+ 1102              	.LFE157:
+ 1104              		.section	.text.spd_ctrl,"ax",%progbits
+ 1105              		.align	1
+ 1106              		.global	spd_ctrl
+ 1107              		.syntax unified
+ 1108              		.thumb
+ 1109              		.thumb_func
+ 1110              		.fpu fpv5-d16
+ 1112              	spd_ctrl:
+ 1113              	.LVL96:
+ 1114              	.LFB158:
+ 370:User/dm_motor_drv.c **** /**
+ 371:User/dm_motor_drv.c **** ************************************************************************
+ 372:User/dm_motor_drv.c **** * @brief:      	speed_ctrl: 速度控制函数
+ 373:User/dm_motor_drv.c **** * @param[in]:   hcan: 		指向CAN_HandleTypeDef结构的指针，用于指定CAN总线
+ 374:User/dm_motor_drv.c **** * @param[in]:   motor_id: 电机ID，指定目标电机
+ 375:User/dm_motor_drv.c **** * @param[in]:   vel: 			速度给定值
+ 376:User/dm_motor_drv.c **** * @retval:     	void
+ 377:User/dm_motor_drv.c **** * @details:    	通过CAN总线向电机发送速度控制命令
+ 378:User/dm_motor_drv.c **** ************************************************************************
+ 379:User/dm_motor_drv.c **** **/
+ 380:User/dm_motor_drv.c **** void spd_ctrl(hcan_t* hcan, uint16_t motor_id, float vel)
+ 381:User/dm_motor_drv.c **** {
+ 1115              		.loc 1 381 1 is_stmt 1 view -0
+ 1116              		.cfi_startproc
+ 1117              		@ args = 0, pretend = 0, frame = 16
+ 1118              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1119              		.loc 1 381 1 is_stmt 0 view .LVU334
+ 1120 0000 00B5     		push	{lr}
+ 1121              	.LCFI24:
+ 1122              		.cfi_def_cfa_offset 4
+ 1123              		.cfi_offset 14, -4
+ 1124 0002 85B0     		sub	sp, sp, #20
+ 1125              	.LCFI25:
+ 1126              		.cfi_def_cfa_offset 24
+ 1127 0004 8DED010A 		vstr.32	s0, [sp, #4]
+ 382:User/dm_motor_drv.c **** 	uint16_t id;
+ 1128              		.loc 1 382 2 is_stmt 1 view .LVU335
+ 383:User/dm_motor_drv.c **** 	uint8_t *vbuf;
+ 1129              		.loc 1 383 2 view .LVU336
+ 384:User/dm_motor_drv.c **** 	uint8_t data[4];
+ 1130              		.loc 1 384 2 view .LVU337
+ 385:User/dm_motor_drv.c **** 	
+ 386:User/dm_motor_drv.c **** 	id = motor_id + SPD_MODE;
+ARM GAS  /tmp/ccS5fZTm.s 			page 29
+
+
+ 1131              		.loc 1 386 2 view .LVU338
+ 1132              		.loc 1 386 5 is_stmt 0 view .LVU339
+ 1133 0008 01F50071 		add	r1, r1, #512
+ 1134              	.LVL97:
+ 387:User/dm_motor_drv.c **** 	vbuf=(uint8_t*)&vel;
+ 1135              		.loc 1 387 2 is_stmt 1 view .LVU340
+ 388:User/dm_motor_drv.c **** 	
+ 389:User/dm_motor_drv.c **** 	data[0] = *vbuf;
+ 1136              		.loc 1 389 2 view .LVU341
+ 1137              		.loc 1 389 12 is_stmt 0 view .LVU342
+ 1138 000c 019B     		ldr	r3, [sp, #4]
+ 1139              		.loc 1 389 10 view .LVU343
+ 1140 000e 8DF80C30 		strb	r3, [sp, #12]
+ 390:User/dm_motor_drv.c **** 	data[1] = *(vbuf+1);
+ 1141              		.loc 1 390 2 is_stmt 1 view .LVU344
+ 1142              		.loc 1 390 10 is_stmt 0 view .LVU345
+ 1143 0012 C3F30722 		ubfx	r2, r3, #8, #8
+ 1144 0016 8DF80D20 		strb	r2, [sp, #13]
+ 391:User/dm_motor_drv.c **** 	data[2] = *(vbuf+2);
+ 1145              		.loc 1 391 2 is_stmt 1 view .LVU346
+ 1146              		.loc 1 391 10 is_stmt 0 view .LVU347
+ 1147 001a C3F30742 		ubfx	r2, r3, #16, #8
+ 1148 001e 8DF80E20 		strb	r2, [sp, #14]
+ 392:User/dm_motor_drv.c **** 	data[3] = *(vbuf+3);
+ 1149              		.loc 1 392 2 is_stmt 1 view .LVU348
+ 1150              		.loc 1 392 10 is_stmt 0 view .LVU349
+ 1151 0022 C3F30763 		ubfx	r3, r3, #24, #8
+ 1152 0026 8DF80F30 		strb	r3, [sp, #15]
+ 393:User/dm_motor_drv.c **** 	
+ 394:User/dm_motor_drv.c **** 	fdcanx_send_data(hcan, id, data, 4);
+ 1153              		.loc 1 394 2 is_stmt 1 view .LVU350
+ 1154 002a 0423     		movs	r3, #4
+ 1155 002c 03AA     		add	r2, sp, #12
+ 1156 002e 89B2     		uxth	r1, r1
+ 1157              		.loc 1 394 2 is_stmt 0 view .LVU351
+ 1158 0030 FFF7FEFF 		bl	fdcanx_send_data
+ 1159              	.LVL98:
+ 395:User/dm_motor_drv.c **** }
+ 1160              		.loc 1 395 1 view .LVU352
+ 1161 0034 05B0     		add	sp, sp, #20
+ 1162              	.LCFI26:
+ 1163              		.cfi_def_cfa_offset 4
+ 1164              		@ sp needed
+ 1165 0036 5DF804FB 		ldr	pc, [sp], #4
+ 1166              		.loc 1 395 1 view .LVU353
+ 1167              		.cfi_endproc
+ 1168              	.LFE158:
+ 1170              		.section	.text.psi_ctrl,"ax",%progbits
+ 1171              		.align	1
+ 1172              		.global	psi_ctrl
+ 1173              		.syntax unified
+ 1174              		.thumb
+ 1175              		.thumb_func
+ 1176              		.fpu fpv5-d16
+ 1178              	psi_ctrl:
+ 1179              	.LVL99:
+ 1180              	.LFB159:
+ARM GAS  /tmp/ccS5fZTm.s 			page 30
+
+
+ 396:User/dm_motor_drv.c **** 
+ 397:User/dm_motor_drv.c **** /**
+ 398:User/dm_motor_drv.c **** ************************************************************************
+ 399:User/dm_motor_drv.c **** * @brief:      	pos_speed_ctrl: 混控模式
+ 400:User/dm_motor_drv.c **** * @param[in]:   hcan:			指向CAN_HandleTypeDef结构的指针，用于指定CAN总线
+ 401:User/dm_motor_drv.c **** * @param[in]:   motor_id:	电机ID，指定目标电机
+ 402:User/dm_motor_drv.c **** * @param[in]:   pos:			位置给定值
+ 403:User/dm_motor_drv.c **** * @param[in]:   vel:			速度给定值
+ 404:User/dm_motor_drv.c **** * @param[in]:   i:				电流给定值
+ 405:User/dm_motor_drv.c **** * @retval:     	void
+ 406:User/dm_motor_drv.c **** * @details:    	通过CAN总线向电机发送位置速度控制命令
+ 407:User/dm_motor_drv.c **** ************************************************************************
+ 408:User/dm_motor_drv.c **** **/
+ 409:User/dm_motor_drv.c **** void psi_ctrl(hcan_t* hcan, uint16_t motor_id, float pos, float vel, float cur)
+ 410:User/dm_motor_drv.c **** {
+ 1181              		.loc 1 410 1 is_stmt 1 view -0
+ 1182              		.cfi_startproc
+ 1183              		@ args = 0, pretend = 0, frame = 16
+ 1184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1185              		.loc 1 410 1 is_stmt 0 view .LVU355
+ 1186 0000 00B5     		push	{lr}
+ 1187              	.LCFI27:
+ 1188              		.cfi_def_cfa_offset 4
+ 1189              		.cfi_offset 14, -4
+ 1190 0002 85B0     		sub	sp, sp, #20
+ 1191              	.LCFI28:
+ 1192              		.cfi_def_cfa_offset 24
+ 1193 0004 8DED010A 		vstr.32	s0, [sp, #4]
+ 411:User/dm_motor_drv.c **** 	uint16_t id;
+ 1194              		.loc 1 411 2 is_stmt 1 view .LVU356
+ 412:User/dm_motor_drv.c **** 	uint8_t *pbuf, *vbuf, *ibuf;
+ 1195              		.loc 1 412 2 view .LVU357
+ 413:User/dm_motor_drv.c **** 	uint8_t data[8];
+ 1196              		.loc 1 413 2 view .LVU358
+ 414:User/dm_motor_drv.c **** 	
+ 415:User/dm_motor_drv.c **** 	uint16_t u16_vel = vel*100;
+ 1197              		.loc 1 415 2 view .LVU359
+ 1198              		.loc 1 415 24 is_stmt 0 view .LVU360
+ 1199 0008 DFED1B7A 		vldr.32	s15, .L48
+ 1200 000c 60EEA70A 		vmul.f32	s1, s1, s15
+ 1201              	.LVL100:
+ 1202              		.loc 1 415 11 view .LVU361
+ 1203 0010 FCEEE07A 		vcvt.u32.f32	s15, s1
+ 1204 0014 17EE902A 		vmov	r2, s15	@ int
+ 1205              	.LVL101:
+ 416:User/dm_motor_drv.c **** 	uint16_t u16_cur  = cur*10000;
+ 1206              		.loc 1 416 2 is_stmt 1 view .LVU362
+ 1207              		.loc 1 416 25 is_stmt 0 view .LVU363
+ 1208 0018 DFED187A 		vldr.32	s15, .L48+4
+ 1209 001c 21EE271A 		vmul.f32	s2, s2, s15
+ 1210              	.LVL102:
+ 1211              		.loc 1 416 11 view .LVU364
+ 1212 0020 FCEEC17A 		vcvt.u32.f32	s15, s2
+ 1213 0024 17EE903A 		vmov	r3, s15	@ int
+ 1214              	.LVL103:
+ 417:User/dm_motor_drv.c **** 	
+ 418:User/dm_motor_drv.c **** 	id = motor_id + PSI_MODE;
+ARM GAS  /tmp/ccS5fZTm.s 			page 31
+
+
+ 1215              		.loc 1 418 2 is_stmt 1 view .LVU365
+ 1216              		.loc 1 418 5 is_stmt 0 view .LVU366
+ 1217 0028 01F54071 		add	r1, r1, #768
+ 1218              	.LVL104:
+ 419:User/dm_motor_drv.c **** 	pbuf=(uint8_t*)&pos;
+ 1219              		.loc 1 419 2 is_stmt 1 view .LVU367
+ 420:User/dm_motor_drv.c **** 	vbuf=(uint8_t*)&u16_vel;
+ 1220              		.loc 1 420 2 view .LVU368
+ 421:User/dm_motor_drv.c **** 	ibuf=(uint8_t*)&u16_cur;
+ 1221              		.loc 1 421 2 view .LVU369
+ 422:User/dm_motor_drv.c **** 	
+ 423:User/dm_motor_drv.c **** 	data[0] = *pbuf;
+ 1222              		.loc 1 423 2 view .LVU370
+ 1223              		.loc 1 423 12 is_stmt 0 view .LVU371
+ 1224 002c DDF804C0 		ldr	ip, [sp, #4]
+ 1225              		.loc 1 423 10 view .LVU372
+ 1226 0030 8DF808C0 		strb	ip, [sp, #8]
+ 424:User/dm_motor_drv.c **** 	data[1] = *(pbuf+1);
+ 1227              		.loc 1 424 2 is_stmt 1 view .LVU373
+ 1228              		.loc 1 424 10 is_stmt 0 view .LVU374
+ 1229 0034 CCF3072E 		ubfx	lr, ip, #8, #8
+ 1230 0038 8DF809E0 		strb	lr, [sp, #9]
+ 425:User/dm_motor_drv.c **** 	data[2] = *(pbuf+2);
+ 1231              		.loc 1 425 2 is_stmt 1 view .LVU375
+ 1232              		.loc 1 425 10 is_stmt 0 view .LVU376
+ 1233 003c CCF3074E 		ubfx	lr, ip, #16, #8
+ 1234 0040 8DF80AE0 		strb	lr, [sp, #10]
+ 426:User/dm_motor_drv.c **** 	data[3] = *(pbuf+3);
+ 1235              		.loc 1 426 2 is_stmt 1 view .LVU377
+ 1236              		.loc 1 426 10 is_stmt 0 view .LVU378
+ 1237 0044 CCF3076C 		ubfx	ip, ip, #24, #8
+ 1238 0048 8DF80BC0 		strb	ip, [sp, #11]
+ 427:User/dm_motor_drv.c **** 
+ 428:User/dm_motor_drv.c **** 	data[4] = *vbuf;
+ 1239              		.loc 1 428 2 is_stmt 1 view .LVU379
+ 1240              		.loc 1 428 10 is_stmt 0 view .LVU380
+ 1241 004c 8DF80C20 		strb	r2, [sp, #12]
+ 429:User/dm_motor_drv.c **** 	data[5] = *(vbuf+1);
+ 1242              		.loc 1 429 2 is_stmt 1 view .LVU381
+ 1243              		.loc 1 429 10 is_stmt 0 view .LVU382
+ 1244 0050 C2F30722 		ubfx	r2, r2, #8, #8
+ 1245              	.LVL105:
+ 1246              		.loc 1 429 10 view .LVU383
+ 1247 0054 8DF80D20 		strb	r2, [sp, #13]
+ 430:User/dm_motor_drv.c **** 	
+ 431:User/dm_motor_drv.c **** 	data[6] = *ibuf;
+ 1248              		.loc 1 431 2 is_stmt 1 view .LVU384
+ 1249              		.loc 1 431 10 is_stmt 0 view .LVU385
+ 1250 0058 8DF80E30 		strb	r3, [sp, #14]
+ 432:User/dm_motor_drv.c **** 	data[7] = *(ibuf+1);
+ 1251              		.loc 1 432 2 is_stmt 1 view .LVU386
+ 1252              		.loc 1 432 10 is_stmt 0 view .LVU387
+ 1253 005c C3F30723 		ubfx	r3, r3, #8, #8
+ 1254              	.LVL106:
+ 1255              		.loc 1 432 10 view .LVU388
+ 1256 0060 8DF80F30 		strb	r3, [sp, #15]
+ 433:User/dm_motor_drv.c **** 	
+ARM GAS  /tmp/ccS5fZTm.s 			page 32
+
+
+ 434:User/dm_motor_drv.c **** 	fdcanx_send_data(hcan, id, data, 8);
+ 1257              		.loc 1 434 2 is_stmt 1 view .LVU389
+ 1258 0064 0823     		movs	r3, #8
+ 1259 0066 0DEB0302 		add	r2, sp, r3
+ 1260 006a 89B2     		uxth	r1, r1
+ 1261              		.loc 1 434 2 is_stmt 0 view .LVU390
+ 1262 006c FFF7FEFF 		bl	fdcanx_send_data
+ 1263              	.LVL107:
+ 435:User/dm_motor_drv.c **** }
+ 1264              		.loc 1 435 1 view .LVU391
+ 1265 0070 05B0     		add	sp, sp, #20
+ 1266              	.LCFI29:
+ 1267              		.cfi_def_cfa_offset 4
+ 1268              		@ sp needed
+ 1269 0072 5DF804FB 		ldr	pc, [sp], #4
+ 1270              	.LVL108:
+ 1271              	.L49:
+ 1272              		.loc 1 435 1 view .LVU392
+ 1273 0076 00BF     		.align	2
+ 1274              	.L48:
+ 1275 0078 0000C842 		.word	1120403456
+ 1276 007c 00401C46 		.word	1176256512
+ 1277              		.cfi_endproc
+ 1278              	.LFE159:
+ 1280              		.section	.text.dm_motor_ctrl_send,"ax",%progbits
+ 1281              		.align	1
+ 1282              		.global	dm_motor_ctrl_send
+ 1283              		.syntax unified
+ 1284              		.thumb
+ 1285              		.thumb_func
+ 1286              		.fpu fpv5-d16
+ 1288              	dm_motor_ctrl_send:
+ 1289              	.LVL109:
+ 1290              	.LFB146:
+  73:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 1291              		.loc 1 73 1 is_stmt 1 view -0
+ 1292              		.cfi_startproc
+ 1293              		@ args = 0, pretend = 0, frame = 0
+ 1294              		@ frame_needed = 0, uses_anonymous_args = 0
+  73:User/dm_motor_drv.c **** 	switch(motor->ctrl.mode)
+ 1295              		.loc 1 73 1 is_stmt 0 view .LVU394
+ 1296 0000 08B5     		push	{r3, lr}
+ 1297              	.LCFI30:
+ 1298              		.cfi_def_cfa_offset 8
+ 1299              		.cfi_offset 3, -8
+ 1300              		.cfi_offset 14, -4
+  74:User/dm_motor_drv.c **** 	{
+ 1301              		.loc 1 74 2 is_stmt 1 view .LVU395
+  74:User/dm_motor_drv.c **** 	{
+ 1302              		.loc 1 74 20 is_stmt 0 view .LVU396
+ 1303 0002 91F83C30 		ldrb	r3, [r1, #60]	@ zero_extendqisi2
+  74:User/dm_motor_drv.c **** 	{
+ 1304              		.loc 1 74 2 view .LVU397
+ 1305 0006 013B     		subs	r3, r3, #1
+ 1306 0008 032B     		cmp	r3, #3
+ 1307 000a 10D8     		bhi	.L50
+ 1308 000c DFE803F0 		tbb	[pc, r3]
+ARM GAS  /tmp/ccS5fZTm.s 			page 33
+
+
+ 1309              	.L53:
+ 1310 0010 02       		.byte	(.L56-.L53)/2
+ 1311 0011 10       		.byte	(.L55-.L53)/2
+ 1312 0012 18       		.byte	(.L54-.L53)/2
+ 1313 0013 1E       		.byte	(.L52-.L53)/2
+ 1314              		.p2align 1
+ 1315              	.L56:
+  77:User/dm_motor_drv.c **** 			break;
+ 1316              		.loc 1 77 4 is_stmt 1 view .LVU398
+ 1317 0014 91ED122A 		vldr.32	s4, [r1, #72]
+ 1318 0018 D1ED151A 		vldr.32	s3, [r1, #84]
+ 1319 001c 91ED141A 		vldr.32	s2, [r1, #80]
+ 1320 0020 D1ED110A 		vldr.32	s1, [r1, #68]
+ 1321 0024 91ED100A 		vldr.32	s0, [r1, #64]
+ 1322 0028 0A88     		ldrh	r2, [r1]
+ 1323 002a FFF7FEFF 		bl	mit_ctrl
+ 1324              	.LVL110:
+  78:User/dm_motor_drv.c **** 		case pos_mode:
+ 1325              		.loc 1 78 4 view .LVU399
+ 1326              	.L50:
+  89:User/dm_motor_drv.c **** 
+ 1327              		.loc 1 89 1 is_stmt 0 view .LVU400
+ 1328 002e 08BD     		pop	{r3, pc}
+ 1329              	.LVL111:
+ 1330              	.L55:
+  80:User/dm_motor_drv.c **** 			break;
+ 1331              		.loc 1 80 4 is_stmt 1 view .LVU401
+ 1332 0030 D1ED110A 		vldr.32	s1, [r1, #68]
+ 1333 0034 91ED100A 		vldr.32	s0, [r1, #64]
+ 1334 0038 0988     		ldrh	r1, [r1]
+ 1335              	.LVL112:
+  80:User/dm_motor_drv.c **** 			break;
+ 1336              		.loc 1 80 4 is_stmt 0 view .LVU402
+ 1337 003a FFF7FEFF 		bl	pos_ctrl
+ 1338              	.LVL113:
+  81:User/dm_motor_drv.c **** 		case spd_mode:
+ 1339              		.loc 1 81 4 is_stmt 1 view .LVU403
+ 1340 003e F6E7     		b	.L50
+ 1341              	.LVL114:
+ 1342              	.L54:
+  83:User/dm_motor_drv.c **** 			break;
+ 1343              		.loc 1 83 4 view .LVU404
+ 1344 0040 91ED110A 		vldr.32	s0, [r1, #68]
+ 1345 0044 0988     		ldrh	r1, [r1]
+ 1346              	.LVL115:
+  83:User/dm_motor_drv.c **** 			break;
+ 1347              		.loc 1 83 4 is_stmt 0 view .LVU405
+ 1348 0046 FFF7FEFF 		bl	spd_ctrl
+ 1349              	.LVL116:
+  84:User/dm_motor_drv.c **** 		case psi_mode:
+ 1350              		.loc 1 84 4 is_stmt 1 view .LVU406
+ 1351 004a F0E7     		b	.L50
+ 1352              	.LVL117:
+ 1353              	.L52:
+  86:User/dm_motor_drv.c **** 			break;
+ 1354              		.loc 1 86 4 view .LVU407
+ 1355 004c 91ED131A 		vldr.32	s2, [r1, #76]
+ARM GAS  /tmp/ccS5fZTm.s 			page 34
+
+
+ 1356 0050 D1ED110A 		vldr.32	s1, [r1, #68]
+ 1357 0054 91ED100A 		vldr.32	s0, [r1, #64]
+ 1358 0058 0988     		ldrh	r1, [r1]
+ 1359              	.LVL118:
+  86:User/dm_motor_drv.c **** 			break;
+ 1360              		.loc 1 86 4 is_stmt 0 view .LVU408
+ 1361 005a FFF7FEFF 		bl	psi_ctrl
+ 1362              	.LVL119:
+  87:User/dm_motor_drv.c **** 	}	
+ 1363              		.loc 1 87 4 is_stmt 1 view .LVU409
+  89:User/dm_motor_drv.c **** 
+ 1364              		.loc 1 89 1 is_stmt 0 view .LVU410
+ 1365 005e E6E7     		b	.L50
+ 1366              		.cfi_endproc
+ 1367              	.LFE146:
+ 1369              		.section	.text.read_motor_data,"ax",%progbits
+ 1370              		.align	1
+ 1371              		.global	read_motor_data
+ 1372              		.syntax unified
+ 1373              		.thumb
+ 1374              		.thumb_func
+ 1375              		.fpu fpv5-d16
+ 1377              	read_motor_data:
+ 1378              	.LVL120:
+ 1379              	.LFB160:
+ 436:User/dm_motor_drv.c **** /**
+ 437:User/dm_motor_drv.c **** ************************************************************************
+ 438:User/dm_motor_drv.c **** * @brief:      	read_motor_data: 发送读取寄存器命令
+ 439:User/dm_motor_drv.c **** * @param[in]:   id:    电机can id
+ 440:User/dm_motor_drv.c **** * @param[in]:   rid:   寄存器地址
+ 441:User/dm_motor_drv.c **** * @retval:     	void
+ 442:User/dm_motor_drv.c **** * @details:    	读取电机参数
+ 443:User/dm_motor_drv.c **** ************************************************************************
+ 444:User/dm_motor_drv.c **** **/
+ 445:User/dm_motor_drv.c **** void read_motor_data(uint16_t id, uint8_t rid) 
+ 446:User/dm_motor_drv.c **** {
+ 1380              		.loc 1 446 1 is_stmt 1 view -0
+ 1381              		.cfi_startproc
+ 1382              		@ args = 0, pretend = 0, frame = 8
+ 1383              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1384              		.loc 1 446 1 is_stmt 0 view .LVU412
+ 1385 0000 00B5     		push	{lr}
+ 1386              	.LCFI31:
+ 1387              		.cfi_def_cfa_offset 4
+ 1388              		.cfi_offset 14, -4
+ 1389 0002 83B0     		sub	sp, sp, #12
+ 1390              	.LCFI32:
+ 1391              		.cfi_def_cfa_offset 16
+ 447:User/dm_motor_drv.c **** 	uint8_t can_id_l = id & 0x0F;
+ 1392              		.loc 1 447 2 is_stmt 1 view .LVU413
+ 1393              		.loc 1 447 10 is_stmt 0 view .LVU414
+ 1394 0004 00F00F03 		and	r3, r0, #15
+ 1395              	.LVL121:
+ 448:User/dm_motor_drv.c **** 	uint8_t can_id_h = (id >> 4) & 0x0F;
+ 1396              		.loc 1 448 2 is_stmt 1 view .LVU415
+ 1397              		.loc 1 448 10 is_stmt 0 view .LVU416
+ 1398 0008 C0F30310 		ubfx	r0, r0, #4, #4
+ARM GAS  /tmp/ccS5fZTm.s 			page 35
+
+
+ 1399              	.LVL122:
+ 449:User/dm_motor_drv.c **** 	
+ 450:User/dm_motor_drv.c **** 	uint8_t data[4] = {can_id_l, can_id_h, 0x33, rid};
+ 1400              		.loc 1 450 2 is_stmt 1 view .LVU417
+ 1401              		.loc 1 450 10 is_stmt 0 view .LVU418
+ 1402 000c 8DF80430 		strb	r3, [sp, #4]
+ 1403 0010 8DF80500 		strb	r0, [sp, #5]
+ 1404 0014 3323     		movs	r3, #51
+ 1405              	.LVL123:
+ 1406              		.loc 1 450 10 view .LVU419
+ 1407 0016 8DF80630 		strb	r3, [sp, #6]
+ 1408 001a 8DF80710 		strb	r1, [sp, #7]
+ 451:User/dm_motor_drv.c **** 	fdcanx_send_data(&hfdcan1, 0x7FF, data, 4);
+ 1409              		.loc 1 451 2 is_stmt 1 view .LVU420
+ 1410 001e 0423     		movs	r3, #4
+ 1411 0020 0DEB0302 		add	r2, sp, r3
+ 1412 0024 40F2FF71 		movw	r1, #2047
+ 1413              	.LVL124:
+ 1414              		.loc 1 451 2 is_stmt 0 view .LVU421
+ 1415 0028 0248     		ldr	r0, .L60
+ 1416              	.LVL125:
+ 1417              		.loc 1 451 2 view .LVU422
+ 1418 002a FFF7FEFF 		bl	fdcanx_send_data
+ 1419              	.LVL126:
+ 452:User/dm_motor_drv.c **** }
+ 1420              		.loc 1 452 1 view .LVU423
+ 1421 002e 03B0     		add	sp, sp, #12
+ 1422              	.LCFI33:
+ 1423              		.cfi_def_cfa_offset 4
+ 1424              		@ sp needed
+ 1425 0030 5DF804FB 		ldr	pc, [sp], #4
+ 1426              	.L61:
+ 1427              		.align	2
+ 1428              	.L60:
+ 1429 0034 00000000 		.word	hfdcan1
+ 1430              		.cfi_endproc
+ 1431              	.LFE160:
+ 1433              		.section	.text.read_motor_ctrl_fbdata,"ax",%progbits
+ 1434              		.align	1
+ 1435              		.global	read_motor_ctrl_fbdata
+ 1436              		.syntax unified
+ 1437              		.thumb
+ 1438              		.thumb_func
+ 1439              		.fpu fpv5-d16
+ 1441              	read_motor_ctrl_fbdata:
+ 1442              	.LVL127:
+ 1443              	.LFB161:
+ 453:User/dm_motor_drv.c **** /**
+ 454:User/dm_motor_drv.c **** ************************************************************************
+ 455:User/dm_motor_drv.c **** * @brief:      	read_motor_ctrl_fbdata: 发送读取电机反馈数据的命令
+ 456:User/dm_motor_drv.c **** * @param[in]:   id:    电机can id
+ 457:User/dm_motor_drv.c **** * @retval:     	void
+ 458:User/dm_motor_drv.c **** * @details:    	读取电机控制反馈的数据
+ 459:User/dm_motor_drv.c **** ************************************************************************
+ 460:User/dm_motor_drv.c **** **/
+ 461:User/dm_motor_drv.c **** void read_motor_ctrl_fbdata(uint16_t id) 
+ 462:User/dm_motor_drv.c **** {
+ARM GAS  /tmp/ccS5fZTm.s 			page 36
+
+
+ 1444              		.loc 1 462 1 is_stmt 1 view -0
+ 1445              		.cfi_startproc
+ 1446              		@ args = 0, pretend = 0, frame = 8
+ 1447              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1448              		.loc 1 462 1 is_stmt 0 view .LVU425
+ 1449 0000 00B5     		push	{lr}
+ 1450              	.LCFI34:
+ 1451              		.cfi_def_cfa_offset 4
+ 1452              		.cfi_offset 14, -4
+ 1453 0002 83B0     		sub	sp, sp, #12
+ 1454              	.LCFI35:
+ 1455              		.cfi_def_cfa_offset 16
+ 463:User/dm_motor_drv.c **** 	uint8_t can_id_l = id & 0xFF;       // 低 8 位
+ 1456              		.loc 1 463 2 is_stmt 1 view .LVU426
+ 1457              	.LVL128:
+ 464:User/dm_motor_drv.c ****     uint8_t can_id_h = (id >> 8) & 0x07; // 高 3 位
+ 1458              		.loc 1 464 5 view .LVU427
+ 1459              		.loc 1 464 13 is_stmt 0 view .LVU428
+ 1460 0004 C0F30223 		ubfx	r3, r0, #8, #3
+ 1461              	.LVL129:
+ 465:User/dm_motor_drv.c **** 
+ 466:User/dm_motor_drv.c **** 	uint8_t data[4] = {can_id_l, can_id_h, 0xCC, 0x00};
+ 1462              		.loc 1 466 2 is_stmt 1 view .LVU429
+ 1463              		.loc 1 466 10 is_stmt 0 view .LVU430
+ 1464 0008 8DF80400 		strb	r0, [sp, #4]
+ 1465 000c 8DF80530 		strb	r3, [sp, #5]
+ 1466 0010 CC23     		movs	r3, #204
+ 1467              	.LVL130:
+ 1468              		.loc 1 466 10 view .LVU431
+ 1469 0012 8DF80630 		strb	r3, [sp, #6]
+ 1470 0016 0023     		movs	r3, #0
+ 1471 0018 8DF80730 		strb	r3, [sp, #7]
+ 467:User/dm_motor_drv.c **** 	fdcanx_send_data(&hfdcan1, 0x7FF, data, 4);
+ 1472              		.loc 1 467 2 is_stmt 1 view .LVU432
+ 1473 001c 0423     		movs	r3, #4
+ 1474 001e 0DEB0302 		add	r2, sp, r3
+ 1475 0022 40F2FF71 		movw	r1, #2047
+ 1476 0026 0348     		ldr	r0, .L64
+ 1477              	.LVL131:
+ 1478              		.loc 1 467 2 is_stmt 0 view .LVU433
+ 1479 0028 FFF7FEFF 		bl	fdcanx_send_data
+ 1480              	.LVL132:
+ 468:User/dm_motor_drv.c **** }
+ 1481              		.loc 1 468 1 view .LVU434
+ 1482 002c 03B0     		add	sp, sp, #12
+ 1483              	.LCFI36:
+ 1484              		.cfi_def_cfa_offset 4
+ 1485              		@ sp needed
+ 1486 002e 5DF804FB 		ldr	pc, [sp], #4
+ 1487              	.L65:
+ 1488 0032 00BF     		.align	2
+ 1489              	.L64:
+ 1490 0034 00000000 		.word	hfdcan1
+ 1491              		.cfi_endproc
+ 1492              	.LFE161:
+ 1494              		.section	.text.write_motor_data,"ax",%progbits
+ 1495              		.align	1
+ARM GAS  /tmp/ccS5fZTm.s 			page 37
+
+
+ 1496              		.global	write_motor_data
+ 1497              		.syntax unified
+ 1498              		.thumb
+ 1499              		.thumb_func
+ 1500              		.fpu fpv5-d16
+ 1502              	write_motor_data:
+ 1503              	.LVL133:
+ 1504              	.LFB162:
+ 469:User/dm_motor_drv.c **** /**
+ 470:User/dm_motor_drv.c **** ************************************************************************
+ 471:User/dm_motor_drv.c **** * @brief:      	write_motor_data: 发送写寄存器命令
+ 472:User/dm_motor_drv.c **** * @param[in]:   id:    电机can id
+ 473:User/dm_motor_drv.c **** * @param[in]:   rid:   寄存器地址
+ 474:User/dm_motor_drv.c **** * @param[in]:   d0-d3: 写入的数据
+ 475:User/dm_motor_drv.c **** * @retval:     	void
+ 476:User/dm_motor_drv.c **** * @details:    	向寄存器写入数据
+ 477:User/dm_motor_drv.c **** ************************************************************************
+ 478:User/dm_motor_drv.c **** **/
+ 479:User/dm_motor_drv.c **** void write_motor_data(uint16_t id, uint8_t rid, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3)
+ 480:User/dm_motor_drv.c **** {
+ 1505              		.loc 1 480 1 is_stmt 1 view -0
+ 1506              		.cfi_startproc
+ 1507              		@ args = 8, pretend = 0, frame = 8
+ 1508              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1509              		.loc 1 480 1 is_stmt 0 view .LVU436
+ 1510 0000 00B5     		push	{lr}
+ 1511              	.LCFI37:
+ 1512              		.cfi_def_cfa_offset 4
+ 1513              		.cfi_offset 14, -4
+ 1514 0002 83B0     		sub	sp, sp, #12
+ 1515              	.LCFI38:
+ 1516              		.cfi_def_cfa_offset 16
+ 481:User/dm_motor_drv.c **** 	uint8_t can_id_l = id & 0xFF;       // 低 8 位
+ 1517              		.loc 1 481 2 is_stmt 1 view .LVU437
+ 1518              	.LVL134:
+ 482:User/dm_motor_drv.c ****     uint8_t can_id_h = (id >> 8) & 0x07; // 高 3 位
+ 1519              		.loc 1 482 5 view .LVU438
+ 1520              		.loc 1 482 13 is_stmt 0 view .LVU439
+ 1521 0004 C0F3022C 		ubfx	ip, r0, #8, #3
+ 1522              	.LVL135:
+ 483:User/dm_motor_drv.c **** 	
+ 484:User/dm_motor_drv.c **** 	uint8_t data[8] = {can_id_l, can_id_h, 0x55, rid, d0, d1, d2, d3};
+ 1523              		.loc 1 484 2 is_stmt 1 view .LVU440
+ 1524              		.loc 1 484 10 is_stmt 0 view .LVU441
+ 1525 0008 8DF80000 		strb	r0, [sp]
+ 1526 000c 8DF801C0 		strb	ip, [sp, #1]
+ 1527 0010 5520     		movs	r0, #85
+ 1528              	.LVL136:
+ 1529              		.loc 1 484 10 view .LVU442
+ 1530 0012 8DF80200 		strb	r0, [sp, #2]
+ 1531 0016 8DF80310 		strb	r1, [sp, #3]
+ 1532 001a 8DF80420 		strb	r2, [sp, #4]
+ 1533 001e 8DF80530 		strb	r3, [sp, #5]
+ 1534 0022 9DF81030 		ldrb	r3, [sp, #16]	@ zero_extendqisi2
+ 1535              	.LVL137:
+ 1536              		.loc 1 484 10 view .LVU443
+ 1537 0026 8DF80630 		strb	r3, [sp, #6]
+ARM GAS  /tmp/ccS5fZTm.s 			page 38
+
+
+ 1538 002a 9DF81430 		ldrb	r3, [sp, #20]	@ zero_extendqisi2
+ 1539 002e 8DF80730 		strb	r3, [sp, #7]
+ 485:User/dm_motor_drv.c **** 	fdcanx_send_data(&hfdcan1, 0x7FF, data, 8);
+ 1540              		.loc 1 485 2 is_stmt 1 view .LVU444
+ 1541 0032 0823     		movs	r3, #8
+ 1542 0034 6A46     		mov	r2, sp
+ 1543              	.LVL138:
+ 1544              		.loc 1 485 2 is_stmt 0 view .LVU445
+ 1545 0036 40F2FF71 		movw	r1, #2047
+ 1546              	.LVL139:
+ 1547              		.loc 1 485 2 view .LVU446
+ 1548 003a 0348     		ldr	r0, .L68
+ 1549 003c FFF7FEFF 		bl	fdcanx_send_data
+ 1550              	.LVL140:
+ 486:User/dm_motor_drv.c **** }
+ 1551              		.loc 1 486 1 view .LVU447
+ 1552 0040 03B0     		add	sp, sp, #12
+ 1553              	.LCFI39:
+ 1554              		.cfi_def_cfa_offset 4
+ 1555              		@ sp needed
+ 1556 0042 5DF804FB 		ldr	pc, [sp], #4
+ 1557              	.LVL141:
+ 1558              	.L69:
+ 1559              		.loc 1 486 1 view .LVU448
+ 1560 0046 00BF     		.align	2
+ 1561              	.L68:
+ 1562 0048 00000000 		.word	hfdcan1
+ 1563              		.cfi_endproc
+ 1564              	.LFE162:
+ 1566              		.section	.text.save_motor_data,"ax",%progbits
+ 1567              		.align	1
+ 1568              		.global	save_motor_data
+ 1569              		.syntax unified
+ 1570              		.thumb
+ 1571              		.thumb_func
+ 1572              		.fpu fpv5-d16
+ 1574              	save_motor_data:
+ 1575              	.LVL142:
+ 1576              	.LFB163:
+ 487:User/dm_motor_drv.c **** /**
+ 488:User/dm_motor_drv.c **** ************************************************************************
+ 489:User/dm_motor_drv.c **** * @brief:      	save_motor_data: 发送保存命令
+ 490:User/dm_motor_drv.c **** * @param[in]:   id:    电机can id
+ 491:User/dm_motor_drv.c **** * @param[in]:   rid:   寄存器地址
+ 492:User/dm_motor_drv.c **** * @retval:     	void
+ 493:User/dm_motor_drv.c **** * @details:    	保存写入的电机参数
+ 494:User/dm_motor_drv.c **** ************************************************************************
+ 495:User/dm_motor_drv.c **** **/
+ 496:User/dm_motor_drv.c **** void save_motor_data(uint16_t id, uint8_t rid) 
+ 497:User/dm_motor_drv.c **** {
+ 1577              		.loc 1 497 1 is_stmt 1 view -0
+ 1578              		.cfi_startproc
+ 1579              		@ args = 0, pretend = 0, frame = 8
+ 1580              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1581              		.loc 1 497 1 is_stmt 0 view .LVU450
+ 1582 0000 00B5     		push	{lr}
+ 1583              	.LCFI40:
+ARM GAS  /tmp/ccS5fZTm.s 			page 39
+
+
+ 1584              		.cfi_def_cfa_offset 4
+ 1585              		.cfi_offset 14, -4
+ 1586 0002 83B0     		sub	sp, sp, #12
+ 1587              	.LCFI41:
+ 1588              		.cfi_def_cfa_offset 16
+ 498:User/dm_motor_drv.c **** 	uint8_t can_id_l = id & 0xFF;       // 低 8 位
+ 1589              		.loc 1 498 2 is_stmt 1 view .LVU451
+ 1590              	.LVL143:
+ 499:User/dm_motor_drv.c ****     uint8_t can_id_h = (id >> 8) & 0x07; // 高 3 位
+ 1591              		.loc 1 499 5 view .LVU452
+ 1592              		.loc 1 499 13 is_stmt 0 view .LVU453
+ 1593 0004 C0F30223 		ubfx	r3, r0, #8, #3
+ 1594              	.LVL144:
+ 500:User/dm_motor_drv.c **** 	
+ 501:User/dm_motor_drv.c **** 	uint8_t data[4] = {can_id_l, can_id_h, 0xAA, 0x01};
+ 1595              		.loc 1 501 2 is_stmt 1 view .LVU454
+ 1596              		.loc 1 501 10 is_stmt 0 view .LVU455
+ 1597 0008 8DF80400 		strb	r0, [sp, #4]
+ 1598 000c 8DF80530 		strb	r3, [sp, #5]
+ 1599 0010 AA23     		movs	r3, #170
+ 1600              	.LVL145:
+ 1601              		.loc 1 501 10 view .LVU456
+ 1602 0012 8DF80630 		strb	r3, [sp, #6]
+ 1603 0016 0123     		movs	r3, #1
+ 1604 0018 8DF80730 		strb	r3, [sp, #7]
+ 502:User/dm_motor_drv.c **** 	fdcanx_send_data(&hfdcan1, 0x7FF, data, 4);
+ 1605              		.loc 1 502 2 is_stmt 1 view .LVU457
+ 1606 001c 0423     		movs	r3, #4
+ 1607 001e 0DEB0302 		add	r2, sp, r3
+ 1608 0022 40F2FF71 		movw	r1, #2047
+ 1609              	.LVL146:
+ 1610              		.loc 1 502 2 is_stmt 0 view .LVU458
+ 1611 0026 0348     		ldr	r0, .L72
+ 1612              	.LVL147:
+ 1613              		.loc 1 502 2 view .LVU459
+ 1614 0028 FFF7FEFF 		bl	fdcanx_send_data
+ 1615              	.LVL148:
+ 503:User/dm_motor_drv.c **** }
+ 1616              		.loc 1 503 1 view .LVU460
+ 1617 002c 03B0     		add	sp, sp, #12
+ 1618              	.LCFI42:
+ 1619              		.cfi_def_cfa_offset 4
+ 1620              		@ sp needed
+ 1621 002e 5DF804FB 		ldr	pc, [sp], #4
+ 1622              	.L73:
+ 1623 0032 00BF     		.align	2
+ 1624              	.L72:
+ 1625 0034 00000000 		.word	hfdcan1
+ 1626              		.cfi_endproc
+ 1627              	.LFE163:
+ 1629              		.text
+ 1630              	.Letext0:
+ 1631              		.file 2 "/usr/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h"
+ 1632              		.file 3 "Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h"
+ 1633              		.file 4 "Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h"
+ 1634              		.file 5 "Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h"
+ 1635              		.file 6 "Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_fdcan.h"
+ARM GAS  /tmp/ccS5fZTm.s 			page 40
+
+
+ 1636              		.file 7 "User/dm_motor_drv.h"
+ 1637              		.file 8 "Core/Inc/fdcan.h"
+ 1638              		.file 9 "User/bsp_fdcan.h"
+ARM GAS  /tmp/ccS5fZTm.s 			page 41
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 dm_motor_drv.c
+     /tmp/ccS5fZTm.s:17     .text.dm_motor_clear_para:0000000000000000 $t
+     /tmp/ccS5fZTm.s:25     .text.dm_motor_clear_para:0000000000000000 dm_motor_clear_para
+     /tmp/ccS5fZTm.s:59     .text.float_to_uint:0000000000000000 $t
+     /tmp/ccS5fZTm.s:66     .text.float_to_uint:0000000000000000 float_to_uint
+     /tmp/ccS5fZTm.s:105    .text.uint_to_float:0000000000000000 $t
+     /tmp/ccS5fZTm.s:112    .text.uint_to_float:0000000000000000 uint_to_float
+     /tmp/ccS5fZTm.s:152    .text.dm_motor_fbdata:0000000000000000 $t
+     /tmp/ccS5fZTm.s:159    .text.dm_motor_fbdata:0000000000000000 dm_motor_fbdata
+     /tmp/ccS5fZTm.s:282    .text.enable_motor_mode:0000000000000000 $t
+     /tmp/ccS5fZTm.s:289    .text.enable_motor_mode:0000000000000000 enable_motor_mode
+     /tmp/ccS5fZTm.s:354    .text.dm_motor_enable:0000000000000000 $t
+     /tmp/ccS5fZTm.s:361    .text.dm_motor_enable:0000000000000000 dm_motor_enable
+     /tmp/ccS5fZTm.s:383    .text.dm_motor_enable:0000000000000010 $d
+     /tmp/ccS5fZTm.s:387    .text.dm_motor_enable:0000000000000014 $t
+     /tmp/ccS5fZTm.s:438    .text.disable_motor_mode:0000000000000000 $t
+     /tmp/ccS5fZTm.s:445    .text.disable_motor_mode:0000000000000000 disable_motor_mode
+     /tmp/ccS5fZTm.s:510    .text.dm_motor_disable:0000000000000000 $t
+     /tmp/ccS5fZTm.s:517    .text.dm_motor_disable:0000000000000000 dm_motor_disable
+     /tmp/ccS5fZTm.s:540    .text.dm_motor_disable:0000000000000012 $d
+     /tmp/ccS5fZTm.s:544    .text.dm_motor_disable:0000000000000016 $t
+     /tmp/ccS5fZTm.s:598    .text.save_pos_zero:0000000000000000 $t
+     /tmp/ccS5fZTm.s:605    .text.save_pos_zero:0000000000000000 save_pos_zero
+     /tmp/ccS5fZTm.s:670    .text.clear_err:0000000000000000 $t
+     /tmp/ccS5fZTm.s:677    .text.clear_err:0000000000000000 clear_err
+     /tmp/ccS5fZTm.s:742    .text.dm_motor_clear_err:0000000000000000 $t
+     /tmp/ccS5fZTm.s:749    .text.dm_motor_clear_err:0000000000000000 dm_motor_clear_err
+     /tmp/ccS5fZTm.s:771    .text.dm_motor_clear_err:0000000000000010 $d
+     /tmp/ccS5fZTm.s:775    .text.dm_motor_clear_err:0000000000000014 $t
+     /tmp/ccS5fZTm.s:826    .text.mit_ctrl:0000000000000000 $t
+     /tmp/ccS5fZTm.s:833    .text.mit_ctrl:0000000000000000 mit_ctrl
+     /tmp/ccS5fZTm.s:1012   .text.mit_ctrl:00000000000000e0 $d
+     /tmp/ccS5fZTm.s:1018   .text.pos_ctrl:0000000000000000 $t
+     /tmp/ccS5fZTm.s:1025   .text.pos_ctrl:0000000000000000 pos_ctrl
+     /tmp/ccS5fZTm.s:1105   .text.spd_ctrl:0000000000000000 $t
+     /tmp/ccS5fZTm.s:1112   .text.spd_ctrl:0000000000000000 spd_ctrl
+     /tmp/ccS5fZTm.s:1171   .text.psi_ctrl:0000000000000000 $t
+     /tmp/ccS5fZTm.s:1178   .text.psi_ctrl:0000000000000000 psi_ctrl
+     /tmp/ccS5fZTm.s:1275   .text.psi_ctrl:0000000000000078 $d
+     /tmp/ccS5fZTm.s:1281   .text.dm_motor_ctrl_send:0000000000000000 $t
+     /tmp/ccS5fZTm.s:1288   .text.dm_motor_ctrl_send:0000000000000000 dm_motor_ctrl_send
+     /tmp/ccS5fZTm.s:1310   .text.dm_motor_ctrl_send:0000000000000010 $d
+     /tmp/ccS5fZTm.s:1314   .text.dm_motor_ctrl_send:0000000000000014 $t
+     /tmp/ccS5fZTm.s:1370   .text.read_motor_data:0000000000000000 $t
+     /tmp/ccS5fZTm.s:1377   .text.read_motor_data:0000000000000000 read_motor_data
+     /tmp/ccS5fZTm.s:1429   .text.read_motor_data:0000000000000034 $d
+     /tmp/ccS5fZTm.s:1434   .text.read_motor_ctrl_fbdata:0000000000000000 $t
+     /tmp/ccS5fZTm.s:1441   .text.read_motor_ctrl_fbdata:0000000000000000 read_motor_ctrl_fbdata
+     /tmp/ccS5fZTm.s:1490   .text.read_motor_ctrl_fbdata:0000000000000034 $d
+     /tmp/ccS5fZTm.s:1495   .text.write_motor_data:0000000000000000 $t
+     /tmp/ccS5fZTm.s:1502   .text.write_motor_data:0000000000000000 write_motor_data
+     /tmp/ccS5fZTm.s:1562   .text.write_motor_data:0000000000000048 $d
+     /tmp/ccS5fZTm.s:1567   .text.save_motor_data:0000000000000000 $t
+     /tmp/ccS5fZTm.s:1574   .text.save_motor_data:0000000000000000 save_motor_data
+     /tmp/ccS5fZTm.s:1625   .text.save_motor_data:0000000000000034 $d
+
+ARM GAS  /tmp/ccS5fZTm.s 			page 42
+
+
+UNDEFINED SYMBOLS
+fdcanx_send_data
+hfdcan1
