@@ -1,12 +1,12 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
+  * @file		   : main.c
+  * @brief		  : Main program body
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -18,23 +18,23 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "dma.h"
 #include "fdcan.h"
+#include "memorymap.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "bsp_fdcan.h"
-#include "dm_motor_ctrl.h"
-#include <stdio.h>  
-#include <string.h> 
+#include "stdio.h"
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define RPM_TO_RADS(rpm) ((rpm) * (2.0f * 3.1415926535f / 60.0f))
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -44,7 +44,12 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#include "bsp_fdcan.h"
+#include "dm_motor_ctrl.h"
+#include <stdio.h>  
+#include <string.h> 
+volatile float g_target_motor_speed;
+volatile float target_rpm;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -55,32 +60,14 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
-#define RPM_TO_RADS(rpm) ((rpm) * (2.0f * 3.1415926535f / 60.0f))
-volatile float g_target_motor_speed;
-volatile float target_rpm;
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* USER CODE BEGIN Callback 0 */
-	if (htim->Instance == TIM3) {
-		
-		read_all_motor_data(&motor[Motor1]);
-		
-		if(motor[Motor1].tmp.read_flag == 0)
-			dm_motor_ctrl_send(&hfdcan1, &motor[Motor1]);
-        
-        
-        g_target_motor_speed = RPM_TO_RADS(target_rpm); 
-        motor[Motor1].ctrl.vel_set = g_target_motor_speed;
 
-        dm_motor_ctrl_send(&hfdcan1, &motor[Motor1]);
-	}
-}
-uint8_t send_data[8] = {0,0,1,1,4,5,6,7};
 /* USER CODE END 0 */
 
 /**
@@ -120,59 +107,28 @@ int main(void)
   /* USER CODE BEGIN 2 */
   
   
-      char tx_msg_buffer[128]; 
-    const char *ready_message = "Motor Control System Ready. Target RPM can be updated via UART.\r\n";
-    uint8_t initial_uart_rx_byte[1];
-        if (HAL_UART_Receive_IT(&huart1, initial_uart_rx_byte, 1) != HAL_OK)
-    {
-        Error_Handler(); 
-    }
+  const char *ready_message = "Motor Control System Ready. Target RPM can be updated via UART.\r\n";
+  uint8_t initial_uart_rx_byte[1];
+  if (HAL_UART_Receive_IT(&huart1, initial_uart_rx_byte, 1) != HAL_OK)
+  {
+	Error_Handler(); 
+  }
 
-    HAL_UART_Transmit(&huart1, (uint8_t*)ready_message, strlen(ready_message), HAL_MAX_DELAY);
+  HAL_UART_Transmit(&huart1, (uint8_t*)ready_message, strlen(ready_message), HAL_MAX_DELAY);
 
-  
-  power(1);
-  HAL_Delay(1000);
-	bsp_fdcan_set_baud(&hfdcan1, CAN_CLASS, CAN_BR_1M);
 
-	bsp_can_init();
-    
-    
-    
-      
-  
-  
-///// test block
-//    bsp_fdcan_set_baud(&hfdcan1, CAN_CLASS, CAN_BR_1M);
-//    can_filter_init();
-//    HAL_FDCAN_Start(&hfdcan1);    
-//    while (1)
-//    {
-//        fdcanx_send_data(&hfdcan1, 0x520, send_data, 8);
-//        HAL_Delay(500);
-//    }
-//    
-//  
-//  ////test block
-    
-	dm_motor_init();
-	motor[Motor1].ctrl.mode 	= spd_mode;
-	HAL_Delay(100);
-	
-	write_motor_data(motor[Motor1].id, 10, spd_mode, 0, 0, 0);
-	HAL_Delay(100);
-//	write_motor_data(motor[Motor1].id, 35, CAN_BR_5M, 0, 0, 0);
-//	HAL_Delay(100);
-	read_motor_data(motor[Motor1].id, RID_CAN_BR); 
-	dm_motor_disable(&hfdcan1, &motor[Motor1]);
-	HAL_Delay(100);
-	save_motor_data(motor[Motor1].id, 10);
-	HAL_Delay(100);
-	dm_motor_enable(&hfdcan1, &motor[Motor1]);
-	HAL_Delay(1000);
-	HAL_TIM_Base_Start_IT(&htim3);
-//	read_all_motor_data(&motor[Motor1]);
   /* USER CODE END 2 */
+
+  /* Init scheduler */
+  osKernelInitialize();
+
+  /* Call init function for freertos objects (in cmsis_os2.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -248,6 +204,40 @@ void SystemClock_Config(void)
 /* USER CODE END 4 */
 
 /**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM23 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM23)
+  {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+  if (htim->Instance == TIM3) {
+		
+		read_all_motor_data(&motor[Motor1]);
+		
+		if(motor[Motor1].tmp.read_flag == 0)
+			dm_motor_ctrl_send(&hfdcan1, &motor[Motor1]);
+        
+        
+        g_target_motor_speed = RPM_TO_RADS(target_rpm); 
+        motor[Motor1].ctrl.vel_set = g_target_motor_speed;
+
+        dm_motor_ctrl_send(&hfdcan1, &motor[Motor1]);
+  }
+  /* USER CODE END Callback 1 */
+}
+
+/**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
@@ -274,7 +264,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	 ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

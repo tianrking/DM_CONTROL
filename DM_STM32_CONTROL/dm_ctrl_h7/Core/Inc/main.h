@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -31,17 +31,19 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+    
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+    
+#define			power(x)			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, x)
+#define RPM_TO_RADS(rpm) ((rpm) * (2.0f * 3.1415926535f / 60.0f))
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define			power(x)			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, x)
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2024 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -146,7 +146,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     __HAL_LINKDMA(uartHandle,hdmatx,hdma_usart1_tx);
 
     /* USART1 interrupt Init */
-    HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(USART1_IRQn);
   /* USER CODE BEGIN USART1_MspInit 1 */
 
@@ -184,46 +184,42 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
-// ���ڽ�����ɻص�����
-// ���ڽ��ջ�������С
-#include "stdio.h"
 #include "string.h"
-#define UART_RX_BUFFER_SIZE 1     // ÿ�ν���1���ֽ�
-#define UART_CMD_BUFFER_SIZE 64   // �洢һ����������Ļ�����
-uint8_t uart_rx_buffer[UART_RX_BUFFER_SIZE];         // HAL���DMA��IT���ջ�����
-char    uart_cmd_buffer[UART_CMD_BUFFER_SIZE];       // �洢���յ��������ַ���
-volatile uint16_t uart_cmd_index = 0;                // ��ǰ�������������
-volatile uint8_t uart_cmd_received_flag = 0;         // ���������ɱ�־
+#define UART_RX_BUFFER_SIZE 1     // Receive 1 byte each time
+#define UART_CMD_BUFFER_SIZE 64   // Buffer to store a complete command
+uint8_t uart_rx_buffer[UART_RX_BUFFER_SIZE];         // HAL DMA or IT receive buffer
+char    uart_cmd_buffer[UART_CMD_BUFFER_SIZE];       // Store received command string
+volatile uint16_t uart_cmd_index = 0;                // Current command buffer index
+volatile uint8_t uart_cmd_received_flag = 0;         // Command received completion flag
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == USART1)
     {
         if (uart_cmd_index < UART_CMD_BUFFER_SIZE - 1)
         {
-            // ����Ƿ��ǻس������з�����Ϊ��������ı�־
+            // Check if it's carriage return or line feed as command end marker
             if (uart_rx_buffer[0] == '\r' || uart_rx_buffer[0] == '\n')
             {
-                if (uart_cmd_index > 0) // ȷ�����ǿ�����
+                if (uart_cmd_index > 0) // Ensure it's not an empty command
                 {
-                    uart_cmd_buffer[uart_cmd_index] = '\0'; // ����ַ���������
-                    uart_cmd_received_flag = 1;             // �������������ɱ�־
-                    uart_cmd_index = 0;                     // ����������׼��������һ������
+                    uart_cmd_buffer[uart_cmd_index] = '\0'; // Add string terminator
+                    uart_cmd_received_flag = 1;             // Set command received completion flag
+                    uart_cmd_index = 0;                     // Reset index to prepare for next command
                 }
             }
             else
             {
-                uart_cmd_buffer[uart_cmd_index++] = uart_rx_buffer[0]; // �����������
+                uart_cmd_buffer[uart_cmd_index++] = uart_rx_buffer[0]; // Store the received byte
             }
         }
-        else // �����������
+        else // Buffer overflow
         {
-            uart_cmd_index = 0; // �򵥵����ã���ֹ��� (������Ӹ����ӵĴ�����)
+            uart_cmd_index = 0; // Simple reset to prevent overflow (more sophisticated handling could be added)
             memset(uart_cmd_buffer, 0, UART_CMD_BUFFER_SIZE);
         }
-
-        // �����������ڽ����жϣ�׼��������һ���ֽ�
+        // Re-enable UART receive interrupt to prepare for next byte
         HAL_UART_Receive_IT(&huart1, uart_rx_buffer, UART_RX_BUFFER_SIZE);
     }
 }
-
 /* USER CODE END 1 */
